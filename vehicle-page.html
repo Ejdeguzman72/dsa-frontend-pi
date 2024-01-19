@@ -13,7 +13,7 @@
       <ul class="navbar">
          <li><a href="home-page.html">Home</a></li>
          <li class="dropdown">
-            <a href="fitness-page.html" class="dropbtn">Fitness</a>
+            <a href="finance-page.html" class="dropbtn">Finance</a>
             <div class="dropdown-content">
                <a href="general-finance-page.html">General Expenses</a>
                <a href="automotive-finance-page.html">Automotive Expenses</a>
@@ -48,6 +48,23 @@
    </nav><br />
 
    <a class="tabs" href="vehicle-page.html">Vehicles</a>
+
+   <div id="vehicleList" class="vehicle-list-container"></div>
+   <div id="pagination" class="pagination-container"></div>
+
+   <div id="myModal" class="modal">
+      <div class="modal-content">
+         <span class="close">&times;</span>
+         <div id="modalContent">
+            <button>Delete</button>
+            <button>Update</button>
+         </div>
+      </div>
+   </div>
+
+   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+   <script src="scripts/library/vehicle-script.js"></script>
+
    <footer>
       <p>Edgar Joseph DeGuzman</p>
    </footer>

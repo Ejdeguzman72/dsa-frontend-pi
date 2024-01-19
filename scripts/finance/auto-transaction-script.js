@@ -16,10 +16,10 @@ const fetchAutotrxList = async () => {
 };
 
 // Render auto transaction list items
-const renderAutotrxList = (autoTrxs, page) => {
+const renderAutotrxList = (entries, page) => {
     const startIdx = (page - 1) * itemsPerPage;
     const endIdx = startIdx + itemsPerPage;
-    const autoTrxToDisplay = autoTrxs.slice(startIdx, endIdx);
+    const autoTrxToDisplay = entries.slice(startIdx, endIdx);
 
     autoTrxListContainer.innerHTML = '';
 
@@ -29,7 +29,7 @@ const renderAutotrxList = (autoTrxs, page) => {
         autoTrxElement.dataset.index = startIdx + index;
 
         const amountElement = document.createElement('h3');
-        amountElement.textContent = autotrx.amount;
+        amountElement.textContent = autotrx.amount.toFixed(2);
 
         const autoTrxDateElement = document.createElement('p');
         autoTrxDateElement.textContent = autotrx.autoTrxDate;
@@ -55,7 +55,7 @@ let autoTransactions = {};
 // Open modal with auto transaction details
 const openModal = (autoTrx) => {
     modalContent.innerHTML = `
-        <h2>${autoTrx.amount}</h2>
+        <h2>${autoTrx.amount.toFixed(2)}</h2>
         <p>Transaction Date: ${autoTrx.autoTrxDate}</p>
         <p>Manufacturer: ${autoTrx.make}</p>
         <p>Model: ${autoTrx.model}</p>

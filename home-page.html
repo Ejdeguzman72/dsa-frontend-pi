@@ -9,11 +9,16 @@
 </head>
 
 <body>
+   <div class="burger-icon" onclick="toggleNavbar()">
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+   </div>
    <nav>
       <ul class="navbar">
          <li><a href="home-page.html">Home</a></li>
          <li class="dropdown">
-            <a href="fitness-page.html" class="dropbtn">Fitness</a>
+            <a href="finance-page.html" class="dropbtn">Finance</a>
             <div class="dropdown-content">
                <a href="general-finance-page.html">General Expenses</a>
                <a href="automotive-finance-page.html">Automotive Expenses</a>
@@ -46,8 +51,8 @@
          <li><a href="social-media-page.html">Message Board</a></li>
       </ul>
    </nav>
-   
-   
+
+
    <div class="pills">
       <input class="input" type="text" placeholder="Search News" />
       <div class="pill-nav">
@@ -57,18 +62,26 @@
          <a href="#about">Political</a>
          <a href="">Sports</a>
          <a href="">Technology</a>
-         <a href="">Weather</a><hr>
+         <a href="">Weather</a>
+         <hr>
       </div>
    </div>
-     
+
    <div id="articles-container"></div>
    <div id="pagination-container"></div><br />
-   <!-- <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-   <script src="scripts/newsroom/renderNewsArticles.js"></script> -->
 
-   <!-- <footer>
+   <script>
+      // JavaScript function to toggle the visibility of the navbar
+      function toggleNavbar() {
+         var navbar = document.querySelector('ul.navbar');
+         console.log('fghdhdghdfg')
+         navbar.classList.toggle('show');
+      }
+   </script>
+
+   <footer>
       <p>Edgar Joseph DeGuzman</p>
-   </footer> -->
+   </footer>
 </body>
 
 </html>

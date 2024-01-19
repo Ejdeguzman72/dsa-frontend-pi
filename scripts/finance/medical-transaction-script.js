@@ -1,45 +1,45 @@
-const generalTrxListContainer = document.getElementById('generalTrxList');
+const medicalTrxListContainer = document.getElementById('medicalTrxList');
 const paginationContainer = document.getElementById('pagination');
 const modal = document.getElementById('myModal');
 const modalContent = document.getElementById('modalContent');
 const closeBtn = document.getElementsByClassName('close')[0];
 
-// Fetch auto repair shop list using Axios
-const fetchGeneralTrxList = async () => {
+// Fetch medical trx list using Axios
+const fetchMedicalTrxList = async () => {
     try {
-        const response = await axios.get('http://localhost:8080/app/general-transactions/all');
+        const response = await axios.get('http://localhost:8080/app/medical-transactions/all');
         return response.data.list;
     } catch (error) {
-        console.error('Error fetching general transaction list:', error.message);
+        console.error('Error fetching medical transaction list:', error.message);
         return [];
     }
 };
 
-// Render general trx list items
-const renderGeneralTrxList = (entries, page) => {
+// Render medical trx list items
+const renderMedicalTrxList = (entries, page) => {
     const startIdx = (page - 1) * itemsPerPage;
     const endIdx = startIdx + itemsPerPage;
-    const generalTrxToDisplay = entries.slice(startIdx, endIdx);
+    const medicalTrxToDisplay = entries.slice(startIdx, endIdx);
 
-    generalTrxListContainer.innerHTML = '';
+    medicalTrxListContainer.innerHTML = '';
 
-    generalTrxToDisplay.forEach((transaction, index) => {
-        const generalTrxElement = document.createElement('div');
-        generalTrxElement.classList.add('general-trx-element');
-        generalTrxElement.dataset.index = startIdx + index;
+    medicalTrxToDisplay.forEach((transaction, index) => {
+        const medicalTrxElement = document.createElement('div');
+        medicalTrxElement.classList.add('medical-trx-element');
+        medicalTrxElement.dataset.index = startIdx + index;
 
         const amountElement = document.createElement('h3');
         amountElement.textContent = transaction.amount.toFixed(2);
 
-        const generalTrxDateElement = document.createElement('p');
-        generalTrxDateElement.textContent = `${transaction.paymentDate} - ${transaction.username}`;
+        const medTrxDateElement = document.createElement('p');
+        medTrxDateElement.textContent = `${transaction.medTrxDate} - ${transaction.username}`;
 
-        generalTrxElement.appendChild(amountElement);
-        generalTrxElement.appendChild(generalTrxDateElement);
+        medicalTrxElement.appendChild(amountElement);
+        medicalTrxElement.appendChild(medTrxDateElement);
 
-        generalTrxElement.addEventListener('click', () => openModal(transaction));
+        medicalTrxElement.addEventListener('click', () => openModal(transaction));
 
-        generalTrxListContainer.appendChild(generalTrxElement);
+        medicalTrxListContainer.appendChild(medicalTrxElement);
     });
 };
 
@@ -52,8 +52,8 @@ let transactions = {};
 const openModal = (transaction) => {
     modalContent.innerHTML = `
         <h2>${transaction.amount.toFixed(2)}</h2>
-        <p>Transaction Date: ${transaction.paymentDate}</p>
-        <p>Entity: ${transaction.entity}</p>
+        <p>Transaction Date: ${transaction.medTrxDate}</p>
+        <p>Office: ${transaction.facilityName} - ${transaction.address} ${transaction.city} ${transaction.state} ${transaction.zip} </p>
         <p>Transaction Type: ${transaction.transactionTypeDescr}</p>
         <p>Username: ${transaction.username}</p>
     `;
@@ -74,8 +74,8 @@ window.onclick = (event) => {
 
 // Initialize page
 const initPage = async () => {
-    transactions = await fetchGeneralTrxList();
-    renderGeneralTrxList(transactions, currentPage);
+    transactions = await fetchMedicalTrxList();
+    renderMedicalTrxList(transactions, currentPage);
     renderPagination();
 };
 
@@ -95,7 +95,7 @@ const renderPagination = () => {
 // Handle pagination button click
 const onPageClick = (page) => {
     currentPage = page;
-    renderGeneralTrxList(transactions, currentPage);
+    renderMedicalTrxList(transactions, currentPage);
 };
 
 // Initialize the page
