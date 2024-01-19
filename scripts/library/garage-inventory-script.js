@@ -1,41 +1,41 @@
-const contactListContainer = document.getElementById('contactList');
+const garageInventoryListContainer = document.getElementById('garageInventoryList');
 const paginationContainer = document.getElementById('pagination');
 const modal = document.getElementById('myModal');
 const modalContent = document.getElementById('modalContent');
 const closeBtn = document.getElementsByClassName('close')[0];
 
-// Fetch contact info list using Axios
-const fetchContactList = async () => {
+// Fetch garage inventory list using Axios
+const fetchGarageInventoryList = async () => {
     try {
-        const response = await axios.get('http://localhost:8080/app/person-info/all');
+        const response = await axios.get('http://localhost:8080/app/inventory/all');
         return response.data.list;
     } catch (error) {
-        console.error('Error fetching conatact list:', error.message);
+        console.error('Error fetching garage inventory list:', error.message);
         return [];
     }
 };
 
-// Render contact info list items
-const renderContactList = (entries, page) => {
+// Render garage inventory list items
+const renderGarageInventoryList = (entries, page) => {
     const startIdx = (page - 1) * itemsPerPage;
     const endIdx = startIdx + itemsPerPage;
     const entriesToDisplay = entries.slice(startIdx, endIdx);
 
-    contactListContainer.innerHTML = '';
+    garageInventoryListContainer.innerHTML = '';
 
     entriesToDisplay.forEach((entry, index) => {
-        const contactElement = document.createElement('div');
-        contactElement.classList.add('contact-element');
-        contactElement.dataset.index = startIdx + index;
+        const garageInventoryElement = document.createElement('div');
+        garageInventoryElement.classList.add('garage-inventory-element');
+        garageInventoryElement.dataset.index = startIdx + index;
 
         const nameElement = document.createElement('h3');
-        nameElement.textContent = `${entry.firstname + ' ' + entry.lastname}`;
+        nameElement.textContent = `${entry.name} - ${entry.location}`;
 
-        contactElement.appendChild(nameElement);
+        garageInventoryElement.appendChild(nameElement);
 
-        contactElement.addEventListener('click', () => openModal(entry));
+        garageInventoryElement.addEventListener('click', () => openModal(entry));
 
-        contactListContainer.appendChild(contactElement);
+        garageInventoryListContainer.appendChild(garageInventoryElement);
     });
 };
 
@@ -44,14 +44,14 @@ const itemsPerPage = 5;
 let currentPage = 1;
 let entries = {};
 
-// Open modal with contact info details
-const openModal = (contact) => {
+// Open modal with garage inventory details
+const openModal = (entry) => {
     modalContent.innerHTML = `
-        <h2>${contact.firstname + ' ' + contact.lastname}</h2>
-        <p>Email: ${contact.email}</p>
-        <p>Phone}: ${contact.phone}</p>
-        <p>Birthdate: ${contact.birthdate}</p>
-        <p>Address: ${contact.address01 + ' ' + contact.city + ', ' + contact.state + ' ' + contact.zip}</p>
+        <h2>${entry.name}</h2>
+        <p>Description: ${entry.description}</p>
+        <p>Condition: ${entry.condition}</p>
+        <p>Location: ${entry.location}</p>
+        <p>Quantity: ${entry.quantity}</p>
     `;
     modal.style.display = 'block';
 };
@@ -70,8 +70,8 @@ window.onclick = (event) => {
 
 // Initialize page
 const initPage = async () => {
-    entries = await fetchContactList();
-    renderContactList(entries, currentPage);
+    entries = await fetchGarageInventoryList();
+    renderGarageInventoryList(entries, currentPage);
     renderPagination();
 };
 
@@ -91,7 +91,7 @@ const renderPagination = () => {
 // Handle pagination button click
 const onPageClick = (page) => {
     currentPage = page;
-    renderContactList(entries, currentPage);
+    renderGarageInventoryList(entries, currentPage);
 };
 
 // Initialize the page

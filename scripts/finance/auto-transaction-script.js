@@ -4,7 +4,7 @@ const modal = document.getElementById('myModal');
 const modalContent = document.getElementById('modalContent');
 const closeBtn = document.getElementsByClassName('close')[0];
 
-// Fetch auto repair shop list using Axios
+// Fetch auto transaction list using Axios
 const fetchAutotrxList = async () => {
     try {
         const response = await axios.get('http://localhost:8080/app/auto-transactions/all');
@@ -15,7 +15,7 @@ const fetchAutotrxList = async () => {
     }
 };
 
-// Render auto repair shop list items
+// Render auto transaction list items
 const renderAutotrxList = (autoTrxs, page) => {
     const startIdx = (page - 1) * itemsPerPage;
     const endIdx = startIdx + itemsPerPage;
@@ -52,7 +52,7 @@ const itemsPerPage = 5;
 let currentPage = 1;
 let autoTransactions = {};
 
-// Open modal with auto repair shop details
+// Open modal with auto transaction details
 const openModal = (autoTrx) => {
     modalContent.innerHTML = `
         <h2>${autoTrx.amount}</h2>

@@ -4,18 +4,18 @@ const modal = document.getElementById('myModal');
 const modalContent = document.getElementById('modalContent');
 const closeBtn = document.getElementsByClassName('close')[0];
 
-// Fetch auto repair shop list using Axios
+// Fetch cardio tracker list using Axios
 const fetchCardioList = async () => {
     try {
         const response = await axios.get('http://localhost:8080/app/cardio-tracker-app/all');
         return response.data.list;
     } catch (error) {
-        console.error('Error fetching auto repair shop list:', error.message);
+        console.error('Error fetching cardio tracker list:', error.message);
         return [];
     }
 };
 
-// Render auto repair shop list items
+// Render cardio tracker list items
 const renderCardioList = (entries, page) => {
     const startIdx = (page - 1) * itemsPerPage;
     const endIdx = startIdx + itemsPerPage;
@@ -48,7 +48,7 @@ const itemsPerPage = 4;
 let currentPage = 1;
 let entries = {};
 
-// Open modal with auto repair shop details
+// Open modal with cardio tracker details
 const openModal = (cardio) => {
     modalContent.innerHTML = `
         <h2>${cardio.descr}</h2>
