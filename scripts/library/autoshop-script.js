@@ -1,5 +1,3 @@
-// book-recommendations-script.js
-
 const autoShopListContainer = document.getElementById('autoShopList');
 const paginationContainer = document.getElementById('pagination');
 const modal = document.getElementById('myModal');
