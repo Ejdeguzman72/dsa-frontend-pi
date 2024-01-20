@@ -31,7 +31,15 @@ const renderContactList = (entries, page) => {
         const nameElement = document.createElement('h3');
         nameElement.textContent = `${entry.firstname + ' ' + entry.lastname}`;
 
+        const phoneElement = document.createElement('p');
+        phoneElement.textContent = `Phone: ${entry.phone}`
+
+        const emailElement = document.createElement('p');
+        emailElement.textContent = `Email: ${entry.email}`;
+
         contactElement.appendChild(nameElement);
+        contactElement.appendChild(phoneElement);
+        contactElement.appendChild(emailElement);
 
         contactElement.addEventListener('click', () => openModal(entry));
 
