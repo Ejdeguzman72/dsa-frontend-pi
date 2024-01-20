@@ -25,7 +25,7 @@ const renderMedicalOfficeList = (entries, page) => {
 
     medicalOfficesToDisplay.forEach((entry, index) => {
         const medicalOfficeElement = document.createElement('div');
-        medicalOfficeElement.classList.add('autoshop-element');
+        medicalOfficeElement.classList.add('medical-office-element');
         medicalOfficeElement.dataset.index = startIdx + index;
 
         const nameElement = document.createElement('h3');
@@ -48,7 +48,7 @@ const itemsPerPage = 5;
 let currentPage = 1;
 let medicalOffices = {};
 
-// Open modal with auto repair shop details
+// Open modal with medical office details
 const openModal = (office) => {
     modalContent.innerHTML = `
         <h2>${office.name}</h2>
@@ -74,8 +74,8 @@ window.onclick = (event) => {
 
 // Initialize page
 const initPage = async () => {
-    autoshops = await fetchMedicalOfficeList();
-    renderMedicalOfficeList(autoshops, currentPage);
+    medicalOffices = await fetchMedicalOfficeList();
+    renderMedicalOfficeList(medicalOffices, currentPage);
     renderPagination();
 };
 

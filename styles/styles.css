@@ -139,7 +139,7 @@ ul.navbar li.dropdown:hover .dropdown-content {
 
 footer p {
    margin: 10px;
- }
+}
 
 .home-title {
    font-family: fantasy;
@@ -159,14 +159,17 @@ footer p {
    font-size: 30px;
    width: 100%;
    color: black;
-   border-radius: 30px; /* Adjusted border-radius */
+   border-radius: 30px;
+   /* Adjusted border-radius */
    border-style: solid;
    border-color: black;
    opacity: 0.8;
    text-decoration: none;
    display: block;
-   text-align: center; /* Center the text within the tab */
-   padding: 10px; /* Add padding for better visual appearance */
+   text-align: center;
+   /* Center the text within the tab */
+   padding: 10px;
+   /* Add padding for better visual appearance */
    margin-bottom: 20px;
 }
 
@@ -207,4 +210,237 @@ footer p {
    color: black;
    text-decoration: none;
    cursor: pointer;
+}
+
+.pagination-container {
+   display: inline-block;
+   list-style: none;
+   padding: 10px;
+   margin: 10px;
+   border-radius: 50px;
+}
+
+.autoshop-element {
+   width: 100%;
+   background-color: #dcdcdc;
+   opacity: 0.8;
+   margin: 10px;
+   padding: 10px;
+   border-radius: 10px;
+   border-color: #333;
+   border-style: groove;
+}
+
+.autoshop-element:hover {
+   box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+}
+
+.general-trx-element {
+   width: 100%;
+   background-color: #dcdcdc;
+   opacity: 0.8;
+   margin: 10px;
+   padding: 10px;
+   border-radius: 10px;
+   border-color: #333;
+   border-style: groove;
+}
+
+.general-trx-element:hover {
+   box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+}
+
+.autotrx-element {
+   width: 100%;
+   background-color: #dcdcdc;
+   opacity: 0.8;
+   margin: 10px;
+   padding: 10px;
+   border-radius: 10px;
+   border-color: #333;
+   border-style: groove;
+}
+
+.autotrx-element:hover {
+   box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+}
+
+.gym-tracker-element {
+   width: 100%;
+   background-color: #dcdcdc;
+   opacity: 0.8;
+   margin: 10px;
+   padding: 10px;
+   border-radius: 10px;
+   border-color: #333;
+   border-style: groove;
+}
+
+.gym-tracker-element:hover {
+   box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+}
+
+.blog-element {
+   width: 100%;
+   background-color: #dcdcdc;
+   opacity: 0.8;
+   margin: 10px;
+   padding: 10px;
+   border-radius: 10px;
+   border-color: #333;
+   border-style: groove;
+}
+
+.blog-element:hover {
+   box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+}
+
+.book-element {
+   width: 100%;
+   background-color: #dcdcdc;
+   opacity: 0.8;
+   margin: 10px;
+   padding: 10px;
+   border-radius: 10px;
+   border-color: #333;
+   border-style: groove;
+}
+
+.book-element:hover {
+   box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+}
+
+.cardio-element {
+   width: 100%;
+   background-color: #dcdcdc;
+   opacity: 0.8;
+   margin: 10px;
+   padding: 10px;
+   border-radius: 10px;
+   border-color: #333;
+   border-style: groove;
+}
+
+.cardio-element:hover {
+   box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+}
+
+.contact-element {
+   width: 100%;
+   background-color: #dcdcdc;
+   opacity: 0.8;
+   margin: 10px;
+   padding: 10px;
+   border-radius: 10px;
+   border-color: #333;
+   border-style: groove;
+}
+
+.contact-element:hover {
+   box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+}
+
+.entertainment-element {
+   width: 100%;
+   background-color: #dcdcdc;
+   opacity: 0.8;
+   margin: 10px;
+   padding: 10px;
+   border-radius: 10px;
+   border-color: #333;
+   border-style: groove;
+}
+
+.entertainment-element:hover {
+   box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+}
+
+.garage-inventory-element {
+   width: 100%;
+   background-color: #dcdcdc;
+   opacity: 0.8;
+   margin: 10px;
+   padding: 10px;
+   border-radius: 10px;
+   border-color: #333;
+   border-style: groove;
+}
+
+.garage-inventory-element:hover {
+   box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+}
+
+.medical-office-element {
+   width: 100%;
+   background-color: #dcdcdc;
+   opacity: 0.8;
+   margin: 10px;
+   padding: 10px;
+   border-radius: 10px;
+   border-color: #333;
+   border-style: groove;
+}
+
+.medical-office-element:hover {
+   box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+}
+
+.music-element {
+   width: 100%;
+   background-color: #dcdcdc;
+   opacity: 0.8;
+   margin: 10px;
+   padding: 10px;
+   border-radius: 10px;
+   border-color: #333;
+   border-style: groove;
+}
+
+.music-element:hover {
+   box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+}
+
+.medical-trx-element {
+   width: 100%;
+   background-color: #dcdcdc;
+   opacity: 0.8;
+   margin: 10px;
+   padding: 10px;
+   border-radius: 10px;
+   border-color: #333;
+   border-style: groove;
+}
+
+.medical-trx-element:hover {
+   box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+}
+
+.restaurant-element {
+   width: 100%;
+   background-color: #dcdcdc;
+   opacity: 0.8;
+   margin: 10px;
+   padding: 10px;
+   border-radius: 10px;
+   border-color: #333;
+   border-style: groove;
+}
+
+.restaurant-element:hover {
+   box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+}
+
+.vehicle-element {
+   width: 100%;
+   background-color: #dcdcdc;
+   opacity: 0.8;
+   margin: 10px;
+   padding: 10px;
+   border-radius: 10px;
+   border-color: #333;
+   border-style: groove;
+}
+
+.vehicle-element:hover {
+   box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
 }
