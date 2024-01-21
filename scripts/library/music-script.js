@@ -50,6 +50,8 @@ const openModal = (music) => {
         <h2>${music.title}</h2>
         <p>Author: ${music.artist}</p>
         <p>Genre: ${music.genre}</p>
+        <button>Update</button>
+        <button>Delete</button>
     `;
     modal.style.display = 'block';
 };

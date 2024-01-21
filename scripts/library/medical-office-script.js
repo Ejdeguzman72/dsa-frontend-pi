@@ -56,6 +56,8 @@ const openModal = (office) => {
         <p>City: ${office.city}</p>
         <p>State: ${office.state}</p>
         <p>Zip: ${office.zip}</p>
+        <button>Update</button>
+        <button>Delete</button>
     `;
     modal.style.display = 'block';
 };

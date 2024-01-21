@@ -56,6 +56,8 @@ const openModal = (transaction) => {
         <p>Entity: ${transaction.entity}</p>
         <p>Transaction Type: ${transaction.transactionTypeDescr}</p>
         <p>Username: ${transaction.username}</p>
+        <button>Update</button>
+        <button>Delete</button>
     `;
     modal.style.display = 'block';
 };

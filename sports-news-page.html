@@ -2,13 +2,18 @@
 <html>
 
 <head>
-   <title>DSA - Home Page</title>
+   <title>DSA - Sports News</title>
    <meta charset="UTF-8">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <link rel="stylesheet" type="text/css" href="styles/newsroom-styles.css">
 </head>
 
 <body>
+   <div class="burger-icon" onclick="toggleNavbar()">
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+   </div>
    <nav>
       <ul class="navbar">
          <li><a href="home-page.html">Home</a></li>
@@ -65,8 +70,14 @@
    <div id="articles-container"></div>
    <div id="pagination-container"></div><br />
 
-   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-   <script src="scripts/newsroom/home-page-newsroom-script.js"></script>
+   <script>
+      // JavaScript function to toggle the visibility of the navbar
+      function toggleNavbar() {
+         var navbar = document.querySelector('ul.navbar');
+         console.log('fghdhdghdfg')
+         navbar.classList.toggle('show');
+      }
+   </script>
 
    <footer>
       <p>Edgar Joseph DeGuzman</p>

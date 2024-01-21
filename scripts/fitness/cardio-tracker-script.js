@@ -58,6 +58,8 @@ const openModal = (entry) => {
         <p>Date: ${entry.date}</p>
         <p>Exercise Type: ${entry.exerciseTypeName}</p>
         <p>Username: ${entry.username}</p>
+        <button>Update</button>
+        <button>Delete</button>
     `;
     modal.style.display = 'block';
 };

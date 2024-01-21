@@ -48,6 +48,8 @@ let entries = {};
 const openModal = (entry) => {
     modalContent.innerHTML = `
         <h2>${entry.name + ' - ' + entry.descr}</h2>
+        <button>Update</button>
+        <button>Delete</button>
     `;
     modal.style.display = 'block';
 };

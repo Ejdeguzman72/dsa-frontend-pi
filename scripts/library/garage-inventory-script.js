@@ -52,6 +52,8 @@ const openModal = (entry) => {
         <p>Condition: ${entry.condition}</p>
         <p>Location: ${entry.location}</p>
         <p>Quantity: ${entry.quantity}</p>
+        <button>Update</button>
+        <button>Delete</button>
     `;
     modal.style.display = 'block';
 };

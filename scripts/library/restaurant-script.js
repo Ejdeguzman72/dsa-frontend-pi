@@ -54,6 +54,8 @@ const openModal = (restaurant) => {
         <p>State: ${restaurant.state}</p>
         <p>Zip: ${restaurant.zip}</p>
         <p>Type: ${restaurant.descr}</p>
+        <button>Update</button>
+        <button>Delete</button>
     `;
     modal.style.display = 'block';
 };

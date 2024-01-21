@@ -63,6 +63,8 @@ const openModal = (autoTrx) => {
         <p>Auto Repair Shop: ${autoTrx.autoShopName}</p>
         <p>User: ${autoTrx.username}</p>
         <p>Transaction Type: ${autoTrx.transactionTypeDescr}</p>
+        <button>Update</button>
+        <button>Delete</button>
     `;
     modal.style.display = 'block';
 };

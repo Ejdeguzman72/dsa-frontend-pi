@@ -56,6 +56,8 @@ const openModal = (cardio) => {
         <p>Time: ${cardio.cTime}</p>
         <p>Username: ${cardio.username}</p>
         <p>Date: ${cardio.cDate}</p>
+        <button>Update</button>
+        <button>Delete</button>
     `;
     modal.style.display = 'block';
 };

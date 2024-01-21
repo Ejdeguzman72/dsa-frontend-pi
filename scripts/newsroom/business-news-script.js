@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     const articlesContainer = document.getElementById('articles-container');
-    const perPage = 8; // Number of articles per page
+    const perPage = 10; // Number of articles per page
     let currentPage = 1;
 
     // Function to display articles for the current page
@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Create HTML elements for the article (similar to previous code)
             const articleDiv = document.createElement('div');
-            articleDiv.classList.add('article');
+            articleDiv.classList.add('article-element');
 
             const articleTitle = document.createElement('h2');
             articleTitle.textContent = article.title;
@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
             articleDiv.appendChild(articleAuthor);
             articleDiv.appendChild(articleDescription);
             articleDiv.appendChild(articleLink);
-            // articleDiv.appendChild(articleImage);
+            articleDiv.appendChild(articleImage);
 
             // Append the articleDiv to the articlesContainer
             articlesContainer.appendChild(articleDiv);
@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // Make a GET request using Axios
-    axios.get('http://192.168.1.36:8081/app/news/all')
+    axios.get('http://192.168.1.36:8081/app/news/business/all')
         .then(response => {
             const articles = response.data.articles;
 

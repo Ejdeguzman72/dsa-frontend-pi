@@ -60,6 +60,8 @@ const openModal = (contact) => {
         <p>Phone}: ${contact.phone}</p>
         <p>Birthdate: ${contact.birthdate}</p>
         <p>Address: ${contact.address01 + ' ' + contact.city + ', ' + contact.state + ' ' + contact.zip}</p>
+        <button>Update</button>
+        <button>Delete</button>
     `;
     modal.style.display = 'block';
 };

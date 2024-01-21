@@ -64,6 +64,8 @@ const openModal = (autoshop) => {
         <p>City: ${autoshop.city}</p>
         <p>State: ${autoshop.state}</p>
         <p>Zip: ${autoshop.zip}</p>
+        <button>Update</button>
+        <button>Delete</button>
     `;
     modal.style.display = 'block';
 };

@@ -50,6 +50,8 @@ const openModal = (vehicle) => {
         <h2>${vehicle.year} ${vehicle.make} ${vehicle.model} </h2>
         <p>Transmission: ${vehicle.transmission}</p>
         <p>Capacity: ${vehicle.capacity}</p>
+        <button>Update</button>
+        <button>Delete</button>
     `;
     modal.style.display = 'block';
 };

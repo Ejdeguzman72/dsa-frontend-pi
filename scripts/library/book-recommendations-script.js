@@ -58,6 +58,8 @@ const openModal = (book) => {
         <h2>${book.title}</h2>
         <p>Author: ${book.author}</p>
         <p>${book.descr}</p>
+        <button>Update</button>
+        <button>Delete</button>
     `;
     modal.style.display = 'block';
 };

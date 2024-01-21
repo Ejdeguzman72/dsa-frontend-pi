@@ -333,3 +333,24 @@ footer p {
     font-family: 'Recursive', sans-serif;
     font-size: 18px;
 }
+
+.article-element {
+    width: 100%;
+    background-color: #dcdcdc;
+    opacity: 0.8;
+    margin: 10px;
+    padding: 10px;
+    border-radius: 10px;
+    border-color: #333;
+    border-style: groove;
+}
+
+.article-element:hover {
+    box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+}
+
+.article-element img {
+    max-width: 20%;
+    height: auto;
+    margin-bottom: 10px;
+}
