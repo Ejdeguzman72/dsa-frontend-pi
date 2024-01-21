@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // Make a GET request using Axios
-    axios.get('http://192.168.1.36:8081/app/technology/all')
+    axios.get('http://192.168.1.36:8081/app/news/technology/all')
         .then(response => {
             const articles = response.data.articles;
 
