@@ -50,11 +50,36 @@ const openModal = (music) => {
         <h2>${music.title}</h2>
         <p>Author: ${music.artist}</p>
         <p>Genre: ${music.genre}</p>
-        <button>Update</button>
-        <button>Delete</button>
+        <button onClick="updateEntry(${music.songId})">Update</button>
+        <button onClick="confirmDeleteEntry(${music.songId})" class="delete-button">Delete</button>
     `;
     modal.style.display = 'block';
 };
+
+const confirmDeleteEntry = (songId) => {
+    const confirmModal = window.confirm('Are you sure you want to delete this entry?');
+    if (confirmModal) {
+        deleteEntry(songId);
+    }
+};
+
+// Function to handle music deletion
+const deleteEntry = async (songId) => {
+    try {
+        
+        await axios.delete(`http://localhost:8080/app/music/delete/${songId}`);
+        
+        // Optionally, you can reload the music list after deletion
+        entries = await fetchMusicList();
+        renderMusicList(entries, currentPage);
+        
+        // Close the modal after successful deletion
+        modal.style.display = 'none';
+    } catch (error) {
+        console.error('Error deleting songId:', error.message);
+    }
+};
+
 
 // Close modal
 closeBtn.onclick = () => {

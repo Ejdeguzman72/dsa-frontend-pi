@@ -56,10 +56,34 @@ const openModal = (transaction) => {
         <p>Office: ${transaction.facilityName} - ${transaction.address} ${transaction.city} ${transaction.state} ${transaction.zip} </p>
         <p>Transaction Type: ${transaction.transactionTypeDescr}</p>
         <p>Username: ${transaction.username}</p>
-        <button>Update</button>
-        <button>Delete</button>
+        <button onClick="updateEntry(${transaction.medTrxId})">Update</button>
+        <button onClick="confirmDeleteEntry(${transaction.medTrxId})" class="delete-button">Delete</button>
     `;
     modal.style.display = 'block';
+};
+
+const confirmDeleteEntry = (medTrxId) => {
+    const confirmModal = window.confirm('Are you sure you want to delete this entry?');
+    if (confirmModal) {
+        deleteEntry(medTrxId);
+    }
+};
+
+// Function to handle entry deletion
+const deleteEntry = async (genTrxId) => {
+    try {
+        
+        await axios.delete(`http://localhost:8080/app/medical-transactions/delete/${medTrxId}`);
+        
+        // Optionally, you can reload the vehicleId list after deletion
+        entries = await fetchMedicalTrxList();
+        renderMedicalTrxList(entries, currentPage);
+        
+        // Close the modal after successful deletion
+        modal.style.display = 'none';
+    } catch (error) {
+        console.error('Error deleting medTrxId:', error.message);
+    }
 };
 
 // Close modal

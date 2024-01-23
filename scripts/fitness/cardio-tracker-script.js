@@ -1,67 +1,90 @@
-const gymTrackerListContainer = document.getElementById('gymTrackerList');
+const cardioListContainer = document.getElementById('cardioList');
 const paginationContainer = document.getElementById('pagination');
 const modal = document.getElementById('myModal');
 const modalContent = document.getElementById('modalContent');
 const closeBtn = document.getElementsByClassName('close')[0];
 
-// Fetch gym tracker list using Axios
-const fetchGymTrackerList = async () => {
+// Fetch cardio tracker list using Axios
+const fetchCardioList = async () => {
     try {
-        const response = await axios.get('http://localhost:8080/app/gym-tracker/all');
+        const response = await axios.get('http://localhost:8080/app/cardio-tracker-app/all');
         return response.data.list;
     } catch (error) {
-        console.error('Error fetching gym tracker list:', error.message);
+        console.error('Error fetching cardio tracker list:', error.message);
         return [];
     }
 };
 
-// Render gym tracker list items
-const renderGymTrackerList = (entries, page) => {
+// Render cardio tracker list items
+const renderCardioList = (entries, page) => {
     const startIdx = (page - 1) * itemsPerPage;
     const endIdx = startIdx + itemsPerPage;
     const entriesToDisplay = entries.slice(startIdx, endIdx);
 
-    gymTrackerListContainer.innerHTML = '';
+    cardioListContainer.innerHTML = '';
 
     entriesToDisplay.forEach((entry, index) => {
-        const gymTrackerElement = document.createElement('div');
-        gymTrackerElement.classList.add('gym-tracker-element');
-        gymTrackerElement.dataset.index = startIdx + index;
+        const cardioElement = document.createElement('div');
+        cardioElement.classList.add('cardio-element');
+        cardioElement.dataset.index = startIdx + index;
 
-        exerciseElement = document.createElement('h3');
-        exerciseElement.textContent = entry.exerciseName;
+        const descrElement = document.createElement('h3');
+        descrElement.textContent = entry.descr;
 
-        setsElement = document.createElement('p');
-        setsElement.textContent = `${entry.sets} - ${entry.reps}`;
+        const cDistanceElement = document.createElement('p');
+        cDistanceElement.textContent = `Distance(miles): ${entry.cDistance}`;
 
-        gymTrackerElement.appendChild(exerciseElement);
-        gymTrackerElement.appendChild(setsElement);
+        cardioElement.appendChild(descrElement);
+        cardioElement.appendChild(cDistanceElement);
 
-        gymTrackerElement.addEventListener('click', () => openModal(entry));
+        cardioElement.addEventListener('click', () => openModal(entry));
 
-        gymTrackerListContainer.appendChild(gymTrackerElement);
+        cardioListContainer.appendChild(cardioElement);
     });
 };
 
 // Pagination
-const itemsPerPage = 5;
+const itemsPerPage = 4;
 let currentPage = 1;
 let entries = {};
 
-// Open modal with gym tracker details
-const openModal = (entry) => {
+// Open modal with cardio tracker details
+const openModal = (cardio) => {
     modalContent.innerHTML = `
-        <h2>${entry.exerciseName}</h2>
-        <p>Sets: ${entry.sets}</p>
-        <p>Reps: ${entry.reps}</p>
-        <p>Weight: ${entry.weight}</p>
-        <p>Date: ${entry.date}</p>
-        <p>Exercise Type: ${entry.exerciseTypeName}</p>
-        <p>Username: ${entry.username}</p>
-        <button>Update</button>
-        <button>Delete</button>
+        <h2>${cardio.descr}</h2>
+        <p>Distance: ${cardio.cDistance}</p>
+        <p>Time: ${cardio.cTime}</p>
+        <p>Username: ${cardio.username}</p>
+        <p>Date: ${cardio.cDate}</p>
+        <button onClick="updateEntry(${cardio.cardioId})">Update</button>
+        <button onClick="confirmDeleteCardio(${cardio.cardioId})" class="delete-button">Delete</button>
     `;
     modal.style.display = 'block';
+};
+
+// Function to confirm cardio deletion
+const confirmDeleteCardio = (cardioId) => {
+    const confirmModal = window.confirm('Are you sure you want to delete this entry?');
+    if (confirmModal) {
+        deleteEntry(cardioId);
+    }
+};
+
+// Function to handle cardio deletion
+const deleteEntry = async (cardioId) => {
+    try {
+        
+        await axios.delete(`http://localhost:8080/app/cardio-tracker-app/delete/${cardioId}`);
+        console.log("Deleting entry with ID: " + cardioId);
+        // Optionally, you can reload the cardio list after deletion
+        entries = await fetchCardioList();
+        renderCardioList(entries, currentPage);
+        
+        // Close the modal after successful deletion
+        modal.style.display = 'none';
+    } catch (error) {
+        console.error('Error deleting cardio:', error.message);
+    }
 };
 
 // Close modal
@@ -78,8 +101,8 @@ window.onclick = (event) => {
 
 // Initialize page
 const initPage = async () => {
-    entries = await fetchGymTrackerList();
-    renderGymTrackerList(entries, currentPage);
+    entries = await fetchCardioList();
+    renderCardioList(entries, currentPage);
     renderPagination();
 };
 
@@ -99,7 +122,7 @@ const renderPagination = () => {
 // Handle pagination button click
 const onPageClick = (page) => {
     currentPage = page;
-    renderGymTrackerList(entries, currentPage);
+    renderCardioList(entries, currentPage);
 };
 
 // Initialize the page

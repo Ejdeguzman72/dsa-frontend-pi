@@ -39,6 +39,31 @@ const renderVehicleList = (vehicleList, page) => {
     });
 };
 
+const confirmDeleteEntry = (vehicleId) => {
+    const confirmModal = window.confirm('Are you sure you want to delete this entry?');
+    if (confirmModal) {
+        deleteEntry(vehicleId);
+    }
+};
+
+// Function to handle entry deletion
+const deleteEntry = async (vehicleId) => {
+    try {
+        
+        await axios.delete(`http://localhost:8080/app/vehicles/delete/${vehicleId}`);
+        
+        // Optionally, you can reload the vehicleId list after deletion
+        entries = await fetchVehicleList();
+        renderVehicleList(entries, currentPage);
+        
+        // Close the modal after successful deletion
+        modal.style.display = 'none';
+    } catch (error) {
+        console.error('Error deleting vehicleId:', error.message);
+    }
+};
+
+
 // Pagination
 const itemsPerPage = 5;
 let currentPage = 1;
@@ -50,8 +75,8 @@ const openModal = (vehicle) => {
         <h2>${vehicle.year} ${vehicle.make} ${vehicle.model} </h2>
         <p>Transmission: ${vehicle.transmission}</p>
         <p>Capacity: ${vehicle.capacity}</p>
-        <button>Update</button>
-        <button>Delete</button>
+        <button onClick="updateEntry(${vehicle.vehicleId})">Update</button>
+        <button onClick="confirmDeleteEntry(${vehicle.vehicleId})" class="delete-button">Delete</button>
     `;
     modal.style.display = 'block';
 };

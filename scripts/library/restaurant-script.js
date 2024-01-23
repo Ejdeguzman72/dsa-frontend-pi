@@ -54,11 +54,36 @@ const openModal = (restaurant) => {
         <p>State: ${restaurant.state}</p>
         <p>Zip: ${restaurant.zip}</p>
         <p>Type: ${restaurant.descr}</p>
-        <button>Update</button>
-        <button>Delete</button>
+        <button onClick="updateEntry(${restaurant.restaurantId})">Update</button>
+        <button onClick="confirmDeleteEntry(${restaurant.restaurantId})" class="delete-button">Delete</button>
     `;
     modal.style.display = 'block';
 };
+
+const confirmDeleteEntry = (restaurantId) => {
+    const confirmModal = window.confirm('Are you sure you want to delete this entry?');
+    if (confirmModal) {
+        deleteEntry(restaurantId);
+    }
+};
+
+// Function to handle entry deletion
+const deleteEntry = async (restaurantId) => {
+    try {
+        
+        await axios.delete(`http://localhost:8080/app/restaurants/delete/${restaurantId}`);
+        
+        // Optionally, you can reload the restaurant list after deletion
+        entries = await fetchRestaurantList();
+        renderRestaurantList(entries, currentPage);
+        
+        // Close the modal after successful deletion
+        modal.style.display = 'none';
+    } catch (error) {
+        console.error('Error deleting restaurantId:', error.message);
+    }
+};
+
 
 // Close modal
 closeBtn.onclick = () => {

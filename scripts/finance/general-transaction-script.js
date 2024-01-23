@@ -56,10 +56,34 @@ const openModal = (transaction) => {
         <p>Entity: ${transaction.entity}</p>
         <p>Transaction Type: ${transaction.transactionTypeDescr}</p>
         <p>Username: ${transaction.username}</p>
-        <button>Update</button>
-        <button>Delete</button>
+        <button onClick="updateEntry(${transaction.genTrxId})">Update</button>
+        <button onClick="confirmDeleteCardio(${transaction.genTrxId})" class="delete-button">Delete</button>
     `;
     modal.style.display = 'block';
+};
+
+const confirmDeleteEntry = (genTrxId) => {
+    const confirmModal = window.confirm('Are you sure you want to delete this entry?');
+    if (confirmModal) {
+        deleteEntry(genTrxId);
+    }
+};
+
+// Function to handle entry deletion
+const deleteEntry = async (genTrxId) => {
+    try {
+        
+        await axios.delete(`http://localhost:8080/app/general-transactions/delete/${genTrxId}`);
+        
+        // Optionally, you can reload the vehicleId list after deletion
+        entries = await fetchGeneralTrxList();
+        renderGeneralTrxList(entries, currentPage);
+        
+        // Close the modal after successful deletion
+        modal.style.display = 'none';
+    } catch (error) {
+        console.error('Error deleting genTrxId:', error.message);
+    }
 };
 
 // Close modal

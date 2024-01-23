@@ -52,10 +52,34 @@ const openModal = (entry) => {
         <p>Condition: ${entry.condition}</p>
         <p>Location: ${entry.location}</p>
         <p>Quantity: ${entry.quantity}</p>
-        <button>Update</button>
-        <button>Delete</button>
+        <button onClick="updateEntry(${entry.inventoryId})">Update</button>
+        <button onClick="confirmDeleteEntry(${entry.inventoryId})" class="delete-button">Delete</button>
     `;
     modal.style.display = 'block';
+};
+
+const confirmDeleteEntry = (inventoryId) => {
+    const confirmModal = window.confirm('Are you sure you want to delete this entry?');
+    if (confirmModal) {
+        deleteEntry(inventoryId);
+    }
+};
+
+// Function to handle entry deletion
+const deleteEntry = async (inventoryId) => {
+    try {
+        
+        await axios.delete(`http://localhost:8080/app/entertainment/delete/${inventoryId}`);
+        
+        // Optionally, you can reload the contact list after deletion
+        entries = await fetchGarageInventoryList();
+        renderGarageInventoryList(entries, currentPage);
+        
+        // Close the modal after successful deletion
+        modal.style.display = 'none';
+    } catch (error) {
+        console.error('Error deleting inventoryId:', error.message);
+    }
 };
 
 // Close modal

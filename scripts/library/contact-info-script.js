@@ -60,10 +60,35 @@ const openModal = (contact) => {
         <p>Phone}: ${contact.phone}</p>
         <p>Birthdate: ${contact.birthdate}</p>
         <p>Address: ${contact.address01 + ' ' + contact.city + ', ' + contact.state + ' ' + contact.zip}</p>
-        <button>Update</button>
-        <button>Delete</button>
+        <button onClick="updateEntry(${contact.personId})">Update</button>
+        <button onClick="confirmDeleteContact(${contact.personId})" class="delete-button">Delete</button>
     `;
     modal.style.display = 'block';
+};
+
+// Function to confirm contact deletion
+const confirmDeleteContact = (personId) => {
+    const confirmModal = window.confirm('Are you sure you want to delete this entry?');
+    if (confirmModal) {
+        deleteEntry(personId);
+    }
+};
+
+// Function to handle contact deletion
+const deleteEntry = async (personId) => {
+    try {
+        
+        await axios.delete(`http://localhost:8080/app/person-info/delete/${personId}`);
+        
+        // Optionally, you can reload the contact list after deletion
+        entries = await fetchContactList();
+        renderContactList(entries, currentPage);
+        
+        // Close the modal after successful deletion
+        modal.style.display = 'none';
+    } catch (error) {
+        console.error('Error deleting contact:', error.message);
+    }
 };
 
 // Close modal

@@ -64,10 +64,35 @@ const openModal = (autoshop) => {
         <p>City: ${autoshop.city}</p>
         <p>State: ${autoshop.state}</p>
         <p>Zip: ${autoshop.zip}</p>
-        <button>Update</button>
-        <button>Delete</button>
+        <button onClick="updateAutoShop(${autoshop.autoShopId})">Update</button>
+        <button onClick="confirmDeleteAutoShop(${autoshop.autoShopId})" class="delete-button">Delete</button>
     `;
     modal.style.display = 'block';
+};
+
+// Function to confirm auto shop deletion
+const confirmDeleteAutoShop = (autoShopId) => {
+    const confirmModal = window.confirm('Are you sure you want to delete this auto repair shop?');
+    if (confirmModal) {
+        deleteAutoShop(autoShopId);
+    }
+};
+
+// Function to handle auto shop deletion
+const deleteAutoShop = async (autoShopId) => {
+    try {
+        // Send a DELETE request to your API endpoint
+        await axios.delete(`http://localhost:8080/app/auto-repair-shops/delete/${autoShopId}`);
+        
+        // Optionally, you can reload the auto shop list after deletion
+        autoshops = await fetchAutoshopList();
+        renderAutoshopList(autoshops, currentPage);
+        
+        // Close the modal after successful deletion
+        modal.style.display = 'none';
+    } catch (error) {
+        console.error('Error deleting auto repair shop:', error.message);
+    }
 };
 
 // Close modal

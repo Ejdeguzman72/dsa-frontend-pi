@@ -58,11 +58,37 @@ const openModal = (entry) => {
         <p>Date: ${entry.date}</p>
         <p>Exercise Type: ${entry.exerciseTypeName}</p>
         <p>Username: ${entry.username}</p>
-        <button>Update</button>
-        <button>Delete</button>
+        <button onClick="updateEntry(${entry.exerciseId})">Update</button>
+        <button onClick="confirmDeleteCardio(${entry.exerciseId})" class="delete-button">Delete</button>
     `;
     modal.style.display = 'block';
 };
+
+const confirmDeleteEntry = (exerciseId) => {
+    const confirmModal = window.confirm('Are you sure you want to delete this entry?');
+    if (confirmModal) {
+        deleteEntry(exerciseId);
+    }
+};
+
+// Function to handle entry deletion
+const deleteEntry = async (exerciseId) => {
+    try {
+        
+        await axios.delete(`http://localhost:8080/app/gym-tracker/delete/${exerciseId}`);
+        
+        // Optionally, you can reload the vehicleId list after deletion
+        entries = await fetchGymTrackerList();
+        renderGymTrackerList(entries, currentPage);
+        
+        // Close the modal after successful deletion
+        modal.style.display = 'none';
+    } catch (error) {
+        console.error('Error deleting exerciseId:', error.message);
+    }
+};
+
+
 
 // Close modal
 closeBtn.onclick = () => {

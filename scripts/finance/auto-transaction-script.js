@@ -63,10 +63,34 @@ const openModal = (autoTrx) => {
         <p>Auto Repair Shop: ${autoTrx.autoShopName}</p>
         <p>User: ${autoTrx.username}</p>
         <p>Transaction Type: ${autoTrx.transactionTypeDescr}</p>
-        <button>Update</button>
-        <button>Delete</button>
+        <button onClick="updateEntry(${autoTrx.autoTrxId})">Update</button>
+        <button onClick="confirmDeleteCardio(${autoTrx.autoTrxId})" class="delete-button">Delete</button>
     `;
     modal.style.display = 'block';
+};
+
+const confirmDeleteEntry = (autoTrxId) => {
+    const confirmModal = window.confirm('Are you sure you want to delete this entry?');
+    if (confirmModal) {
+        deleteEntry(autoTrxId);
+    }
+};
+
+// Function to handle entry deletion
+const deleteEntry = async (autoTrxId) => {
+    try {
+        
+        await axios.delete(`http://localhost:8080/app/auto-transactions/delete/${autoTrxId}`);
+        
+        // Optionally, you can reload the vehicleId list after deletion
+        entries = await fetchAutotrxList();
+        renderAutotrxList(entries, currentPage);
+        
+        // Close the modal after successful deletion
+        modal.style.display = 'none';
+    } catch (error) {
+        console.error('Error deleting autoTrxId:', error.message);
+    }
 };
 
 // Close modal

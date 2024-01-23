@@ -58,10 +58,35 @@ const openModal = (book) => {
         <h2>${book.title}</h2>
         <p>Author: ${book.author}</p>
         <p>${book.descr}</p>
-        <button>Update</button>
-        <button>Delete</button>
+        <button onClick="updateBook(${book.bookId})">Update</button>
+        <button onClick="confirmDeleteBook(${book.bookId})" class="delete-button">Delete</button>
     `;
     modal.style.display = 'block';
+};
+
+// Function to confirm book deletion
+const confirmDeleteBook = (bookId) => {
+    const confirmModal = window.confirm('Are you sure you want to delete these book details?');
+    if (confirmModal) {
+        deleteBook(bookId);
+    }
+};
+
+// Function to handle auto shop deletion
+const deleteBook = async (bookId) => {
+    try {
+        
+        await axios.delete(`http://localhost:8080/app/books/delete/${bookId}`);
+        
+        // Optionally, you can reload the auto shop list after deletion
+        books = await fetchBookList();
+        renderBookList(books, currentPage);
+        
+        // Close the modal after successful deletion
+        modal.style.display = 'none';
+    } catch (error) {
+        console.error('Error deleting book:', error.message);
+    }
 };
 
 // Close modal

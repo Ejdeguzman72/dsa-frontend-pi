@@ -49,8 +49,6 @@ const openModal = (blog) => {
     modalContent.innerHTML = `
         <h2>${blog.content} - ${blog.createdDate}</h2>
         <p>Username: ${blog.username}</p>
-        <button>Update</button>
-        <button>Delete</button>
     `;
     modal.style.display = 'block';
 };

@@ -48,10 +48,35 @@ let entries = {};
 const openModal = (entry) => {
     modalContent.innerHTML = `
         <h2>${entry.name + ' - ' + entry.descr}</h2>
-        <button>Update</button>
-        <button>Delete</button>
+        <button onClick="updateEntry(${entry.entityId})">Update</button>
+        <button onClick="confirmDeleteEntertainment(${entry.entityId})" class="delete-button">Delete</button>
     `;
     modal.style.display = 'block';
+};
+
+// Function to confirm emtertainment deletion
+const confirmDeleteEntertainment = (entityId) => {
+    const confirmModal = window.confirm('Are you sure you want to delete this entry?');
+    if (confirmModal) {
+        deleteEntry(entityId);
+    }
+};
+
+// Function to handle contact deletion
+const deleteEntry = async (entityId) => {
+    try {
+        
+        await axios.delete(`http://localhost:8080/app/entertainment/delete/${entityId}`);
+        
+        // Optionally, you can reload the contact list after deletion
+        entries = await fetchEntertainmentList();
+        renderEntertainmentList(entries, currentPage);
+        
+        // Close the modal after successful deletion
+        modal.style.display = 'none';
+    } catch (error) {
+        console.error('Error deleting entityId:', error.message);
+    }
 };
 
 // Close modal

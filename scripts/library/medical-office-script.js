@@ -56,10 +56,34 @@ const openModal = (office) => {
         <p>City: ${office.city}</p>
         <p>State: ${office.state}</p>
         <p>Zip: ${office.zip}</p>
-        <button>Update</button>
-        <button>Delete</button>
+        <button onClick="updateEntry(${office.medicalOfficeId})">Update</button>
+        <button onClick="confirmDeleteEntry(${office.medicalOfficeId})" class="delete-button">Delete</button>
     `;
     modal.style.display = 'block';
+};
+
+const confirmDeleteEntry = (medicalOfficeId) => {
+    const confirmModal = window.confirm('Are you sure you want to delete this entry?');
+    if (confirmModal) {
+        deleteEntry(medicalOfficeId);
+    }
+};
+
+// Function to handle office deletion
+const deleteEntry = async (medicalOfficeId) => {
+    try {
+        
+        await axios.delete(`http://localhost:8080/app/medical-offices/delete/${medicalOfficeId}`);
+        
+        // Optionally, you can reload the contact list after deletion
+        entries = await fetchMedicalOfficeList();
+        renderMedicalOfficeList(entries, currentPage);
+        
+        // Close the modal after successful deletion
+        modal.style.display = 'none';
+    } catch (error) {
+        console.error('Error deleting medicalOfficeId:', error.message);
+    }
 };
 
 // Close modal
