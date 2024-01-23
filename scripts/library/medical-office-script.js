@@ -51,12 +51,12 @@ let medicalOffices = {};
 // Open modal with medical office details
 const openModal = (office) => {
     modalContent.innerHTML = `
-        <h2>${office.name}</h2>
+        <h2>${office.name}</h2><hr />
         <p>Address: ${office.address}</p>
         <p>City: ${office.city}</p>
         <p>State: ${office.state}</p>
         <p>Zip: ${office.zip}</p>
-        <button onClick="updateEntry(${office.medicalOfficeId})">Update</button>
+        <button onClick="updateEntry(${office.medicalOfficeId})" class="update-button">Update</button>
         <button onClick="confirmDeleteEntry(${office.medicalOfficeId})" class="delete-button">Delete</button>
     `;
     modal.style.display = 'block';

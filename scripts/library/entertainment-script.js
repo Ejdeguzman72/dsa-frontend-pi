@@ -47,8 +47,8 @@ let entries = {};
 // Open modal with entertainment details
 const openModal = (entry) => {
     modalContent.innerHTML = `
-        <h2>${entry.name + ' - ' + entry.descr}</h2>
-        <button onClick="updateEntry(${entry.entityId})">Update</button>
+        <h2>${entry.name + ' - ' + entry.descr}</h2><hr />
+        <button onClick="updateEntry(${entry.entityId})" class="update-button">Update</button>
         <button onClick="confirmDeleteEntertainment(${entry.entityId})" class="delete-button">Delete</button>
     `;
     modal.style.display = 'block';

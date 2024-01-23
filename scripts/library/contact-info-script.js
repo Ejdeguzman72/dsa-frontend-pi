@@ -55,12 +55,12 @@ let entries = {};
 // Open modal with contact info details
 const openModal = (contact) => {
     modalContent.innerHTML = `
-        <h2>${contact.firstname + ' ' + contact.lastname}</h2>
+        <h2>${contact.firstname + ' ' + contact.lastname}</h2><hr />
         <p>Email: ${contact.email}</p>
         <p>Phone}: ${contact.phone}</p>
         <p>Birthdate: ${contact.birthdate}</p>
         <p>Address: ${contact.address01 + ' ' + contact.city + ', ' + contact.state + ' ' + contact.zip}</p>
-        <button onClick="updateEntry(${contact.personId})">Update</button>
+        <button onClick="updateEntry(${contact.personId})" class="update-button">Update</button>
         <button onClick="confirmDeleteContact(${contact.personId})" class="delete-button">Delete</button>
     `;
     modal.style.display = 'block';

@@ -47,10 +47,10 @@ let music = {};
 // Open modal with music details
 const openModal = (music) => {
     modalContent.innerHTML = `
-        <h2>${music.title}</h2>
+        <h2>${music.title}</h2><hr />
         <p>Author: ${music.artist}</p>
         <p>Genre: ${music.genre}</p>
-        <button onClick="updateEntry(${music.songId})">Update</button>
+        <button onClick="updateEntry(${music.songId})" class="update-button">Update</button>
         <button onClick="confirmDeleteEntry(${music.songId})" class="delete-button">Delete</button>
     `;
     modal.style.display = 'block';

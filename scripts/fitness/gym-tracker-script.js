@@ -51,14 +51,14 @@ let entries = {};
 // Open modal with gym tracker details
 const openModal = (entry) => {
     modalContent.innerHTML = `
-        <h2>${entry.exerciseName}</h2>
+        <h2>${entry.exerciseName}</h2><hr />
         <p>Sets: ${entry.sets}</p>
         <p>Reps: ${entry.reps}</p>
         <p>Weight: ${entry.weight}</p>
         <p>Date: ${entry.date}</p>
         <p>Exercise Type: ${entry.exerciseTypeName}</p>
         <p>Username: ${entry.username}</p>
-        <button onClick="updateEntry(${entry.exerciseId})">Update</button>
+        <button onClick="updateEntry(${entry.exerciseId})" class="update-button">Update</button>
         <button onClick="confirmDeleteCardio(${entry.exerciseId})" class="delete-button">Delete</button>
     `;
     modal.style.display = 'block';
@@ -87,8 +87,6 @@ const deleteEntry = async (exerciseId) => {
         console.error('Error deleting exerciseId:', error.message);
     }
 };
-
-
 
 // Close modal
 closeBtn.onclick = () => {

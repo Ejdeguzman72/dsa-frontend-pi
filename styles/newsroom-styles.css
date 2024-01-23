@@ -180,6 +180,11 @@ footer p {
     justify-content: center;
     align-items: center;
     text-align: center;
+    background-color: #ADD8E6;
+    border-radius: 10px;
+    opacity: 0.8;
+    font-family: fantasy;
+    box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
 }
 
 .weather-container p {

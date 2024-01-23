@@ -48,13 +48,13 @@ let restaurants = {};
 // Open modal with auto repair shop details
 const openModal = (restaurant) => {
     modalContent.innerHTML = `
-        <h2>${restaurant.name}</h2>
+        <h2>${restaurant.name}</h2><hr />
         <p>Address: ${restaurant.address}</p>
         <p>City: ${restaurant.city}</p>
         <p>State: ${restaurant.state}</p>
         <p>Zip: ${restaurant.zip}</p>
         <p>Type: ${restaurant.descr}</p>
-        <button onClick="updateEntry(${restaurant.restaurantId})">Update</button>
+        <button onClick="updateEntry(${restaurant.restaurantId})" class="update-button">Update</button>
         <button onClick="confirmDeleteEntry(${restaurant.restaurantId})" class="delete-button">Delete</button>
     `;
     modal.style.display = 'block';

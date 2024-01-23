@@ -55,10 +55,10 @@ let books = {};
 // Open modal with book details
 const openModal = (book) => {
     modalContent.innerHTML = `
-        <h2>${book.title}</h2>
+        <h2>${book.title}</h2><hr />
         <p>Author: ${book.author}</p>
         <p>${book.descr}</p>
-        <button onClick="updateBook(${book.bookId})">Update</button>
+        <button onClick="updateBook(${book.bookId})" class="update-button">Update</button>
         <button onClick="confirmDeleteBook(${book.bookId})" class="delete-button">Delete</button>
     `;
     modal.style.display = 'block';

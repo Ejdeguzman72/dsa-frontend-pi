@@ -51,12 +51,12 @@ let entries = {};
 // Open modal with cardio tracker details
 const openModal = (cardio) => {
     modalContent.innerHTML = `
-        <h2>${cardio.descr}</h2>
+        <h2>${cardio.descr}</h2><hr />
         <p>Distance: ${cardio.cDistance}</p>
         <p>Time: ${cardio.cTime}</p>
         <p>Username: ${cardio.username}</p>
         <p>Date: ${cardio.cDate}</p>
-        <button onClick="updateEntry(${cardio.cardioId})">Update</button>
+        <button onClick="updateEntry(${cardio.cardioId})" class="update-button">Update</button>
         <button onClick="confirmDeleteCardio(${cardio.cardioId})" class="delete-button">Delete</button>
     `;
     modal.style.display = 'block';

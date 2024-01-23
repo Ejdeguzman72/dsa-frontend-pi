@@ -55,7 +55,7 @@ let autoTransactions = {};
 // Open modal with auto transaction details
 const openModal = (autoTrx) => {
     modalContent.innerHTML = `
-        <h2>${autoTrx.amount.toFixed(2)}</h2>
+        <h2>${autoTrx.amount.toFixed(2)}</h2><hr />
         <p>Transaction Date: ${autoTrx.autoTrxDate}</p>
         <p>Manufacturer: ${autoTrx.make}</p>
         <p>Model: ${autoTrx.model}</p>
@@ -63,8 +63,8 @@ const openModal = (autoTrx) => {
         <p>Auto Repair Shop: ${autoTrx.autoShopName}</p>
         <p>User: ${autoTrx.username}</p>
         <p>Transaction Type: ${autoTrx.transactionTypeDescr}</p>
-        <button onClick="updateEntry(${autoTrx.autoTrxId})">Update</button>
-        <button onClick="confirmDeleteCardio(${autoTrx.autoTrxId})" class="delete-button">Delete</button>
+        <button onClick="updateEntry(${autoTrx.autoTrxId})" class="update-button">Update</button>
+        <button onClick="confirmDeleteEntry(${autoTrx.autoTrxId})" class="delete-button">Delete</button>
     `;
     modal.style.display = 'block';
 };

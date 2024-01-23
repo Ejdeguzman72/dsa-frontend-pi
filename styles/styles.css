@@ -488,6 +488,19 @@ footer p {
    color: white;
 }
 
+.update-button {
+   background-color: #008CBA;
+   color: white;
+   font-family: fantasy;
+   font-size: 15px;
+   padding: 10px;
+   margin: 10px;
+}
+
+.update-button:hover {
+   box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+}
+
 .delete-button {
    background-color: red;
    color: white;

@@ -51,13 +51,13 @@ let transactions = {};
 // Open modal with transaction details
 const openModal = (transaction) => {
     modalContent.innerHTML = `
-        <h2>${transaction.amount.toFixed(2)}</h2>
+        <h2>${transaction.amount.toFixed(2)}</h2><hr />
         <p>Transaction Date: ${transaction.paymentDate}</p>
         <p>Entity: ${transaction.entity}</p>
         <p>Transaction Type: ${transaction.transactionTypeDescr}</p>
         <p>Username: ${transaction.username}</p>
-        <button onClick="updateEntry(${transaction.genTrxId})">Update</button>
-        <button onClick="confirmDeleteCardio(${transaction.genTrxId})" class="delete-button">Delete</button>
+        <button onClick="updateEntry(${transaction.genTrxId})" class="update-button">Update</button>
+        <button onClick="confirmDeleteEntry(${transaction.genTrxId})" class="delete-button">Delete</button>
     `;
     modal.style.display = 'block';
 };

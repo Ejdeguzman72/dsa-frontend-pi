@@ -47,12 +47,12 @@ let entries = {};
 // Open modal with garage inventory details
 const openModal = (entry) => {
     modalContent.innerHTML = `
-        <h2>${entry.name}</h2>
+        <h2>${entry.name}</h2><hr />
         <p>Description: ${entry.description}</p>
         <p>Condition: ${entry.condition}</p>
         <p>Location: ${entry.location}</p>
         <p>Quantity: ${entry.quantity}</p>
-        <button onClick="updateEntry(${entry.inventoryId})">Update</button>
+        <button onClick="updateEntry(${entry.inventoryId})" class="update-button">Update</button>
         <button onClick="confirmDeleteEntry(${entry.inventoryId})" class="delete-button">Delete</button>
     `;
     modal.style.display = 'block';

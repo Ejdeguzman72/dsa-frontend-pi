@@ -59,12 +59,12 @@ let autoshops = {};
 // Open modal with auto repair shop details
 const openModal = (autoshop) => {
     modalContent.innerHTML = `
-        <h2>${autoshop.autoShopName}</h2>
+        <h2>${autoshop.autoShopName}</h2><hr />
         <p>Address: ${autoshop.address}</p>
         <p>City: ${autoshop.city}</p>
         <p>State: ${autoshop.state}</p>
         <p>Zip: ${autoshop.zip}</p>
-        <button onClick="updateAutoShop(${autoshop.autoShopId})">Update</button>
+        <button onClick="updateAutoShop(${autoshop.autoShopId})" class="update-button">Update</button>
         <button onClick="confirmDeleteAutoShop(${autoshop.autoShopId})" class="delete-button">Delete</button>
     `;
     modal.style.display = 'block';

@@ -72,10 +72,10 @@ let vehicles = {};
 // Open modal with music details
 const openModal = (vehicle) => {
     modalContent.innerHTML = `
-        <h2>${vehicle.year} ${vehicle.make} ${vehicle.model} </h2>
+        <h2>${vehicle.year} ${vehicle.make} ${vehicle.model} </h2><hr />
         <p>Transmission: ${vehicle.transmission}</p>
         <p>Capacity: ${vehicle.capacity}</p>
-        <button onClick="updateEntry(${vehicle.vehicleId})">Update</button>
+        <button onClick="updateEntry(${vehicle.vehicleId})" class="update-button">Update</button>
         <button onClick="confirmDeleteEntry(${vehicle.vehicleId})" class="delete-button">Delete</button>
     `;
     modal.style.display = 'block';
