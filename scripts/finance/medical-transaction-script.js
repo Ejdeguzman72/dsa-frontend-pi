@@ -70,7 +70,7 @@ const confirmDeleteEntry = (medTrxId) => {
 };
 
 // Function to handle entry deletion
-const deleteEntry = async (genTrxId) => {
+const deleteEntry = async (medTrxId) => {
     try {
         
         await axios.delete(`http://localhost:8080/app/medical-transactions/delete/${medTrxId}`);
