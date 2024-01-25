@@ -2,7 +2,11 @@ const musicListContainer = document.getElementById('musicList');
 const paginationContainer = document.getElementById('pagination');
 const modal = document.getElementById('myModal');
 const modalContent = document.getElementById('modalContent');
-const closeBtn = document.getElementsByClassName('close')[0];
+const closeBtn = document.getElementById('closeListModal');
+const addModalContent = document.getElementById('addModalContent');
+const myAddModal = document.getElementById('myAddModal');
+const addModalCloseBtn = document.getElementById('addModalCloseBtn');
+const submitBtn = document.getElementById('submitBtn');
 
 // Fetch book list using Axios
 const fetchMusicList = async () => {
@@ -44,6 +48,54 @@ const itemsPerPage = 5;
 let currentPage = 1;
 let music = {};
 
+addModalButton.addEventListener('click', () => openAddModal());
+
+const openAddModal = () => {
+    // Clear the modal content (if needed)
+    addModalContent.innerHTML = `
+        <h2>Add Music Information</h2><hr />
+        <input class="input" type="text" name="title" placeholder="Title" />
+        <input class="input" type="text" name="artist" placeholder="Artist" /><br />
+        <input class="input" type="text" name="genre" placeholder="Genre" /><br />
+        <button id="submitBtn" class="add-button" onClick=submitInfo()>Submit</button>
+        <script>submitBtn.addEventListener('click', () => submitInfo())</script>
+    `;
+    myAddModal.style.display = 'block';
+};
+
+const submitInfo = async () => {
+    try {
+        // Get book information from the form or wherever it's stored
+        const title = document.querySelector('input[name="title"]').value;
+        const artist = document.querySelector('input[name="artist"]').value;
+        const genre = document.querySelector('input[name="genre"]').value;
+
+        // Validate the required fields if needed
+
+        // Create a data object with the book information
+        const data = {
+            title: title,
+            artist: artist,
+            genre: genre
+        };
+
+        // Send a POST request to add the book information
+        const response = await axios.post('http://localhost:8080/app/music/add-song-information', data);
+
+        // Optionally, handle the response or perform additional actions
+        console.log('Book added successfully:', response.data);
+
+        // Close the add modal after successful submission
+        myAddModal.style.display = 'none';
+
+        music = await fetchMusicList();
+        renderMusicList(music, currentPage);
+    } catch (error) {
+        console.error('Error submitting book information:', error.message);
+        // Handle errors or provide feedback to the user
+    }
+}
+
 // Open modal with music details
 const openModal = (music) => {
     modalContent.innerHTML = `
@@ -80,7 +132,6 @@ const deleteEntry = async (songId) => {
     }
 };
 
-
 // Close modal
 closeBtn.onclick = () => {
     modal.style.display = 'none';
@@ -90,6 +141,10 @@ closeBtn.onclick = () => {
 window.onclick = (event) => {
     if (event.target === modal) {
         modal.style.display = 'none';
+    }
+
+    if (event.target === myAddModal) {
+        myAddModal.style.display = 'none';
     }
 };
 

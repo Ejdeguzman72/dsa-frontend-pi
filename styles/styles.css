@@ -540,8 +540,8 @@ footer p {
    color: white;
    background-color: #333;
    border-radius: 10px;
-   padding: 10px;
    margin: 10px;
+   font-size: 30px;
 }
 
 .add-button:hover {
@@ -557,4 +557,37 @@ footer p {
    width: 80%;
    box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
    border-radius: 10px;
+}
+
+.add-modal-content input {
+   border-radius: 50px;
+   width: 80%;
+   font-size: 20px;
+   opacity: 0.7;
+}
+
+.add-modal-content h2 {
+   background-color: #333;
+   border-radius: 10px;
+   color: white;
+   font-size: 30;
+   padding: 20px;
+   margin: 20px;
+}
+
+.add-modal-content textarea {
+   border-radius: 10px;
+}
+
+.add-modal-content button {
+   color: white;
+   background-color: #333;
+   border-radius: 10px;
+   margin: 10px;
+   font-size: 20px;
+   padding: 10px;
+}
+
+.textarea {
+   width: 80%;
 }

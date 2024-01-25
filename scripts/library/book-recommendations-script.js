@@ -2,8 +2,12 @@ const bookListContainer = document.getElementById('bookList');
 const paginationContainer = document.getElementById('pagination');
 const modal = document.getElementById('myModal');
 const modalContent = document.getElementById('modalContent');
-const closeBtn = document.getElementsByClassName('close')[0];
-
+const closeBtn = document.getElementById('closeListModal');
+const addModalContent = document.getElementById('addModalContent');
+const myAddModal = document.getElementById('myAddModal');
+const addModalCloseBtn = document.getElementById * ('addModalCloseBtn');
+const submitBtn = document.getElementById('submitBtn');
+console.log(document.getElementById('addModalCloseBtn'))
 // Fetch book list using Axios
 const fetchBookList = async () => {
     try {
@@ -52,6 +56,55 @@ const itemsPerPage = 5;
 let currentPage = 1;
 let books = {};
 
+
+addModalButton.addEventListener('click', () => openAddModal());
+
+const openAddModal = () => {
+    // Clear the modal content (if needed)
+    addModalContent.innerHTML = `
+        <h2>Add Book Information</h2><hr />
+        <input class="input" type="text" name="title" placeholder="Title" />
+        <input class="input" type="text" name="author" placeholder="Author" /><br />
+        <textarea class="textarea" cols="50" rows="5"></textarea/><br />
+        <button id="submitBtn" class="add-button" onClick=submitInfo()>Submit</button>
+        <script>submitBtn.addEventListener('click', () => submitInfo())</script>
+    `;
+    myAddModal.style.display = 'block';
+};
+
+const submitInfo = async () => {
+    try {
+        // Get book information from the form or wherever it's stored
+        const title = document.querySelector('input[name="title"]').value;
+        const author = document.querySelector('input[name="author"]').value;
+        const description = document.querySelector('textarea').value;
+
+        // Validate the required fields if needed
+
+        // Create a data object with the book information
+        const bookData = {
+            title: title,
+            author: author,
+            descr: description
+        };
+
+        // Send a POST request to add the book information
+        const response = await axios.post('http://localhost:8080/app/books/add', bookData);
+
+        // Optionally, handle the response or perform additional actions
+        console.log('Book added successfully:', response.data);
+
+        // Close the add modal after successful submission
+        myAddModal.style.display = 'none';
+
+        books = await fetchBookList();
+        renderBookList(books, currentPage);
+    } catch (error) {
+        console.error('Error submitting book information:', error.message);
+        // Handle errors or provide feedback to the user
+    }
+}
+
 // Open modal with book details
 const openModal = (book) => {
     modalContent.innerHTML = `
@@ -75,13 +128,13 @@ const confirmDeleteBook = (bookId) => {
 // Function to handle auto shop deletion
 const deleteBook = async (bookId) => {
     try {
-        
+
         await axios.delete(`http://localhost:8080/app/books/delete/${bookId}`);
-        
+
         // Optionally, you can reload the auto shop list after deletion
         books = await fetchBookList();
         renderBookList(books, currentPage);
-        
+
         // Close the modal after successful deletion
         modal.style.display = 'none';
     } catch (error) {
@@ -94,10 +147,18 @@ closeBtn.onclick = () => {
     modal.style.display = 'none';
 };
 
+addModalCloseBtn.onclick = () => {
+    myAddModal.style.display = 'none';
+}
+
 // Close modal if clicked outside the modal
 window.onclick = (event) => {
     if (event.target === modal) {
         modal.style.display = 'none';
+    }
+
+    if (event.target === myAddModal) {
+        myAddModal.style.display = 'none';
     }
 };
 
