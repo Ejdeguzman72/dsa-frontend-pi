@@ -2,7 +2,11 @@ const autoShopListContainer = document.getElementById('autoShopList');
 const paginationContainer = document.getElementById('pagination');
 const modal = document.getElementById('myModal');
 const modalContent = document.getElementById('modalContent');
-const closeBtn = document.getElementsByClassName('close')[0];
+const closeBtn = document.getElementById('closeListModal');
+const addModalContent = document.getElementById('addModalContent');
+const myAddModal = document.getElementById('myAddModal');
+const addModalCloseBtn = document.getElementById * ('addModalCloseBtn');
+const submitBtn = document.getElementById('submitBtn');
 
 // Fetch auto repair shop list using Axios
 const fetchAutoshopList = async () => {
@@ -56,6 +60,60 @@ const itemsPerPage = 5;
 let currentPage = 1;
 let autoshops = {};
 
+addModalButton.addEventListener('click', () => openAddModal());
+
+const openAddModal = () => {
+    // Clear the modal content (if needed)
+    addModalContent.innerHTML = `
+        <h2>Add Repair Shop</h2><hr />
+        <input class="input" type="text" name="autoShopName" placeholder="Repair Shop Name" />
+        <input class="input" type="text" name="address" placeholder="Address" /><br />
+        <input class="input" type="text" name="city" placeholder="City" /><br />
+        <input class="input" type="text" name="state" placeholder="State" /><br />
+        <input class="input" type="text" name="zip" placeholder="Zipcode" /><br />
+        <button id="submitBtn" class="add-button" onClick=submitInfo()>Submit</button>
+        <script>submitBtn.addEventListener('click', () => submitInfo())</script>
+    `;
+    myAddModal.style.display = 'block';
+};
+
+const submitInfo = async () => {
+    try {
+        // Get book information from the form or wherever it's stored
+        const autoShopName = document.querySelector('input[name="autoShopName"]').value;
+        const address = document.querySelector('input[name="address"]').value;
+        const city = document.querySelector('input[name="city"]').value;
+        const state = document.querySelector('input[name="state"]').value;
+        const zip = document.querySelector('input[name="zip"]').value;
+
+        // Validate the required fields if needed
+
+        // Create a data object with the book information
+        const data = {
+            autoShopName: autoShopName,
+            address: address,
+            city: city,
+            state: state,
+            zip: zip
+        };
+
+        // Send a POST request to add the book information
+        const response = await axios.post('http://localhost:8080/app/auto-repair-shops/add', data);
+
+        // Optionally, handle the response or perform additional actions
+        console.log('Office added successfully:', response.data);
+
+        // Close the add modal after successful submission
+        myAddModal.style.display = 'none';
+
+        medicalOffices = await fetchAutoshopList();
+        renderAutoshopList(medicalOffices, currentPage);
+    } catch (error) {
+        console.error('Error submitting repair shop information:', error.message);
+        // Handle errors or provide feedback to the user
+    }
+}
+
 // Open modal with auto repair shop details
 const openModal = (autoshop) => {
     modalContent.innerHTML = `
@@ -95,17 +153,25 @@ const deleteAutoShop = async (autoShopId) => {
     }
 };
 
-// Close modal
 closeBtn.onclick = () => {
     modal.style.display = 'none';
 };
+
+addModalCloseBtn.onclick = () => {
+    myAddModal.style.display = 'none';
+}
 
 // Close modal if clicked outside the modal
 window.onclick = (event) => {
     if (event.target === modal) {
         modal.style.display = 'none';
     }
+
+    if (event.target === myAddModal) {
+        myAddModal.style.display = 'none';
+    }
 };
+
 
 // Initialize page
 const initPage = async () => {

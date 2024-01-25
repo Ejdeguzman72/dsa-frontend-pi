@@ -2,7 +2,11 @@ const contactListContainer = document.getElementById('contactList');
 const paginationContainer = document.getElementById('pagination');
 const modal = document.getElementById('myModal');
 const modalContent = document.getElementById('modalContent');
-const closeBtn = document.getElementsByClassName('close')[0];
+const closeBtn = document.getElementById('closeListModal');
+const addModalContent = document.getElementById('addModalContent');
+const myAddModal = document.getElementById('myAddModal');
+const addModalCloseBtn = document.getElementById * ('addModalCloseBtn');
+const submitBtn = document.getElementById('submitBtn');
 
 // Fetch contact info list using Axios
 const fetchContactList = async () => {
@@ -52,6 +56,75 @@ const itemsPerPage = 5;
 let currentPage = 1;
 let entries = {};
 
+addModalButton.addEventListener('click', () => openAddModal());
+
+const openAddModal = () => {
+    // Clear the modal content (if needed)
+    addModalContent.innerHTML = `
+        <h2>Add Contact Information</h2><hr />
+        <input class="input" type="text" name="firstname" placeholder="First Name" />
+        <input class="input" type="text" name="middleInitial" placeholder="Middle Initial (optional)" />
+        <input class="input" type="text" name="lastname" placeholder="Last Name" /><br />
+        <input class="input" type="text" name="address01" placeholder="Address" /><br />
+        <input class="input" type="text" name="city" placeholder="City" /><br />
+        <input class="input" type="text" name="state" placeholder="State" /><br />
+        <input class="input" type="text" name="zipcode" placeholder="Zipcode" /><br />
+        <input class="input" type="text" name="phone" placeholder="Phone" /><br />
+        <input class="input" type="text" name="email" placeholder="Email" /><br />
+        <input class="input" type="text" name="birthdate" placeholder="Birthdate" /><br />
+        <button id="submitBtn" class="add-button" onClick=submitInfo()>Submit</button>
+        <script>submitBtn.addEventListener('click', () => submitInfo())</script>
+    `;
+    myAddModal.style.display = 'block';
+};
+
+const submitInfo = async () => {
+    try {
+        // Get contact information from the form or wherever it's stored
+        const firstname = document.querySelector('input[name="firstname"]').value;
+        const middleInitial = document.querySelector('input[name="middleInitial"]').value;
+        const lastname = document.querySelector('input[name="lastname"]').value;
+        const address01 = document.querySelector('input[name="address01"]').value;
+        const city = document.querySelector('input[name="city"]').value;
+        const state = document.querySelector('input[name="state"]').value;
+        const zipcode = document.querySelector('input[name="zipcode"]').value;
+        const phone = document.querySelector('input[name="phone"]').value;
+        const email = document.querySelector('input[name="email"]').value;
+        const birthdate = document.querySelector('input[name="birthdate"]').value;
+
+        // Validate the required fields if needed
+
+        // Create a data object with the contact information
+        const data = {
+            firstname: firstname,
+            middleInitial: middleInitial,
+            lastname: lastname,
+            address01: address01,
+            city: city,
+            state: state,
+            zipcode: zipcode,
+            phone: phone,
+            email: email,
+            birthdate: birthdate
+        };
+
+        // Send a POST request to add the contact information
+        const response = await axios.post('http://localhost:8080/app/person-info/add', data);
+
+        // Optionally, handle the response or perform additional actions
+        console.log('Contact added successfully:', response.data);
+
+        // Close the add modal after successful submission
+        myAddModal.style.display = 'none';
+
+        medicalOffices = await fetchContactList();
+        renderContactList(medicalOffices, currentPage);
+    } catch (error) {
+        console.error('Error submitting contact information:', error.message);
+        // Handle errors or provide feedback to the user
+    }
+}
+
 // Open modal with contact info details
 const openModal = (contact) => {
     modalContent.innerHTML = `
@@ -96,10 +169,18 @@ closeBtn.onclick = () => {
     modal.style.display = 'none';
 };
 
+addModalCloseBtn.onclick = () => {
+    myAddModal.style.display = 'none';
+}
+
 // Close modal if clicked outside the modal
 window.onclick = (event) => {
     if (event.target === modal) {
         modal.style.display = 'none';
+    }
+
+    if (event.target === myAddModal) {
+        myAddModal.style.display = 'none';
     }
 };
 

@@ -49,12 +49,20 @@
 
    <a class="tabs" href="garage-inventory-page.html">Garage Inventory</a>
 
+   <button id="addModalButton" class="add-button">+</button>
+
+   <div id="myAddModal" class="modal">
+      <div class="add-modal-content">
+         <div id="addModalContent"></div>
+      </div>
+   </div>
+
    <div id="garageInventoryList" class="garage-inventory-list-container"></div>
    <div id="pagination" class="pagination-container"></div>
 
    <div id="myModal" class="modal">
       <div class="modal-content">
-         <span class="close">&times;</span>
+         <span id="closeListModal" class="close">&times;</span>
          <div id="modalContent"></div>
       </div>
    </div>
@@ -62,7 +70,7 @@
    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
    <script src="scripts/library/garage-inventory-script.js"></script>
 
-
+   <hr />
    <footer>
       <p>Edgar Joseph DeGuzman</p>
    </footer>

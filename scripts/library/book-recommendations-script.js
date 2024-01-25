@@ -7,7 +7,7 @@ const addModalContent = document.getElementById('addModalContent');
 const myAddModal = document.getElementById('myAddModal');
 const addModalCloseBtn = document.getElementById * ('addModalCloseBtn');
 const submitBtn = document.getElementById('submitBtn');
-console.log(document.getElementById('addModalCloseBtn'))
+
 // Fetch book list using Axios
 const fetchBookList = async () => {
     try {
