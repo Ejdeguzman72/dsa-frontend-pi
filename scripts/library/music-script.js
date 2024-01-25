@@ -54,10 +54,12 @@ const openAddModal = () => {
     // Clear the modal content (if needed)
     addModalContent.innerHTML = `
         <h2>Add Music Information</h2><hr />
-        <input class="input" type="text" name="title" placeholder="Title" />
-        <input class="input" type="text" name="artist" placeholder="Artist" /><br />
-        <input class="input" type="text" name="genre" placeholder="Genre" /><br />
-        <button id="submitBtn" class="add-button" onClick=submitInfo()>Submit</button>
+        <div class="modal-body">
+            <input class="input" type="text" name="title" placeholder="Title" />
+            <input class="input" type="text" name="artist" placeholder="Artist" /><br />
+            <input class="input" type="text" name="genre" placeholder="Genre" /><br />
+        </div><hr />
+        <button id="submitBtn" class="add-button" onClick=submitInfo()>Submit</button><br /><br />
         <script>submitBtn.addEventListener('click', () => submitInfo())</script>
     `;
     myAddModal.style.display = 'block';

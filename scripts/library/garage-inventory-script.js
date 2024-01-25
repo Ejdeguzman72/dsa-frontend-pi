@@ -53,34 +53,36 @@ addModalButton.addEventListener('click', () => openAddModal());
 const openAddModal = () => {
     // Clear the modal content (if needed)
     addModalContent.innerHTML = `
-        <h2>Add Item</h2><hr />
-        <input class="input" type="text" name="name" placeholder="Item Name" />
-        <input class="input" type="text" name="description" placeholder="Description" /><br />
-        <select name="condition">
-            <option value="Good">Good</option>
-            <option value="Bad">Bad</option>
-            <option value="Decent">Decent</option>
-            <option value="Worn">Worn</option>
-        </select>
-        <select name="location">
-            <option value="Garage">Garage</option>
-            <option value="Shed">Shed</option>
-            <option value="House">House</option>
-        </select>
-        <select name="quantity">
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-            <option value="6">6</option>
-            <option value="7">7</option>
-            <option value="8">8</option>
-            <option value="9">9</option>
-            <option value="10">10</option>
-            <option value="multi">Multi</option>
-        </select>
-        <button id="submitBtn" class="add-button" onClick=submitInfo()>Submit</button>
+        <h2>Add Item</h2><hr /><hr />
+        <div class="modal-body">
+            <input class="input" type="text" name="name" placeholder="Item Name" />
+            <input class="input" type="text" name="description" placeholder="Description" /><br />
+            <select name="condition">
+                <option value="Good">Good</option>
+                <option value="Bad">Bad</option>
+                <option value="Decent">Decent</option>
+                <option value="Worn">Worn</option>
+            </select>
+            <select name="location">
+                <option value="Garage">Garage</option>
+                <option value="Shed">Shed</option>
+                <option value="House">House</option>
+            </select>
+            <select name="quantity">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+                <option value="multi">Multi</option>
+            </select>
+        </div><hr />
+        <button id="submitBtn" class="add-button" onClick=submitInfo()>Submit</button><br /><br />
         <script>submitBtn.addEventListener('click', () => submitInfo())</script>
     `;
     myAddModal.style.display = 'block';
@@ -166,13 +168,20 @@ closeBtn.onclick = () => {
     modal.style.display = 'none';
 };
 
+addModalCloseBtn.onclick = () => {
+    myAddModal.style.display = 'none';
+}
+
 // Close modal if clicked outside the modal
 window.onclick = (event) => {
     if (event.target === modal) {
         modal.style.display = 'none';
     }
-};
 
+    if (event.target === myAddModal) {
+        myAddModal.style.display = 'none';
+    }
+};
 // Initialize page
 const initPage = async () => {
     entries = await fetchGarageInventoryList();

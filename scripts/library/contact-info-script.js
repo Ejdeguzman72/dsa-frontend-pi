@@ -62,17 +62,19 @@ const openAddModal = () => {
     // Clear the modal content (if needed)
     addModalContent.innerHTML = `
         <h2>Add Contact Information</h2><hr />
-        <input class="input" type="text" name="firstname" placeholder="First Name" />
-        <input class="input" type="text" name="middleInitial" placeholder="Middle Initial (optional)" />
-        <input class="input" type="text" name="lastname" placeholder="Last Name" /><br />
-        <input class="input" type="text" name="address01" placeholder="Address" /><br />
-        <input class="input" type="text" name="city" placeholder="City" /><br />
-        <input class="input" type="text" name="state" placeholder="State" /><br />
-        <input class="input" type="text" name="zipcode" placeholder="Zipcode" /><br />
-        <input class="input" type="text" name="phone" placeholder="Phone" /><br />
-        <input class="input" type="text" name="email" placeholder="Email" /><br />
-        <input class="input" type="text" name="birthdate" placeholder="Birthdate" /><br />
-        <button id="submitBtn" class="add-button" onClick=submitInfo()>Submit</button>
+        <div class="modal-body">
+            <input class="input" type="text" name="firstname" placeholder="First Name" />
+            <input class="input" type="text" name="middleInitial" placeholder="Middle Initial (optional)" />
+            <input class="input" type="text" name="lastname" placeholder="Last Name" /><br />
+            <input class="input" type="text" name="address01" placeholder="Address" /><br />
+            <input class="input" type="text" name="city" placeholder="City" /><br />
+            <input class="input" type="text" name="state" placeholder="State" /><br />
+            <input class="input" type="text" name="zipcode" placeholder="Zipcode" /><br />
+            <input class="input" type="text" name="phone" placeholder="Phone" /><br />
+            <input class="input" type="text" name="email" placeholder="Email" /><br />
+            <input class="input" type="text" name="birthdate" placeholder="Birthdate" />
+        </div><hr />
+        <button id="submitBtn" class="add-button" onClick=submitInfo()>Submit</button><br /><br />
         <script>submitBtn.addEventListener('click', () => submitInfo())</script>
     `;
     myAddModal.style.display = 'block';

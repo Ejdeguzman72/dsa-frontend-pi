@@ -58,12 +58,14 @@ const openAddModal = () => {
     // Clear the modal content (if needed)
     addModalContent.innerHTML = `
         <h2>Add Office Information</h2><hr />
-        <input class="input" type="text" name="name" placeholder="Office Name" />
-        <input class="input" type="text" name="address" placeholder="Address" /><br />
-        <input class="input" type="text" name="city" placeholder="City" /><br />
-        <input class="input" type="text" name="state" placeholder="State" /><br />
-        <input class="input" type="text" name="zip" placeholder="Zipcode" /><br />
-        <button id="submitBtn" class="add-button" onClick=submitInfo()>Submit</button>
+        <div class="modal-body">
+            <input class="input" type="text" name="name" placeholder="Office Name" />
+            <input class="input" type="text" name="address" placeholder="Address" /><br />
+            <input class="input" type="text" name="city" placeholder="City" /><br />
+            <input class="input" type="text" name="state" placeholder="State" /><br />
+            <input class="input" type="text" name="zip" placeholder="Zipcode" /><br />
+        </div><hr />
+        <button id="submitBtn" class="add-button" onClick=submitInfo()>Submit</button><br /><br />
         <script>submitBtn.addEventListener('click', () => submitInfo())</script>
     `;
     myAddModal.style.display = 'block';

@@ -80,21 +80,23 @@ const openAddModal = () => {
     // Clear the modal content (if needed)
     addModalContent.innerHTML = `
         <h2>Add Vehicle Information</h2><hr />
-        <input class="input" type="text" name="make" placeholder="Manufacturer Name" />
-        <input class="input" type="text" name="model" placeholder="Model Name" /><br />
-        <input class="input" type="text" name="year" placeholder="Model Year" /><br />
-        <select name="transmission">
-            <option value="Automatic">Automatic</option>
-            <option value="Manual">Manual</option>
-        </select><br />
-        <select name="capacity">
-            <option value="2">2</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-            <option value="6">6</option>
-            <option value="8">8</option>
-        </select><br />
-        <button id="submitBtn" class="add-button" onClick=submitInfo()>Submit</button>
+        <div class="modal-body">
+            <input class="input" type="text" name="make" placeholder="Manufacturer Name" />
+            <input class="input" type="text" name="model" placeholder="Model Name" /><br />
+            <input class="input" type="text" name="year" placeholder="Model Year" /><br />
+            <select name="transmission">
+                <option value="Automatic">Automatic</option>
+                <option value="Manual">Manual</option>
+            </select><br />
+            <select name="capacity">
+                <option value="2">2</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="8">8</option>
+            </select><br />
+        </div><hr />
+        <button id="submitBtn" class="add-button" onClick=submitInfo()>Submit</button><br /><br />
         <script>submitBtn.addEventListener('click', () => submitInfo())</script>
     `;
     myAddModal.style.display = 'block';
