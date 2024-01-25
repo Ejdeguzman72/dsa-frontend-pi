@@ -2,7 +2,12 @@ const vehicleListContainer = document.getElementById('vehicleList');
 const paginationContainer = document.getElementById('pagination');
 const modal = document.getElementById('myModal');
 const modalContent = document.getElementById('modalContent');
-const closeBtn = document.getElementsByClassName('close')[0];
+const closeBtn = document.getElementById('closeListModal');
+const addModalContent = document.getElementById('addModalContent');
+const myAddModal = document.getElementById('myAddModal');
+const addModalCloseBtn = document.getElementById('addModalCloseBtn');
+const submitBtn = document.getElementById('submitBtn');
+
 
 // Fetch vehicle list using Axios
 const fetchVehicleList = async () => {
@@ -49,13 +54,13 @@ const confirmDeleteEntry = (vehicleId) => {
 // Function to handle entry deletion
 const deleteEntry = async (vehicleId) => {
     try {
-        
+
         await axios.delete(`http://localhost:8080/app/vehicles/delete/${vehicleId}`);
-        
+
         // Optionally, you can reload the vehicleId list after deletion
         entries = await fetchVehicleList();
         renderVehicleList(entries, currentPage);
-        
+
         // Close the modal after successful deletion
         modal.style.display = 'none';
     } catch (error) {
@@ -68,6 +73,71 @@ const deleteEntry = async (vehicleId) => {
 const itemsPerPage = 5;
 let currentPage = 1;
 let vehicles = {};
+
+addModalButton.addEventListener('click', () => openAddModal());
+
+const openAddModal = () => {
+    // Clear the modal content (if needed)
+    addModalContent.innerHTML = `
+        <h2>Add Vehicle Information</h2><hr />
+        <input class="input" type="text" name="make" placeholder="Manufacturer Name" />
+        <input class="input" type="text" name="model" placeholder="Model Name" /><br />
+        <input class="input" type="text" name="year" placeholder="Model Year" /><br />
+        <select name="transmission">
+            <option value="Automatic">Automatic</option>
+            <option value="Manual">Manual</option>
+        </select><br />
+        <select name="capacity">
+            <option value="2">2</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="8">8</option>
+        </select><br />
+        <button id="submitBtn" class="add-button" onClick=submitInfo()>Submit</button>
+        <script>submitBtn.addEventListener('click', () => submitInfo())</script>
+    `;
+    myAddModal.style.display = 'block';
+};
+
+const submitInfo = async () => {
+    try {
+        // Get book information from the form or wherever it's stored
+        const make = document.querySelector('input[name="make"]').value;
+        console.log(make)
+        const model = document.querySelector('input[name="model"]').value;
+        console.log(model);
+        const year = document.querySelector('input[name="year"]').value;
+        const transmission = document.querySelector('select[name="transmission"]').value;
+        const capacity = document.querySelector('select[name="capacity"]').value;
+
+        // Validate the required fields if needed
+
+        // Create a data object with the book information
+        const data = {
+            make: make,
+            model: model,
+            year: year,
+            transmission: transmission,
+            capacity: capacity
+        };
+
+        // Send a POST request to add the book information
+        const response = await axios.post('http://localhost:8080/app/vehicles/add', data);
+
+        // Optionally, handle the response or perform additional actions
+        console.log('vehicle added successfully:', response.data);
+
+        // Close the add modal after successful submission
+        myAddModal.style.display = 'none';
+
+        vehicles = await fetchVehicleList();
+        renderVehicleList(vehicles, currentPage);
+    } catch (error) {
+        console.error('Error submitting vehicle information:', error.message);
+        // Handle errors or provide feedback to the user
+    }
+}
 
 // Open modal with music details
 const openModal = (vehicle) => {
@@ -90,6 +160,10 @@ closeBtn.onclick = () => {
 window.onclick = (event) => {
     if (event.target === modal) {
         modal.style.display = 'none';
+    }
+
+    if (event.target === myAddModal) {
+        myAddModal.style.display = 'none';
     }
 };
 

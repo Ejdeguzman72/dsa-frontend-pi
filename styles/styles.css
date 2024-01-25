@@ -579,6 +579,30 @@ footer p {
    border-radius: 10px;
 }
 
+.add-modal-content select {
+   width: 80%;
+   border-radius: 10px;
+   color: black;
+   font-size: 20px;
+   padding: 10px;
+   margin: 10px;
+   font-family: fantasy;
+   text-align: center;
+}
+
+.add-modal-content select:hover {
+   box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+}
+
+.add-modal-content option {
+   width: 80%;
+   border-radius: 10px;
+   color: black;
+   font-size: 20px;
+   padding: 10px;
+   margin: 10px;
+}
+
 .add-modal-content button {
    color: white;
    background-color: #333;
