@@ -70,6 +70,7 @@ const openAddModal = () => {
         </div><hr />
         <button id="submitBtn" class="add-button" onClick=submitInfo()>Submit</button><br /><br />
         <script>submitBtn.addEventListener('click', () => submitInfo())</script>
+        <script src="scripts/dropdown/entertainment-type-dropdown.js"></script>
     `;
     myAddModal.style.display = 'block';
 };
