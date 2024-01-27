@@ -2,7 +2,19 @@ const restaurantListContainer = document.getElementById('restaurantList');
 const paginationContainer = document.getElementById('pagination');
 const modal = document.getElementById('myModal');
 const modalContent = document.getElementById('modalContent');
-const closeBtn = document.getElementsByClassName('close')[0];
+const closeBtn = document.getElementById('closeListModal');
+const addModalContent = document.getElementById('addModalContent');
+const addModalButton = document.getElementById('addModalButton');
+const myAddModal = document.getElementById('myAddModal');
+const submitBtn = document.getElementById('submitBtn');
+let restaurantTypesDropdown;
+
+// Pagination
+const itemsPerPage = 5;
+
+let currentPage = 1;
+let restaurants = [];
+let restaurantTypes = [];
 
 // Fetch medical office list using Axios
 const fetchRestaurantList = async () => {
@@ -13,6 +25,27 @@ const fetchRestaurantList = async () => {
         console.error('Error fetching restaurant list:', error.message);
         return [];
     }
+};
+
+const fetchRestaurantTypes = async () => {
+    try {
+        const response = await axios.get('http://localhost:8080/app/restaurant-types/all');
+        restaurantTypes = response.data.list;
+    } catch (error) {
+        console.error('Error fetching restaurant type list:', error.message);
+        return [];
+    }
+}
+
+const fetchRestaurantTypesDropdown = () => {
+    restaurantTypesDropdown.innerHTML = '';
+
+    restaurantTypes.forEach(type => {
+        const option = document.createElement("option");
+        option.value = type.restaurantTypeId;
+        option.text = type.descr;
+        restaurantTypesDropdown.add(option);
+    });
 };
 
 // Render restaurant list items
@@ -40,11 +73,6 @@ const renderRestaurantList = (entries, page) => {
     });
 };
 
-// Pagination
-const itemsPerPage = 5;
-let currentPage = 1;
-let restaurants = {};
-
 // Open modal with auto repair shop details
 const openModal = (restaurant) => {
     modalContent.innerHTML = `
@@ -70,13 +98,13 @@ const confirmDeleteEntry = (restaurantId) => {
 // Function to handle entry deletion
 const deleteEntry = async (restaurantId) => {
     try {
-        
+
         await axios.delete(`http://localhost:8080/app/restaurants/delete/${restaurantId}`);
-        
+
         // Optionally, you can reload the restaurant list after deletion
         entries = await fetchRestaurantList();
         renderRestaurantList(entries, currentPage);
-        
+
         // Close the modal after successful deletion
         modal.style.display = 'none';
     } catch (error) {
@@ -84,6 +112,62 @@ const deleteEntry = async (restaurantId) => {
     }
 };
 
+addModalButton.addEventListener('click', () => openAddModal());
+
+const openAddModal = async () => {
+    addModalContent.innerHTML = `
+    <h2>Add Restaurant Information</h2><hr />
+    <div class="modal-body">
+        <input class="input" type="text" name="name" placeholder="Restaurant Name" /><br />
+        <input class="input" type="text" name="address" placeholder="Address" /><br />
+        <input class="input" type="text" name="city" placeholder="City" /><br />
+        <input class="input" type="text" name="state" placeholder="State" /><br />
+        <input class="input" type="text" name="zip" placeholder="Zipcode" /><br />
+        <label for="entertainmentTypesDropdown">Select Restaurant Type:</label>
+        <select id="restaurantTypesDropdown" name="restaurantTypeId"></select> <!-- New dropdown element -->
+    </div><hr />
+    <button id="submitBtn" class="add-button" onClick=submitInfo()>Submit</button><br /><br />
+    <script>
+        submitBtn.addEventListener('click', () => submitInfo())
+    </script>
+    `;
+    restaurantTypesDropdown = document.getElementById('restaurantTypesDropdown')
+    await fetchRestaurantTypes();
+    fetchRestaurantTypesDropdown();
+
+    myAddModal.style.display = 'block';
+};
+
+const submitInfo = async () => {
+    try {
+        const name = document.querySelector('input[name="name"]').value;
+        const address = document.querySelector('input[name="address"]').value;
+        const city = document.querySelector('input[name="city"]').value;
+        const state = document.querySelector('input[name="state"]').value;
+        const zip = document.querySelector('input[name="zip"]').value;
+        const restaurantTypeId = document.querySelector('select[name="restaurantTypeId"]').value;
+
+        const data = {
+            name: name,
+            address: address,
+            city: city,
+            state: state,
+            zip: zip,
+            restaurantTypeId: restaurantTypeId
+        };
+
+        const response = await axios.post('http://localhost:8080/app/restaurants/add', data);
+
+        console.log('Entry added successfully:', response.data);
+
+        myAddModal.style.display = 'none';
+
+        restaurantEntries = await fetchRestaurantList();
+        renderRestaurantList(restaurantEntries, currentPage);
+    } catch (error) {
+        console.error('Error submitting restaurant information:', error.message);
+    }
+}
 
 // Close modal
 closeBtn.onclick = () => {
@@ -94,6 +178,10 @@ closeBtn.onclick = () => {
 window.onclick = (event) => {
     if (event.target === modal) {
         modal.style.display = 'none';
+    }
+
+    if (event.target === myAddModal) {
+        myAddModal.style.display = 'none';
     }
 };
 
