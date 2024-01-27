@@ -5,29 +5,51 @@ const modal = document.getElementById('myModal');
 const modalContent = document.getElementById('modalContent');
 const closeBtn = document.getElementById('closeListModal');
 const addModalContent = document.getElementById('addModalContent');
+const addModalButton = document.getElementById('addModalButton');
 const myAddModal = document.getElementById('myAddModal');
-const addModalCloseBtn = document.getElementById * ('addModalCloseBtn');
 const submitBtn = document.getElementById('submitBtn');
+let entertainmentTypesDropdown;
 
 // Constants
 const itemsPerPage = 5;
 
 // State
 let currentPage = 1;
-let entries = {};
+let entertainmentEntries = [];
+let entertainmentTypes = [];
 
-// Fetch auto entertainment list using Axios
+// Fetch entertainment list using Axios
 const fetchEntertainmentList = async () => {
     try {
         const response = await axios.get('http://localhost:8080/app/entertainment/all');
-        return response.data.list;
+        return response.data.list || [];
     } catch (error) {
         console.error('Error fetching entertainment list:', error.message);
         return [];
     }
 };
 
-// Render entertainment list items
+// Fetch entertainment types
+const fetchEntertainmentTypes = async () => {
+    try {
+        const response = await axios.get('http://localhost:8080/app/entertainment-types/all');
+        entertainmentTypes = response.data.list; // Store entertainment types in state
+    } catch (error) {
+        console.error('Error fetching entertainment types:', error);
+    }
+};
+
+const fetchEntertainmentTypesDropdown = () => {
+    entertainmentTypesDropdown.innerHTML = '';
+
+    entertainmentTypes.forEach(type => {
+        const option = document.createElement("option");
+        option.value = type.entertainmentTypeId;
+        option.text = type.descr;
+        entertainmentTypesDropdown.add(option);
+    });
+};
+
 const renderEntertainmentList = (entries, page) => {
     const startIdx = (page - 1) * itemsPerPage;
     const endIdx = startIdx + itemsPerPage;
@@ -51,17 +73,16 @@ const renderEntertainmentList = (entries, page) => {
     });
 };
 
-// Open modal with entertainment details
 const openModal = (entry) => {
     modalContent.innerHTML = `
         <h2>${entry.name + ' - ' + entry.descr}</h2><hr />
         <button onClick="updateEntry(${entry.entityId})" class="update-button">Update</button>
         <button onClick="confirmDeleteEntertainment(${entry.entityId})" class="delete-button">Delete</button>
     `;
+
     modal.style.display = 'block';
 };
 
-// Function to confirm entertainment deletion
 const confirmDeleteEntertainment = (entityId) => {
     const confirmModal = window.confirm('Are you sure you want to delete this entry?');
     if (confirmModal) {
@@ -69,16 +90,13 @@ const confirmDeleteEntertainment = (entityId) => {
     }
 };
 
-// Function to handle entry deletion
 const deleteEntry = async (entityId) => {
     try {
         await axios.delete(`http://localhost:8080/app/entertainment/delete/${entityId}`);
         
-        // Optionally, you can reload the entry list after deletion
-        entries = await fetchEntertainmentList();
-        renderEntertainmentList(entries, currentPage);
+        entertainmentEntries = await fetchEntertainmentList();
+        renderEntertainmentList(entertainmentEntries, currentPage);
         
-        // Close the modal after successful deletion
         modal.style.display = 'none';
     } catch (error) {
         console.error('Error deleting entityId:', error.message);
@@ -87,62 +105,52 @@ const deleteEntry = async (entityId) => {
 
 addModalButton.addEventListener('click', () => openAddModal());
 
-const openAddModal = () => {
-    // Clear the modal content (if needed)
+const openAddModal = async () => {
     addModalContent.innerHTML = `
-        <h2>Add Office Information</h2><hr />
-        <input class="input" type="text" name="name" placeholder="Entertainment Title" />
-        <textarea cols="50" rows="6"></textarea>
-        <button id="submitBtn" class="add-button" onClick=submitInfo()>Submit</button>
-        <script>submitBtn.addEventListener('click', () => submitInfo())</script>
+    <h2>Add Entertainment Entry</h2><hr />
+    <div class="modal-body">
+        <input class="input" type="text" name="name" placeholder="Entertainment Title" /><br />
+        <label for="entertainmentTypesDropdown">Select Entertainment Type:</label>
+        <select id="entertainmentTypesDropdown" name="entertainmentTypeId"></select> <!-- New dropdown element -->
+    </div><hr />
+    <button id="submitBtn" class="add-button" onClick=submitInfo()>Submit</button><br /><br />
+    <script>
+        submitBtn.addEventListener('click', () => submitInfo())
+    </script>
     `;
+    entertainmentTypesDropdown = document.getElementById('entertainmentTypesDropdown')
+    await fetchEntertainmentTypes();
+    fetchEntertainmentTypesDropdown();
+
     myAddModal.style.display = 'block';
 };
 
 const submitInfo = async () => {
     try {
-        // Get book information from the form or wherever it's stored
         const name = document.querySelector('input[name="name"]').value;
-        const address = document.querySelector('input[name="address"]').value;
-        const city = document.querySelector('input[name="city"]').value;
-        const state = document.querySelector('input[name="state"]').value;
-        const zip = document.querySelector('input[name="zip"]').value;
+        const entertainmentTypeId = document.querySelector('select[name="entertainmentTypeId"]').value;
 
-        // Validate the required fields if needed
-
-        // Create a data object with the book information
         const data = {
             name: name,
-            address: address,
-            city: city,
-            state: state,
-            zip: zip
+            entertainmentTypeId: entertainmentTypeId
         };
 
-        // Send a POST request to add the book information
-        const response = await axios.post('http://localhost:8080/app/medical-offices/add', data);
+        const response = await axios.post('http://localhost:8080/app/entertainment/add', data);
 
-        // Optionally, handle the response or perform additional actions
-        console.log('Office added successfully:', response.data);
+        console.log('Entry added successfully:', response.data);
 
-        // Close the add modal after successful submission
         myAddModal.style.display = 'none';
 
-        entries = await fetchEntertainmentList();
-        renderEntertainmentList(entries, currentPage);
+        entertainmentEntries = await fetchEntertainmentList();
+        renderEntertainmentList(entertainmentEntries, currentPage);
     } catch (error) {
         console.error('Error submitting entertaiment information:', error.message);
-        // Handle errors or provide feedback to the user
     }
 }
 
 closeBtn.onclick = () => {
     modal.style.display = 'none';
 };
-
-addModalCloseBtn.onclick = () => {
-    myAddModal.style.display = 'none';
-}
 
 // Close modal if clicked outside the modal
 window.onclick = (event) => {
@@ -157,14 +165,17 @@ window.onclick = (event) => {
 
 // Initialize page
 const initPage = async () => {
-    entries = await fetchEntertainmentList();
-    renderEntertainmentList(entries, currentPage);
-    renderPagination();
+    try {
+        entertainmentEntries = await fetchEntertainmentList();
+        renderEntertainmentList(entertainmentEntries, currentPage);
+        renderPagination();
+    } catch (error) {
+        console.error('Error initializing page:',error.message);
+    }
 };
 
-// Render pagination buttons
 const renderPagination = () => {
-    const totalPages = Math.ceil(entries.length / itemsPerPage);
+    const totalPages = Math.ceil(entertainmentEntries.length / itemsPerPage);
     paginationContainer.innerHTML = '';
 
     for (let i = 1; i <= totalPages; i++) {
@@ -175,10 +186,9 @@ const renderPagination = () => {
     }
 };
 
-// Handle pagination button click
 const onPageClick = (page) => {
     currentPage = page;
-    renderEntertainmentList(entries, currentPage);
+    renderEntertainmentList(entertainmentEntries, currentPage);
 };
 
 // Initialize the page
