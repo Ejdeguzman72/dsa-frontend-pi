@@ -162,8 +162,8 @@ const submitInfo = async () => {
 
         myAddModal.style.display = 'none';
 
-        restaurantEntries = await fetchRestaurantList();
-        renderRestaurantList(restaurantEntries, currentPage);
+        restaurants = await fetchRestaurantList();
+        renderRestaurantList(restaurants, currentPage);
     } catch (error) {
         console.error('Error submitting restaurant information:', error.message);
     }
