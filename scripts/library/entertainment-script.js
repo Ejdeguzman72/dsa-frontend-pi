@@ -128,10 +128,10 @@ const submitInfo = async () => {
         // Close the add modal after successful submission
         myAddModal.style.display = 'none';
 
-        medicalOffices = await fetchMedicalOfficeList();
-        renderMedicalOfficeList(medicalOffices, currentPage);
+        entries = await fetchEntertainmentList();
+        renderEntertainmentList(entries, currentPage);
     } catch (error) {
-        console.error('Error submitting medical office information:', error.message);
+        console.error('Error submitting entertaiment information:', error.message);
         // Handle errors or provide feedback to the user
     }
 }
