@@ -109,11 +109,11 @@ ul.navbar li.dropdown:hover .dropdown-content {
 .input {
    padding: 10px;
    margin: 10px;
-   border-radius: 50px;
+   border-radius: 10px;
    width: 80%;
    text-align: center;
    align-items: center;
-   font-size: 20px;
+   font-size: 15px;
    opacity: 0.7;
 }
 
@@ -125,6 +125,22 @@ ul.navbar li.dropdown:hover .dropdown-content {
    text-align: center;
    justify-content: center;
    align-items: center;
+   margin: 20px;
+   padding: 15px;
+   height: 70%;
+   border-style: solid;
+   border-color: #333;
+   border-radius: 50px;
+   box-shadow: 0 24px 32px 0 rgba(0, 0, 0, 0.24), 0 34px 100px 0 rgba(0, 0, 0, 0.19);
+}
+
+.container-center h1 {
+   font-size: 6vw;
+   font-family: candara;
+   background-color: #ADD8E6;
+   width: 100%;
+   opacity: 0.8;
+   border-radius: 50px;
 }
 
 .login-button {
@@ -172,6 +188,9 @@ ul.navbar li.dropdown:hover .dropdown-content {
 
 .login-button-container {
    display: inline-flex;
+   justify-content: center;
+   align-items: center;
+   padding: 10px;
 }
 
 footer p {
@@ -571,14 +590,14 @@ footer p {
    margin: 15% auto;
    padding: 20px;
    border: 1px solid #888;
-   width: 80%;
+   width: 40%;
    height: auto;
    box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
    border-radius: 10px;
 }
 
 .add-modal-content input {
-   border-radius: 50px;
+   border-radius: 10px;
    width: 80%;
    font-size: 20px;
    opacity: 0.7;
