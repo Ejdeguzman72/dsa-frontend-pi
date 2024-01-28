@@ -2,9 +2,22 @@ const generalTrxListContainer = document.getElementById('generalTrxList');
 const paginationContainer = document.getElementById('pagination');
 const modal = document.getElementById('myModal');
 const modalContent = document.getElementById('modalContent');
-const closeBtn = document.getElementsByClassName('close')[0];
+const closeBtn = document.getElementById('closeListModal');
+const addModalContent = document.getElementById('addModalContent');
+const addModalButton = document.getElementById('addModalButton');
+const myAddModal = document.getElementById('myAddModal');
+const submitBtn = document.getElementById('submitBtn');
+let trxTypeDropdown;
+let userDropdown;
 
-// Fetch auto repair shop list using Axios
+// Pagination
+const itemsPerPage = 4;
+let currentPage = 1;
+let transactions = [];
+let transactionTypes = [];
+let users = [];
+
+// Fetch general transaction list using Axios
 const fetchGeneralTrxList = async () => {
     try {
         const response = await axios.get('http://localhost:8080/app/general-transactions/all');
@@ -14,6 +27,26 @@ const fetchGeneralTrxList = async () => {
         return [];
     }
 };
+
+const fetchTransactionTypesList = async () => {
+    try {
+        const response = await axios.get('http://localhost:8080/app/transaction-types/all');
+        transactionTypes = response.data.list;
+    } catch (error) {
+        console.error('Error fetching transaction type list:', error.message);
+        return [];
+    }
+};
+
+const fetchUsers = async () => {
+    try {
+        const response = await axios.get('http://localhost:8080/app/users/all');
+        users = response.data.list;
+    } catch (error) {
+        console.error('Error fetching user list:', error.message);
+        return [];
+    } 
+}
 
 // Render general trx list items
 const renderGeneralTrxList = (entries, page) => {
@@ -43,10 +76,27 @@ const renderGeneralTrxList = (entries, page) => {
     });
 };
 
-// Pagination
-const itemsPerPage = 4;
-let currentPage = 1;
-let transactions = {};
+const renderTransactionTypeDropdown = () => {
+    trxTypeDropdown.innerHTML = '';
+
+    transactionTypes.forEach(type => {
+        const option = document.createElement('option');
+        option.value = type.trxTypeId;
+        option.text = type.trxTypeDescr;
+        trxTypeDropdown.add(option);
+    })
+}
+
+const renderUserDropdown = () => {
+    userDropdown.innerHTML = '';
+
+    users.forEach(type => {
+        const option = document.createElement('option');
+        option.value = type.userId;
+        option.text = type.username;
+        userDropdown.add(option);
+    })
+}
 
 // Open modal with transaction details
 const openModal = (transaction) => {
@@ -86,6 +136,65 @@ const deleteEntry = async (genTrxId) => {
     }
 };
 
+addModalButton.addEventListener('click', () => openAddModal());
+
+const openAddModal = async () => {
+    addModalContent.innerHTML = `
+    <h2>Add Transaction Information</h2><hr />
+    <div class="modal-body">
+        <input class="input" type="number" name="amount" placeholder="Amount ($0.00)" /><br />
+        <input class="input" type="date" name="paymentDate" placeholder="Payment Date" /><br />
+        <input class="input" type="text" name="entity" placeholder="Entity" /><br />
+        <select id="trxTypeDropdown" name="trxTypeId"></select>
+        <select id="userDropdown" name="userId"></select>
+    </div><hr />
+    <button id="submitBtn" class="add-button" onClick=submitInfo()>Submit</button><br /><br />
+    <script>
+        submitBtn.addEventListener('click', () => submitInfo())
+    </script>
+    `;
+    trxTypeDropdown = document.getElementById('trxTypeDropdown')
+    userDropdown = document.getElementById('userDropdown');
+
+    await fetchTransactionTypesList();
+    await fetchUsers();
+
+    renderTransactionTypeDropdown();
+    renderUserDropdown();
+    renderPagination();
+
+    myAddModal.style.display = 'block';
+};
+
+const submitInfo = async () => {
+    try {
+        const paymentDate = document.querySelector('input[name="paymentDate"]').value;
+        const amount = document.querySelector('input[name="amount"]').value;
+        const entity = document.querySelector('input[name="entity"]').value;
+        const trxTypeId = document.querySelector('select[name="trxTypeId"]').value;
+        const userId = document.querySelector('select[name="userId"]').value;
+
+        const data = {
+            paymentDate: paymentDate,
+            amount: amount,
+            entity: entity,
+            trxTypeId: trxTypeId,
+            userId: userId
+        };
+
+        const response = await axios.post('http://localhost:8080/app/general-transactions/add', data);
+
+        console.log('Entry added successfully:', response.data);
+
+        myAddModal.style.display = 'none';
+
+        trxEntries = await fetchGeneralTrxList();
+        renderGeneralTrxList(trxEntries, currentPage);
+    } catch (error) {
+        console.error('Error submitting transaction information:', error.message);
+    }
+}
+
 // Close modal
 closeBtn.onclick = () => {
     modal.style.display = 'none';
@@ -95,6 +204,10 @@ closeBtn.onclick = () => {
 window.onclick = (event) => {
     if (event.target === modal) {
         modal.style.display = 'none';
+    }
+
+    if (event.target === myAddModal) {
+        myAddModal.style.display = 'none';
     }
 };
 

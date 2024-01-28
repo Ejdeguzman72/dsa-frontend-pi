@@ -2,7 +2,21 @@ const gymTrackerListContainer = document.getElementById('gymTrackerList');
 const paginationContainer = document.getElementById('pagination');
 const modal = document.getElementById('myModal');
 const modalContent = document.getElementById('modalContent');
-const closeBtn = document.getElementsByClassName('close')[0];
+const closeBtn = document.getElementById('closeListModal');
+const addModalContent = document.getElementById('addModalContent');
+const addModalButton = document.getElementById('addModalButton');
+const myAddModal = document.getElementById('myAddModal');
+const submitBtn = document.getElementById('submitBtn');
+let exerciseTypesDropdown;
+let userDropdown;
+
+// Pagination
+const itemsPerPage = 5;
+
+let currentPage = 1;
+let entries = [];
+let exerciseTypes = [];
+let users = [];
 
 // Fetch gym tracker list using Axios
 const fetchGymTrackerList = async () => {
@@ -14,6 +28,26 @@ const fetchGymTrackerList = async () => {
         return [];
     }
 };
+
+const fetchExerciseTypes = async () => {
+    try {
+        const response = await axios.get('http://localhost:8080/app/exercise-type/all');
+        exerciseTypes = response.data.list;
+    } catch (error) {
+        console.error('Error fetching exercise type list:', error.message);
+        return [];
+    } 
+}
+
+const fetchUsers = async () => {
+    try {
+        const response = await axios.get('http://localhost:8080/app/users/all');
+        users = response.data.list;
+    } catch (error) {
+        console.error('Error fetching user type list:', error.message);
+        return [];
+    } 
+}
 
 // Render gym tracker list items
 const renderGymTrackerList = (entries, page) => {
@@ -43,10 +77,27 @@ const renderGymTrackerList = (entries, page) => {
     });
 };
 
-// Pagination
-const itemsPerPage = 5;
-let currentPage = 1;
-let entries = {};
+const renderExerciseTypeDropdown = () => {
+    exerciseTypesDropdown.innerHTML = '';
+
+    exerciseTypes.forEach(type => {
+        const option = document.createElement('option');
+        option.value = type.exerciseTypeId;
+        option.text = type.exercise_type_name;
+        exerciseTypesDropdown.add(option);
+    })
+}
+
+const renderUserDropdown = () => {
+    userDropdown.innerHTML = '';
+
+    users.forEach(type => {
+        const option = document.createElement('option');
+        option.value = type.userId;
+        option.text = type.username;
+        userDropdown.add(option);
+    })
+}
 
 // Open modal with gym tracker details
 const openModal = (entry) => {
@@ -59,7 +110,7 @@ const openModal = (entry) => {
         <p>Exercise Type: ${entry.exerciseTypeName}</p>
         <p>Username: ${entry.username}</p>
         <button onClick="updateEntry(${entry.exerciseId})" class="update-button">Update</button>
-        <button onClick="confirmDeleteCardio(${entry.exerciseId})" class="delete-button">Delete</button>
+        <button onClick="confirmDeleteEntry(${entry.exerciseId})" class="delete-button">Delete</button>
     `;
     modal.style.display = 'block';
 };
@@ -88,6 +139,72 @@ const deleteEntry = async (exerciseId) => {
     }
 };
 
+addModalButton.addEventListener('click', () => openAddModal());
+
+const openAddModal = async () => {
+    addModalContent.innerHTML = `
+    <h2>Add Exercise Information</h2><hr />
+    <div class="modal-body">
+        <select id="exerciseTypesDropdown" name="exerciseTypeId"></select>
+        <input class="input" type="text" name="exerciseName" placeholder="Exercise Name" /><br />
+        <input class="input" type="number" name="sets" placeholder="Sets" /><br />
+        <input class="input" type="number" name="reps" placeholder="reps" /><br />
+        <input class="input" type="number" name="weight" placeholder="Weight" /><br />
+        <input class="input" type="date" name="date" placeholder="Date" /><br />
+        <select id="userDropdown" name="userId"></select>
+    </div><hr />
+    <button id="submitBtn" class="add-button" onClick=submitInfo()>Submit</button><br /><br />
+    <script>
+        submitBtn.addEventListener('click', () => submitInfo())
+    </script>
+    `;
+    exerciseTypesDropdown = document.getElementById('exerciseTypesDropdown')
+    userDropdown = document.getElementById('userDropdown');
+
+    await fetchExerciseTypes();
+    await fetchUsers();
+
+    renderExerciseTypeDropdown();
+    renderUserDropdown();
+    renderPagination();
+
+    myAddModal.style.display = 'block';
+};
+
+const submitInfo = async () => {
+    try {
+        const exerciseName = document.querySelector('input[name="exerciseName"]').value;
+        const sets = document.querySelector('input[name="sets"]').value;
+        const reps = document.querySelector('input[name="reps"]').value;
+        const weight = document.querySelector('input[name="weight"]').value;
+        const date = document.querySelector('input[name="date"]').value;
+        const exerciseTypeId = document.querySelector('select[name="exerciseTypeId"]').value;
+        const userId = document.querySelector('select[name="userId"]').value;
+
+        const data = {
+            exerciseName: exerciseName,
+            sets: sets,
+            reps: reps,
+            weight: weight,
+            date: date,
+            exerciseTypeId: exerciseTypeId,
+            userId: userId
+        };
+
+        const response = await axios.post('http://localhost:8080/app/gym-tracker/add', data);
+
+        console.log('Entry added successfully:', response.data);
+
+        myAddModal.style.display = 'none';
+
+        exerciseEntries = await fetchGymTrackerList();
+        renderGymTrackerList(exerciseEntries, currentPage);
+    } catch (error) {
+        console.error('Error submitting exercise information:', error.message);
+    }
+}
+
+
 // Close modal
 closeBtn.onclick = () => {
     modal.style.display = 'none';
@@ -97,6 +214,10 @@ closeBtn.onclick = () => {
 window.onclick = (event) => {
     if (event.target === modal) {
         modal.style.display = 'none';
+    }
+
+    if (event.target === myAddModal) {
+        myAddModal.style.display = 'none';
     }
 };
 

@@ -2,7 +2,25 @@ const autoTrxListContainer = document.getElementById('autoTrxList');
 const paginationContainer = document.getElementById('pagination');
 const modal = document.getElementById('myModal');
 const modalContent = document.getElementById('modalContent');
-const closeBtn = document.getElementsByClassName('close')[0];
+const closeBtn = document.getElementById('closeListModal');
+const addModalContent = document.getElementById('addModalContent');
+const addModalButton = document.getElementById('addModalButton');
+const myAddModal = document.getElementById('myAddModal');
+const submitBtn = document.getElementById('submitBtn');
+let vehicleDropdown;
+let autoShopDropdown;
+let trxTypeDropdown;
+let userDropdown;
+
+// Pagination
+const itemsPerPage = 5;
+
+let currentPage = 1;
+let autoTransactions = [];
+let vehicles = [];
+let autoShops = [];
+let transactionTypes = [];
+let users = [];
 
 // Fetch auto transaction list using Axios
 const fetchAutotrxList = async () => {
@@ -14,6 +32,46 @@ const fetchAutotrxList = async () => {
         return [];
     }
 };
+
+const fetchVehicleList = async () => {
+    try {
+        const response = await axios.get('http://localhost:8080/app/vehicles/all');
+        vehicles = response.data.list;
+    } catch (error) {
+        console.error('Error fetching vehicle list:', error.message);
+        return [];
+    }
+}
+
+const fetchAutoShops = async () => {
+    try {
+        const response = await axios.get('http://localhost:8080/app/auto-repair-shops/all');
+        autoShops = response.data.list;
+    } catch (error) {
+        console.error('Error fetching auto repair shop list:', error.message);
+        return [];
+    }
+}
+
+const fetchTransactionTypesList = async () => {
+    try {
+        const response = await axios.get('http://localhost:8080/app/transaction-types/all');
+        transactionTypes = response.data.list;
+    } catch (error) {
+        console.error('Error fetching transaction type list:', error.message);
+        return [];
+    }
+};
+
+const fetchUsers = async () => {
+    try {
+        const response = await axios.get('http://localhost:8080/app/users/all');
+        users = response.data.list;
+    } catch (error) {
+        console.error('Error fetching user list:', error.message);
+        return [];
+    } 
+}
 
 // Render auto transaction list items
 const renderAutotrxList = (entries, page) => {
@@ -47,10 +105,50 @@ const renderAutotrxList = (entries, page) => {
     });
 };
 
-// Pagination
-const itemsPerPage = 5;
-let currentPage = 1;
-let autoTransactions = {};
+const renderVehicleDropdown = () => {
+    vehicleDropdown.innerHTML = '';
+
+    vehicles.forEach(type => {
+        const option = document.createElement('option');
+        option.value = type.vehicleId;
+        option.text = `${type.year} ${type.make} ${type.make}`
+        vehicleDropdown.add(option);
+    })
+}
+
+const renderAutoshopDropdown = () => {
+    autoShops.innerHTML = '';
+
+    autoShops.forEach(type => {
+        const option = document.createElement('option');
+        option.value = type.autoShopId;
+        option.text = `${type.autoShopName} - ${type.address} ${type.city} ${type.state} ${type.zip}`
+        autoShopDropdown.add(option);
+    })
+}
+
+
+const renderTransactionTypeDropdown = () => {
+    trxTypeDropdown.innerHTML = '';
+
+    transactionTypes.forEach(type => {
+        const option = document.createElement('option');
+        option.value = type.trxTypeId;
+        option.text = type.trxTypeDescr;
+        trxTypeDropdown.add(option);
+    })
+}
+
+const renderUserDropdown = () => {
+    userDropdown.innerHTML = '';
+
+    users.forEach(type => {
+        const option = document.createElement('option');
+        option.value = type.userId;
+        option.text = type.username;
+        userDropdown.add(option);
+    })
+}
 
 // Open modal with auto transaction details
 const openModal = (autoTrx) => {
@@ -93,6 +191,76 @@ const deleteEntry = async (autoTrxId) => {
     }
 };
 
+addModalButton.addEventListener('click', () => openAddModal());
+
+const openAddModal = async () => {
+    addModalContent.innerHTML = `
+    <h2>Add Transaction Information</h2><hr />
+    <div class="modal-body">
+        <input class="input" type="number" name="amount" placeholder="Amount ($0.00)" /><br />
+        <input class="input" type="date" name="autoTrxDate" placeholder="Payment Date" /><br />
+        <select id="vehicleDropdown" name="vehicleId"></select>
+        <select id="autoShopDropdown" name="autoShopId"></select>
+        <select id="trxTypeDropdown" name="trxTypeId"></select>
+        <select id="userDropdown" name="userId"></select>
+    </div><hr />
+    <button id="submitBtn" class="add-button" onClick=submitInfo()>Submit</button><br /><br />
+    <script>
+        submitBtn.addEventListener('click', () => submitInfo())
+    </script>
+    `;
+
+    autoShopDropdown = document.getElementById('autoShopDropdown');
+    vehicleDropdown = document.getElementById('vehicleDropdown');
+    trxTypeDropdown = document.getElementById('trxTypeDropdown')
+    userDropdown = document.getElementById('userDropdown');
+
+    await fetchVehicleList();
+    await fetchAutoShops();
+    await fetchTransactionTypesList();
+    await fetchUsers();
+
+    renderVehicleDropdown();
+    renderAutoshopDropdown();
+    renderTransactionTypeDropdown();
+    renderUserDropdown();
+    renderPagination();
+    
+    myAddModal.style.display = 'block';
+};
+
+const submitInfo = async () => {
+    try {
+        const autoTrxDate = document.querySelector('input[name="autoTrxDate"]').value;
+        const amount = document.querySelector('input[name="amount"]').value;
+        const vehicleId = document.querySelector('select[name="vehicleId"]').value;
+        const autoShopId = document.querySelector('select[name="autoShopId"]').value;
+        const trxTypeId = document.querySelector('select[name="trxTypeId"]').value;
+        const userId = document.querySelector('select[name="userId"]').value;
+
+        const data = {
+            autoTrxDate: autoTrxDate,
+            amount: amount,
+            vehicleId: vehicleId,
+            autoShopId: autoShopId,
+            trxTypeId: trxTypeId,
+            userId: userId
+        };
+
+        const response = await axios.post('http://localhost:8080/app/auto-transactions/add', data);
+
+        console.log('Entry added successfully:', response.data);
+
+        myAddModal.style.display = 'none';
+
+        trxEntries = await fetchAutotrxList();
+        renderAutotrxList(trxEntries, currentPage);
+        renderPagination();
+    } catch (error) {
+        console.error('Error submitting transaction information:', error.message);
+    }
+}
+
 // Close modal
 closeBtn.onclick = () => {
     modal.style.display = 'none';
@@ -102,6 +270,10 @@ closeBtn.onclick = () => {
 window.onclick = (event) => {
     if (event.target === modal) {
         modal.style.display = 'none';
+    }
+
+    if (event.target === myAddModal) {
+        myAddModal.style.display = 'none';
     }
 };
 

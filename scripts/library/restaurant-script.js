@@ -132,7 +132,10 @@ const openAddModal = async () => {
     </script>
     `;
     restaurantTypesDropdown = document.getElementById('restaurantTypesDropdown')
+
     await fetchRestaurantTypes();
+
+    renderPagination();
     fetchRestaurantTypesDropdown();
 
     myAddModal.style.display = 'block';

@@ -134,7 +134,9 @@ const submitInfo = async () => {
         myAddModal.style.display = 'none';
 
         vehicles = await fetchVehicleList();
+
         renderVehicleList(vehicles, currentPage);
+        renderPagination();
     } catch (error) {
         console.error('Error submitting vehicle information:', error.message);
         // Handle errors or provide feedback to the user

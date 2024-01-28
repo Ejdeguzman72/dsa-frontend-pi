@@ -600,6 +600,7 @@ footer p {
    width: 80%;
    font-size: 20px;
    opacity: 0.7;
+   font-family: fantasy;
 }
 
 .add-modal-content h2 {
@@ -626,7 +627,7 @@ footer p {
 }
 
 .add-modal-content option {
-   width: 80%;
+   width: auto;
    border-radius: 10px;
    color: black;
    font-size: 20px;

@@ -91,7 +91,9 @@ const submitInfo = async () => {
         myAddModal.style.display = 'none';
 
         music = await fetchMusicList();
+
         renderMusicList(music, currentPage);
+        renderPagination();
     } catch (error) {
         console.error('Error submitting book information:', error.message);
         // Handle errors or provide feedback to the user

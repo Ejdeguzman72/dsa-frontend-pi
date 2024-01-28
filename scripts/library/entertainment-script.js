@@ -118,8 +118,11 @@ const openAddModal = async () => {
         submitBtn.addEventListener('click', () => submitInfo())
     </script>
     `;
+
     entertainmentTypesDropdown = document.getElementById('entertainmentTypesDropdown')
+    
     await fetchEntertainmentTypes();
+
     fetchEntertainmentTypesDropdown();
 
     myAddModal.style.display = 'block';
@@ -142,7 +145,9 @@ const submitInfo = async () => {
         myAddModal.style.display = 'none';
 
         entertainmentEntries = await fetchEntertainmentList();
+
         renderEntertainmentList(entertainmentEntries, currentPage);
+        renderPagination();
     } catch (error) {
         console.error('Error submitting entertaiment information:', error.message);
     }

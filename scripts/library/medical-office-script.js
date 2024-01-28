@@ -101,7 +101,9 @@ const submitInfo = async () => {
         myAddModal.style.display = 'none';
 
         medicalOffices = await fetchMedicalOfficeList();
+
         renderMedicalOfficeList(medicalOffices, currentPage);
+        renderPagination();
     } catch (error) {
         console.error('Error submitting medical office information:', error.message);
         // Handle errors or provide feedback to the user

@@ -110,7 +110,9 @@ const submitInfo = async () => {
         myAddModal.style.display = 'none';
 
         medicalOffices = await fetchAutoshopList();
+
         renderAutoshopList(medicalOffices, currentPage);
+        renderPagination();
     } catch (error) {
         console.error('Error submitting repair shop information:', error.message);
         // Handle errors or provide feedback to the user

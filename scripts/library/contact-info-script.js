@@ -120,7 +120,9 @@ const submitInfo = async () => {
         myAddModal.style.display = 'none';
 
         medicalOffices = await fetchContactList();
+
         renderContactList(medicalOffices, currentPage);
+        renderPagination();
     } catch (error) {
         console.error('Error submitting contact information:', error.message);
         // Handle errors or provide feedback to the user

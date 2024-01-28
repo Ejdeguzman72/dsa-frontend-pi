@@ -118,7 +118,9 @@ const submitInfo = async () => {
         myAddModal.style.display = 'none';
 
         entries = await fetchGarageInventoryList();
+
         renderGarageInventoryList(entries, currentPage);
+        renderPagination();
     } catch (error) {
         console.error('Error submitting item information:', error.message);
         // Handle errors or provide feedback to the user
