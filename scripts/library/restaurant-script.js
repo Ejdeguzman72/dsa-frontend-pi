@@ -7,6 +7,10 @@ const addModalContent = document.getElementById('addModalContent');
 const addModalButton = document.getElementById('addModalButton');
 const myAddModal = document.getElementById('myAddModal');
 const submitBtn = document.getElementById('submitBtn');
+const updateModal = document.getElementById('myUpdateModal');
+const updateModalContent = document.getElementById('updateModalContent');
+// const updateCloseBtn = document.getElementById('updateCloseBtn');
+const updateSubmitBtn = document.getElementById('updateSubmitBtn');
 let restaurantTypesDropdown;
 
 // Pagination
@@ -15,6 +19,7 @@ const itemsPerPage = 5;
 let currentPage = 1;
 let restaurants = [];
 let restaurantTypes = [];
+let updatedRestaurantDetails = {};
 
 // Fetch medical office list using Axios
 const fetchRestaurantList = async () => {
@@ -26,6 +31,16 @@ const fetchRestaurantList = async () => {
         return [];
     }
 };
+
+const fetchRestaurantById = async (restaurantId) => {
+    try {
+        const response = await axios.get(`http://localhost:8080/app/restaurants/restaurant/search/id/${restaurantId}`);
+        return response.data.restaurant;
+    } catch (error) {
+        console.error('Error fetching restaurant list:', error.message);
+        return {};
+    }
+}
 
 const fetchRestaurantTypes = async () => {
     try {
@@ -82,7 +97,7 @@ const openModal = (restaurant) => {
         <p>State: ${restaurant.state}</p>
         <p>Zip: ${restaurant.zip}</p>
         <p>Type: ${restaurant.descr}</p>
-        <button onClick="updateEntry(${restaurant.restaurantId})" class="update-button">Update</button>
+        <button onClick="openUpdateModal(${restaurant.restaurantId})" class="update-button">Update</button>
         <button onClick="confirmDeleteEntry(${restaurant.restaurantId})" class="delete-button">Delete</button>
     `;
     modal.style.display = 'block';
@@ -172,6 +187,76 @@ const submitInfo = async () => {
     }
 }
 
+const openUpdateModal = async (restaurantId) => {
+    try {
+        updatedRestaurantDetails = await fetchRestaurantById(restaurantId);
+        if (updatedRestaurantDetails) {
+            modal.style.display = 'none';
+            updateModalContent.innerHTML = `
+        <h2>Update Restaurant Information</h2>
+        <hr />
+        <div class="modal-body">
+            <input class="input" type="text" id="updateRestaurantName" placeholder="Restaurant Name" value="${updatedRestaurantDetails.name}" />
+            <input class="input" type="text" id="updateAddress" placeholder="Address" value="${updatedRestaurantDetails.address}" /><br />
+            <input class="input" type="text" id="updateCity" placeholder="City" value="${updatedRestaurantDetails.city}" /><br />
+            <input class="input" type="text" id="updateState" placeholder="State" value="${updatedRestaurantDetails.state}" /><br />
+            <input class="input" type="text" id="updateZip" placeholder="Zipcode" value="${updatedRestaurantDetails.zip}" /><br />
+            <select id="restaurantTypesDropdown" name="restaurantTypeId"></select>
+        </div><hr />
+        <button id="updateSubmitBtn" class="update-button" onClick="submitUpdate(${updatedRestaurantDetails.restaurantId})">Update</button><br /><br />
+    `;
+            updateModal.style.display = 'block';
+            restaurantTypesDropdown = document.getElementById('restaurantTypesDropdown')
+
+            await fetchRestaurantTypes();
+            fetchRestaurantTypesDropdown();
+        } else {
+            console.error('Error fetching restaurant details')
+        }
+    } catch (error) {
+        console.error('Error opening update model:', error.message);
+    }
+};
+
+// Function to submit the update
+const submitUpdate = async (restaurantId) => {
+    try {
+        const updateRestaurantName = document.getElementById('updateRestaurantName').value;
+        const updateAddress = document.getElementById('updateAddress').value;
+        const updateCity = document.getElementById('updateCity').value;
+        const updateState = document.getElementById('updateState').value;
+        const updateZip = document.getElementById('updateZip').value;
+        const updateRestaurantTypeId = document.getElementById('restaurantTypesDropdown').value;
+
+        // Validate the required fields if needed
+
+        const data = {
+            restaurantId: restaurantId,
+            name: updateRestaurantName,
+            address: updateAddress,
+            city: updateCity,
+            state: updateState,
+            zip: updateZip,
+            restaurantTypeId: updateRestaurantTypeId
+        };
+
+        console.log(data);
+
+        const response = await axios.put(`http://localhost:8080/app/restaurants/update/${data.restaurantId}`, data);
+
+        console.log('Restaurant updated successfully:', response);
+
+        updateModal.style.display = 'none';
+
+        restaurants = await fetchRestaurantList();
+        renderRestaurantList(restaurants, currentPage);
+        renderPagination();
+    } catch (error) {
+        console.error('Error updating restaurant information:', error.message);
+        // Handle errors or provide feedback to the user
+    }
+};
+
 // Close modal
 closeBtn.onclick = () => {
     modal.style.display = 'none';
@@ -185,6 +270,10 @@ window.onclick = (event) => {
 
     if (event.target === myAddModal) {
         myAddModal.style.display = 'none';
+    }
+
+    if (event.target === updateModal) {
+        updateModal.style.display = 'none';
     }
 };
 

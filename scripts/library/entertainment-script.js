@@ -8,6 +8,10 @@ const addModalContent = document.getElementById('addModalContent');
 const addModalButton = document.getElementById('addModalButton');
 const myAddModal = document.getElementById('myAddModal');
 const submitBtn = document.getElementById('submitBtn');
+const updateModal = document.getElementById('myUpdateModal');
+const updateModalContent = document.getElementById('updateModalContent');
+// const updateCloseBtn = document.getElementById('updateCloseBtn');
+const updateSubmitBtn = document.getElementById('updateSubmitBtn');
 let entertainmentTypesDropdown;
 
 // Constants
@@ -17,6 +21,7 @@ const itemsPerPage = 5;
 let currentPage = 1;
 let entertainmentEntries = [];
 let entertainmentTypes = [];
+let updateEntertainmentDetails = {};
 
 // Fetch entertainment list using Axios
 const fetchEntertainmentList = async () => {
@@ -28,6 +33,16 @@ const fetchEntertainmentList = async () => {
         return [];
     }
 };
+
+const fetchEntertainmentById = async (entityId) => {
+    try {
+        const response = await axios.get(`http://localhost:8080/app/entertainment/search/id/${entityId}`);
+        return response.data.entertainment;
+    } catch (error) {
+        console.error('Error fetching entertainment list:', error.message);
+        return [];
+    }
+}
 
 // Fetch entertainment types
 const fetchEntertainmentTypes = async () => {
@@ -76,7 +91,6 @@ const renderEntertainmentList = (entries, page) => {
 const openModal = (entry) => {
     modalContent.innerHTML = `
         <h2>${entry.name + ' - ' + entry.descr}</h2><hr />
-        <button onClick="updateEntry(${entry.entityId})" class="update-button">Update</button>
         <button onClick="confirmDeleteEntertainment(${entry.entityId})" class="delete-button">Delete</button>
     `;
 

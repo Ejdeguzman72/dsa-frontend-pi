@@ -7,6 +7,16 @@ const addModalContent = document.getElementById('addModalContent');
 const myAddModal = document.getElementById('myAddModal');
 const addModalCloseBtn = document.getElementById('addModalCloseBtn');
 const submitBtn = document.getElementById('submitBtn');
+const updateModal = document.getElementById('myUpdateModal');
+const updateModalContent = document.getElementById('updateModalContent');
+// const updateCloseBtn = document.getElementById('updateCloseBtn');
+const updateSubmitBtn = document.getElementById('updateSubmitBtn');
+
+// Pagination
+const itemsPerPage = 5;
+let currentPage = 1;
+let musicEntries = [];
+let updateMusicDetails = {};
 
 // Fetch book list using Axios
 const fetchMusicList = async () => {
@@ -19,7 +29,17 @@ const fetchMusicList = async () => {
     }
 };
 
-// Render book list items
+const fetchMusicById = async (songId) => {
+    try {
+        const response = await axios.get(`http://localhost:8080/app/music/song/id/${songId}`);
+        return response.data.song;
+    } catch (error) {
+        console.error('Error fetching music:', error.message);
+        return {};
+    }
+}
+
+// Render music list items
 const renderMusicList = (musicList, page) => {
     const startIdx = (page - 1) * itemsPerPage;
     const endIdx = startIdx + itemsPerPage;
@@ -42,11 +62,6 @@ const renderMusicList = (musicList, page) => {
         musicListContainer.appendChild(musicElement);
     });
 };
-
-// Pagination
-const itemsPerPage = 5;
-let currentPage = 1;
-let music = {};
 
 addModalButton.addEventListener('click', () => openAddModal());
 
@@ -95,7 +110,7 @@ const submitInfo = async () => {
         renderMusicList(music, currentPage);
         renderPagination();
     } catch (error) {
-        console.error('Error submitting book information:', error.message);
+        console.error('Error submitting music information:', error.message);
         // Handle errors or provide feedback to the user
     }
 }
@@ -106,7 +121,7 @@ const openModal = (music) => {
         <h2>${music.title}</h2><hr />
         <p>Author: ${music.artist}</p>
         <p>Genre: ${music.genre}</p>
-        <button onClick="updateEntry(${music.songId})" class="update-button">Update</button>
+        <button onClick="openUpdateModal(${music.songId})" class="update-button">Update</button>
         <button onClick="confirmDeleteEntry(${music.songId})" class="delete-button">Delete</button>
     `;
     modal.style.display = 'block';
@@ -136,6 +151,63 @@ const deleteEntry = async (songId) => {
     }
 };
 
+const openUpdateModal = async (songId) => {
+    try {
+        updateMusicDetails = await fetchMusicById(songId);
+        if (updateMusicDetails) {
+            modal.style.display = 'none';
+            updateModalContent.innerHTML = `
+        <h2>Update Music Entry</h2>
+        <hr />
+        <div class="modal-body">
+            <input class="input" type="text" id="updateTitle" placeholder="Song Title" value="${updateMusicDetails.title}" />
+            <input class="input" type="text" id="updateArtist" placeholder="Address" value="${updateMusicDetails.artist}" /><br />
+            <input class="input" type="text" name="updateGenre" placeholder="Genre" value="${updateMusicDetails.genre}" /><br />
+        </div><hr />
+        <button id="updateSubmitBtn" class="update-button" onClick="submitUpdate(${updateMusicDetails.songId})">Update</button><br /><br />
+    `;
+    updateModal.style.display = 'block';
+        } else {
+            console.error('Error fetching music details')
+        }
+    } catch (error) {
+        console.error('Error opening update model:', error.message);
+    }
+};
+
+// Function to submit the update
+const submitUpdate = async (songId) => {
+    try {
+        const updateTitle = document.getElementById('updateTitle').value;
+        const updateArtist = document.getElementById('updateArtist').value;
+        const updateGenre = document.getElementById('updateGenre').value;
+
+        // Validate the required fields if needed
+
+        const data = {
+            songId: songId,
+            title: updateTitle,
+            artist: updateArtist,
+            genre: updateGenre
+        };
+
+        console.log(data);
+
+        const response = await axios.put(`http://localhost:8080/app/music/update/${data.songId}`, data);
+
+        console.log('Song Information updated successfully:', response);
+
+        updateModal.style.display = 'none';
+
+        musicEntries = await fetchMusicList();
+        renderBookList(musicEntries, currentPage);
+        renderPagination();
+    } catch (error) {
+        console.error('Error updating music information:', error.message);
+        // Handle errors or provide feedback to the user
+    }
+};
+
 // Close modal
 closeBtn.onclick = () => {
     modal.style.display = 'none';
@@ -149,6 +221,10 @@ window.onclick = (event) => {
 
     if (event.target === myAddModal) {
         myAddModal.style.display = 'none';
+    }
+
+    if (event.target === updateModal) {
+        updateModal.style.display = 'none';
     }
 };
 

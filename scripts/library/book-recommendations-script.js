@@ -7,6 +7,17 @@ const addModalContent = document.getElementById('addModalContent');
 const myAddModal = document.getElementById('myAddModal');
 const addModalCloseBtn = document.getElementById * ('addModalCloseBtn');
 const submitBtn = document.getElementById('submitBtn');
+const updateModal = document.getElementById('myUpdateModal');
+const updateModalContent = document.getElementById('updateModalContent');
+// const updateCloseBtn = document.getElementById('updateCloseBtn');
+const updateSubmitBtn = document.getElementById('updateSubmitBtn');
+
+// Pagination
+const itemsPerPage = 5;
+
+let currentPage = 1;
+let books = {};
+let updateBookDetais = {};
 
 // Fetch book list using Axios
 const fetchBookList = async () => {
@@ -18,6 +29,15 @@ const fetchBookList = async () => {
         return [];
     }
 };
+
+const fetchBookById = async (bookId) => {
+    try {
+        const response = await axios.get(`http://localhost:8080/app/books/book/search/id/${bookId}`);
+        return response.data.book;
+    } catch (error) {
+        console.error('Error fetching book with ID: ', updateBookDetais, error.message);
+    }
+}
 
 // Render book list items
 const renderBookList = (bookList, page) => {
@@ -50,12 +70,6 @@ const renderBookList = (bookList, page) => {
         bookListContainer.appendChild(bookElement);
     });
 };
-
-// Pagination
-const itemsPerPage = 5;
-let currentPage = 1;
-let books = {};
-
 
 addModalButton.addEventListener('click', () => openAddModal());
 
@@ -116,7 +130,7 @@ const openModal = (book) => {
         <h2>${book.title}</h2><hr />
         <p>Author: ${book.author}</p>
         <p>${book.descr}</p>
-        <button onClick="updateBook(${book.bookId})" class="update-button">Update</button>
+        <button onClick="openUpdateModal(${book.bookId})" class="update-button">Update</button>
         <button onClick="confirmDeleteBook(${book.bookId})" class="delete-button">Delete</button>
     `;
     modal.style.display = 'block';
@@ -147,6 +161,63 @@ const deleteBook = async (bookId) => {
     }
 };
 
+const openUpdateModal = async (bookId) => {
+    try {
+        updateBookDetais = await fetchBookById(bookId);
+        if (updateBookDetais) {
+            modal.style.display = 'none';
+            updateModalContent.innerHTML = `
+        <h2>Update Book Information</h2>
+        <hr />
+        <div class="modal-body">
+            <input class="input" type="text" id="updateTitle" placeholder="Repair Shop Name" value="${updateBookDetais.title}" />
+            <input class="input" type="text" id="updateAuthor" placeholder="Address" value="${updateBookDetais.author}" /><br />
+            <textarea class="textarea" cols="50" rows="5" id="updateDescr">${updateBookDetais.descr}</textarea/><br />
+        </div><hr />
+        <button id="updateSubmitBtn" class="update-button" onClick="submitUpdate(${updateBookDetais.bookId})">Update</button><br /><br />
+    `;
+    updateModal.style.display = 'block';
+        } else {
+            console.error('Error fetching book details')
+        }
+    } catch (error) {
+        console.error('Error opening update model:', error.message);
+    }
+};
+
+// Function to submit the update
+const submitUpdate = async (bookId) => {
+    try {
+        const updateTitle = document.getElementById('updateTitle').value;
+        const updateAuthor = document.getElementById('updateAuthor').value;
+        const updateDescr = document.getElementById('updateDescr').value;
+
+        // Validate the required fields if needed
+
+        const data = {
+            bookId: bookId,
+            title: updateTitle,
+            author: updateAuthor,
+            descr: updateDescr
+        };
+
+        console.log(data);
+
+        const response = await axios.put(`http://localhost:8080/app/books/update/${data.bookId}`, data);
+
+        console.log('Book Information updated successfully:', response);
+
+        updateModal.style.display = 'none';
+
+        books = await fetchBookList();
+        renderBookList(books, currentPage);
+        renderPagination();
+    } catch (error) {
+        console.error('Error updating book information:', error.message);
+        // Handle errors or provide feedback to the user
+    }
+};
+
 // Close modal
 closeBtn.onclick = () => {
     modal.style.display = 'none';
@@ -164,6 +235,10 @@ window.onclick = (event) => {
 
     if (event.target === myAddModal) {
         myAddModal.style.display = 'none';
+    }
+
+    if (event.target === updateModal) {
+        updateModal.style.display = 'none';
     }
 };
 

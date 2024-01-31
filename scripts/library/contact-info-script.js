@@ -7,6 +7,17 @@ const addModalContent = document.getElementById('addModalContent');
 const myAddModal = document.getElementById('myAddModal');
 const addModalCloseBtn = document.getElementById * ('addModalCloseBtn');
 const submitBtn = document.getElementById('submitBtn');
+const updateModal = document.getElementById('myUpdateModal');
+const updateModalContent = document.getElementById('updateModalContent');
+// const updateCloseBtn = document.getElementById('updateCloseBtn');
+const updateSubmitBtn = document.getElementById('updateSubmitBtn');
+
+
+// Pagination
+const itemsPerPage = 5;
+let currentPage = 1;
+let entries = [];
+let updateContactDetails = {};
 
 // Fetch contact info list using Axios
 const fetchContactList = async () => {
@@ -18,6 +29,15 @@ const fetchContactList = async () => {
         return [];
     }
 };
+
+const fetchContactById = async (personId) => {
+    try {
+        const response = await axios.get(`http://localhost:8080/app/person-info/contact/id/${personId}`);
+        return response.data.person;
+    } catch (error) {
+        console.error('Error fetching person:', error.message);
+    }
+}
 
 // Render contact info list items
 const renderContactList = (entries, page) => {
@@ -50,11 +70,6 @@ const renderContactList = (entries, page) => {
         contactListContainer.appendChild(contactElement);
     });
 };
-
-// Pagination
-const itemsPerPage = 5;
-let currentPage = 1;
-let entries = {};
 
 addModalButton.addEventListener('click', () => openAddModal());
 
@@ -136,8 +151,8 @@ const openModal = (contact) => {
         <p>Email: ${contact.email}</p>
         <p>Phone}: ${contact.phone}</p>
         <p>Birthdate: ${contact.birthdate}</p>
-        <p>Address: ${contact.address01 + ' ' + contact.city + ', ' + contact.state + ' ' + contact.zip}</p>
-        <button onClick="updateEntry(${contact.personId})" class="update-button">Update</button>
+        <p>Address: ${contact.address01 + ' ' + contact.city + ', ' + contact.state + ' ' + contact.zipcode}</p>
+        <button onClick="openUpdateModal(${contact.personId})" class="update-button">Update</button>
         <button onClick="confirmDeleteContact(${contact.personId})" class="delete-button">Delete</button>
     `;
     modal.style.display = 'block';
@@ -168,6 +183,91 @@ const deleteEntry = async (personId) => {
     }
 };
 
+const openUpdateModal = async (personId) => {
+    try {
+        updateContactDetails = await fetchContactById(personId);
+        console.log(updateContactDetails);
+        if (updateContactDetails) {
+            modal.style.display = 'none';
+            updateModalContent.innerHTML = `
+        <h2>Update Contact Informaton</h2>
+        <hr />
+        <div class="modal-body">
+            <input class="input" type="text" id="updateFirstname" value="${updateContactDetails.firstname}" />
+            <input class="input" type="text" id="updateMiddleInitial" value="${updateContactDetails.middleInitial}" /><br />
+            <input class="input" type="text" id="updateLastname" value="${updateContactDetails.lastname}" /><br />
+            <input class="input" type="number" id="updateAge" value="${updateContactDetails.age}" /><br />
+            <input class="input" type="text" id="updateAddress01" value="${updateContactDetails.address01}" /><br />
+            <input class="input" type="text" id="updateAddress02" value="${updateContactDetails.address02}" /><br />
+            <input class="input" type="text" id="updateCity" value="${updateContactDetails.city}" /><br />
+            <input class="input" type="text" id="updateState" value="${updateContactDetails.state}" /><br />
+            <input class="input" type="text" id="updateZipcode" value="${updateContactDetails.zipcode}" /><br />
+            <input class="input" type="text" id="updateBirthdate" value="${updateContactDetails.birthdate}" /><br />
+            <input class="input" type="text" id="updatePhone" value="${updateContactDetails.phone}" /><br />
+            <input class="input" type="email" id="updateEmail" value="${updateContactDetails.email}" /><br />
+        </div><hr />
+        <button id="updateSubmitBtn" class="update-button" onClick="submitUpdate(${updateContactDetails.personId})">Update</button><br /><br />
+    `;
+    updateModal.style.display = 'block';
+        } else {
+            console.error('Error fetching contact details')
+        }
+    } catch (error) {
+        console.error('Error opening update modal:', error.message);
+    }
+};
+
+// Function to submit the update
+const submitUpdate = async (personId) => {
+    try {
+        const updateFirstname = document.getElementById('updateFirstname').value;
+        const updateMiddleInitial = document.getElementById('updateMiddleInitial').value;
+        const updateLastname = document.getElementById('updateLastname').value;
+        const updateAge = document.getElementById('updateAge').value;
+        const updateAddress01 = document.getElementById('updateAddress01').value;
+        const updateAddress02 = document.getElementById('updateAddress02').value;
+        const updateCity = document.getElementById('updateCity').value;
+        const updateState = document.getElementById('updateState').value;
+        const updateZipcode = document.getElementById('updateZipcode').value;
+        const updateBirthdate = document.getElementById('updateBirthdate').value;
+        const updatePhone = document.getElementById('updatePhone').value;
+        const updateEmail = document.getElementById('updateEmail').value;
+
+        // Validate the required fields if needed
+
+        const data = {
+            personId: personId,
+            firstname: updateFirstname,
+            middleInitial: updateMiddleInitial,
+            lastname: updateLastname,
+            age: updateAge,
+            address01: updateAddress01,
+            addres02: updateAddress02,
+            city: updateCity,
+            state: updateState,
+            zipcode: updateZipcode,
+            birthdate: updateBirthdate,
+            phone: updatePhone,
+            email: updateEmail
+        };
+
+        console.log(data);
+
+        const response = await axios.put(`http://localhost:8080/app/person-info/update/${data.personId}`, data);
+
+        console.log('Contact Info updated successfully:', response);
+
+        updateModal.style.display = 'none';
+
+        entries = await fetchContactList();
+        renderContactList(entries, currentPage);
+        renderPagination();
+    } catch (error) {
+        console.error('Error updating contact information:', error.message);
+        // Handle errors or provide feedback to the user
+    }
+};
+
 // Close modal
 closeBtn.onclick = () => {
     modal.style.display = 'none';
@@ -185,6 +285,10 @@ window.onclick = (event) => {
 
     if (event.target === myAddModal) {
         myAddModal.style.display = 'none';
+    }
+
+    if (event.target === updateModal) {
+        updateModal.style.display = 'none';
     }
 };
 

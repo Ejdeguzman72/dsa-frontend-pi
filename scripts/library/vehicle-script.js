@@ -7,7 +7,16 @@ const addModalContent = document.getElementById('addModalContent');
 const myAddModal = document.getElementById('myAddModal');
 const addModalCloseBtn = document.getElementById('addModalCloseBtn');
 const submitBtn = document.getElementById('submitBtn');
+const updateModal = document.getElementById('myUpdateModal');
+const updateModalContent = document.getElementById('updateModalContent');
+// const updateCloseBtn = document.getElementById('updateCloseBtn');
+const updateSubmitBtn = document.getElementById('updateSubmitBtn');
 
+// Pagination
+const itemsPerPage = 5;
+let currentPage = 1;
+let vehicles = {};
+let updatedVehicleDetails = {};
 
 // Fetch vehicle list using Axios
 const fetchVehicleList = async () => {
@@ -19,6 +28,15 @@ const fetchVehicleList = async () => {
         return [];
     }
 };
+
+const fetchVehicleById = async (vehicleId) => {
+    try {
+        const response = await axios.get(`http://localhost:8080/app/vehicles/vehicle/id/${vehicleId}`);
+        return response.data.vehicle;
+    } catch (error) {
+        console.error('Error fetching vehicle with ID: ', updatedVehicleDetails, error.message);
+    }
+}
 
 // Render vehicle list items
 const renderVehicleList = (vehicleList, page) => {
@@ -67,12 +85,6 @@ const deleteEntry = async (vehicleId) => {
         console.error('Error deleting vehicleId:', error.message);
     }
 };
-
-
-// Pagination
-const itemsPerPage = 5;
-let currentPage = 1;
-let vehicles = {};
 
 addModalButton.addEventListener('click', () => openAddModal());
 
@@ -149,10 +161,87 @@ const openModal = (vehicle) => {
         <h2>${vehicle.year} ${vehicle.make} ${vehicle.model} </h2><hr />
         <p>Transmission: ${vehicle.transmission}</p>
         <p>Capacity: ${vehicle.capacity}</p>
-        <button onClick="updateEntry(${vehicle.vehicleId})" class="update-button">Update</button>
+        <button onClick="openUpdateModal(${vehicle.vehicleId})" class="update-button">Update</button>
         <button onClick="confirmDeleteEntry(${vehicle.vehicleId})" class="delete-button">Delete</button>
     `;
     modal.style.display = 'block';
+};
+
+const openUpdateModal = async (vehicleId) => {
+    try {
+        updatedVehicleDetails = await fetchVehicleById(vehicleId);
+        if (updatedVehicleDetails) {
+            modal.style.display = 'none';
+            updateModalContent.innerHTML = `
+        <h2>Update Vehicle Information</h2>
+        <hr />
+        <div class="modal-body">
+            <input class="input" type="text" id="updateMake" placeholder="Vehicle Manufacturer" value="${updatedVehicleDetails.make}" />
+            <input class="input" type="text" id="updateModel" placeholder="Vehicle Model" value="${updatedVehicleDetails.model}" /><br />
+            <input class="input" type="text" id="updateYear" placeholder="Year" value="${updatedVehicleDetails.year}" /><br />
+            <select name="transmission" id="updateTransmission">
+                <option value="Automatic">Automatic</option>
+                <option value="Manual">Manual</option>
+            </select><br />
+            <select name="capacity" id="updateCapacity">
+                <option value="2">2</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="8">8</option>
+            </select><br />
+        </div><hr />
+        <button id="updateSubmitBtn" class="update-button" onClick="submitUpdate(${updatedVehicleDetails.vehicleId})">Update</button><br /><br />
+    `;
+    updateModal.style.display = 'block';
+        } else {
+            console.error('Error fetching vehicle details')
+        }
+    } catch (error) {
+        console.error('Error opening update model:', error.message);
+    }
+};
+
+// Function to submit the update
+const submitUpdate = async (vehicleId) => {
+    // try {
+        const updateMake = document.getElementById('updateMake').value;
+        console.log(updateMake)
+        const updateModel = document.getElementById('updateModel').value;
+        console.log(updateModel)
+        const updateYear = document.getElementById('updateYear').value;
+        console.log(updateYear)
+        const updateTransmission = document.getElementById('updateTransmission').value;
+        console.log(updateTransmission)
+        const updateCapacity = document.getElementById('updateCapacity').value;
+        console.log(updateCapacity)
+
+        // Validate the required fields if needed
+
+        const data = {
+            make: updateMake,
+            model: updateModel,
+            year: updateYear,
+            transmission: updateTransmission,
+            capacity: updateCapacity,
+            vehicleId: vehicleId
+        };
+
+        console.log(data);
+
+        const response = await axios.put(`http://localhost:8080/app/vehicles/update/${data.vehicleId}`, data);
+
+        console.log('Vehicle Information updated successfully:', response);
+
+        updateModal.style.display = 'none';
+
+        vehicles = await fetchVehicleList();
+        renderVehicleList(vehicles, currentPage);
+        renderPagination();
+    // } catch (error) {
+    //     console.error('Error updating vehicle information:', error.message);
+    //     // Handle errors or provide feedback to the user
+    // }
 };
 
 // Close modal
@@ -168,6 +257,10 @@ window.onclick = (event) => {
 
     if (event.target === myAddModal) {
         myAddModal.style.display = 'none';
+    }
+
+    if (event.target === updateModal) {
+        updateModal.style.display = 'none';
     }
 };
 

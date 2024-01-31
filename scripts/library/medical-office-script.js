@@ -7,6 +7,17 @@ const addModalContent = document.getElementById('addModalContent');
 const myAddModal = document.getElementById('myAddModal');
 const addModalCloseBtn = document.getElementById * ('addModalCloseBtn');
 const submitBtn = document.getElementById('submitBtn');
+const updateModal = document.getElementById('myUpdateModal');
+const updateModalContent = document.getElementById('updateModalContent');
+// const updateCloseBtn = document.getElementById('updateCloseBtn');
+const updateSubmitBtn = document.getElementById('updateSubmitBtn');
+
+// Pagination
+const itemsPerPage = 5;
+
+let currentPage = 1;
+let medicalOffices = [];
+let updateMedicalOfficeDetails = {};
 
 // Fetch medical office list using Axios
 const fetchMedicalOfficeList = async () => {
@@ -18,6 +29,16 @@ const fetchMedicalOfficeList = async () => {
         return [];
     }
 };
+
+const fetchMedicalOfficeById = async (medicalOfficeId) => {
+    try {
+        const response = await axios.get(`http://localhost:8080/app/medical-offices/offices/search/id/${medicalOfficeId}`);
+        return response.data.medicalOffice;
+    } catch (error) {
+        console.error('Error fetching medical office:', error.message);
+        return [];
+    }
+}
 
 // Render medical office list items
 const renderMedicalOfficeList = (entries, page) => {
@@ -46,11 +67,6 @@ const renderMedicalOfficeList = (entries, page) => {
         medicalOfficeListContainer.appendChild(medicalOfficeElement);
     });
 };
-
-// Pagination
-const itemsPerPage = 5;
-let currentPage = 1;
-let medicalOffices = {};
 
 addModalButton.addEventListener('click', () => openAddModal());
 
@@ -118,7 +134,7 @@ const openModal = (office) => {
         <p>City: ${office.city}</p>
         <p>State: ${office.state}</p>
         <p>Zip: ${office.zip}</p>
-        <button onClick="updateEntry(${office.medicalOfficeId})" class="update-button">Update</button>
+        <button onClick="openUpdateModal(${office.medicalOfficeId})" class="update-button">Update</button>
         <button onClick="confirmDeleteEntry(${office.medicalOfficeId})" class="delete-button">Delete</button>
     `;
     modal.style.display = 'block';
@@ -148,6 +164,69 @@ const deleteEntry = async (medicalOfficeId) => {
     }
 };
 
+const openUpdateModal = async (medicalOfficeId) => {
+    try {
+        updateMedicalOfficeDetails = await fetchMedicalOfficeById(medicalOfficeId);
+        if (updateMedicalOfficeDetails) {
+            modal.style.display = 'none';
+            updateModalContent.innerHTML = `
+        <h2>Update Auto Repair Shop</h2>
+        <hr />
+        <div class="modal-body">
+            <input class="input" type="text" id="updateOfficeName" placeholder="Medical Office Name" value="${updateMedicalOfficeDetails.name}" />
+            <input class="input" type="text" id="updateAddress" placeholder="Address" value="${updateMedicalOfficeDetails.address}" /><br />
+            <input class="input" type="text" id="updateCity" placeholder="City" value="${updateMedicalOfficeDetails.city}" /><br />
+            <input class="input" type="text" id="updateState" placeholder="State" value="${updateMedicalOfficeDetails.state}" /><br />
+            <input class="input" type="text" id="updateZip" placeholder="Zipcode" value="${updateMedicalOfficeDetails.zip}" /><br />
+        </div><hr />
+        <button id="updateSubmitBtn" class="update-button" onClick="submitUpdate(${updateMedicalOfficeDetails.medicalOfficeId})">Update</button><br /><br />
+    `;
+    updateModal.style.display = 'block';
+        } else {
+            console.error('Error fetching medical office details')
+        }
+    } catch (error) {
+        console.error('Error opening update model:', error.message);
+    }
+};
+
+// Function to submit the update
+const submitUpdate = async (medicalOfficeId) => {
+    try {
+        const updateOfficeName = document.getElementById('updateOfficeName').value;
+        const updateAddress = document.getElementById('updateAddress').value;
+        const updateCity = document.getElementById('updateCity').value;
+        const updateState = document.getElementById('updateState').value;
+        const updateZip = document.getElementById('updateZip').value;
+
+        // Validate the required fields if needed
+
+        const data = {
+            name: updateOfficeName,
+            address: updateAddress,
+            city: updateCity,
+            state: updateState,
+            zip: updateZip,
+            medicalOfficeId: medicalOfficeId
+        };
+
+        console.log(data);
+
+        const response = await axios.put(`http://localhost:8080/app/medical-offices/update/${data.medicalOfficeId}`, data);
+
+        console.log('Medical Office updated successfully:', response);
+
+        updateModal.style.display = 'none';
+
+        medicalOffices = await fetchMedicalOfficeList();
+        renderMedicalOfficeList(medicalOffices, currentPage);
+        renderPagination();
+    } catch (error) {
+        console.error('Error updating medical office information:', error.message);
+        // Handle errors or provide feedback to the user
+    }
+};
+
 // Close modal
 closeBtn.onclick = () => {
     modal.style.display = 'none';
@@ -165,6 +244,10 @@ window.onclick = (event) => {
 
     if (event.target === myAddModal) {
         myAddModal.style.display = 'none';
+    }
+
+    if (event.target === updateModal) {
+        upddateModal.style.display = 'none';
     }
 };
 

@@ -5,8 +5,18 @@ const modalContent = document.getElementById('modalContent');
 const closeBtn = document.getElementById('closeListModal');
 const addModalContent = document.getElementById('addModalContent');
 const myAddModal = document.getElementById('myAddModal');
-const addModalCloseBtn = document.getElementById * ('addModalCloseBtn');
+const addModalCloseBtn = document.getElementById('addModalCloseBtn');
 const submitBtn = document.getElementById('submitBtn');
+const updateModal = document.getElementById('myUpdateModal');
+const updateModalContent = document.getElementById('updateModalContent');
+// const updateCloseBtn = document.getElementById('updateCloseBtn');
+const updateSubmitBtn = document.getElementById('updateSubmitBtn');
+
+// Pagination
+const itemsPerPage = 5;
+let currentPage = 1;
+let autoshops = {};
+let updateAutoShopDetails = {};
 
 // Fetch auto repair shop list using Axios
 const fetchAutoshopList = async () => {
@@ -18,6 +28,15 @@ const fetchAutoshopList = async () => {
         return [];
     }
 };
+
+const fetchAutoShopById = async (autoShopId) => {
+    try {
+        const response = await axios.get(`http://localhost:8080/app/auto-repair-shops/repair-shop/search/id/${autoShopId}`);
+        return response.data.autoShop;
+    } catch (error) {
+        console.error('Error fetching auto repair shop with ID: ', updateAutoShopDetails, error.message);
+    }
+}
 
 // Render auto repair shop list items
 const renderAutoshopList = (autoshops, page) => {
@@ -54,11 +73,6 @@ const renderAutoshopList = (autoshops, page) => {
         autoShopListContainer.appendChild(autoshopElement);
     });
 };
-
-// Pagination
-const itemsPerPage = 5;
-let currentPage = 1;
-let autoshops = {};
 
 addModalButton.addEventListener('click', () => openAddModal());
 
@@ -127,7 +141,7 @@ const openModal = (autoshop) => {
         <p>City: ${autoshop.city}</p>
         <p>State: ${autoshop.state}</p>
         <p>Zip: ${autoshop.zip}</p>
-        <button onClick="updateAutoShop(${autoshop.autoShopId})" class="update-button">Update</button>
+        <button onClick="openUpdateModal(${autoshop.autoShopId})" class="update-button" id="updateModal">Update</button>
         <button onClick="confirmDeleteAutoShop(${autoshop.autoShopId})" class="delete-button">Delete</button>
     `;
     modal.style.display = 'block';
@@ -146,11 +160,11 @@ const deleteAutoShop = async (autoShopId) => {
     try {
         // Send a DELETE request to your API endpoint
         await axios.delete(`http://localhost:8080/app/auto-repair-shops/delete/${autoShopId}`);
-        
+
         // Optionally, you can reload the auto shop list after deletion
         autoshops = await fetchAutoshopList();
         renderAutoshopList(autoshops, currentPage);
-        
+
         // Close the modal after successful deletion
         modal.style.display = 'none';
     } catch (error) {
@@ -158,13 +172,76 @@ const deleteAutoShop = async (autoShopId) => {
     }
 };
 
+const openUpdateModal = async (autoShopId) => {
+    try {
+        updateAutoShopDetails = await fetchAutoShopById(autoShopId);
+        if (updateAutoShopDetails) {
+            modal.style.display = 'none';
+            updateModalContent.innerHTML = `
+        <h2>Update Auto Repair Shop</h2>
+        <hr />
+        <div class="modal-body">
+            <input class="input" type="text" id="updateAutoShopName" placeholder="Repair Shop Name" value="${updateAutoShopDetails.autoShopName}" />
+            <input class="input" type="text" id="updateAddress" placeholder="Address" value="${updateAutoShopDetails.address}" /><br />
+            <input class="input" type="text" id="updateCity" placeholder="City" value="${updateAutoShopDetails.city}" /><br />
+            <input class="input" type="text" id="updateState" placeholder="State" value="${updateAutoShopDetails.state}" /><br />
+            <input class="input" type="text" id="updateZip" placeholder="Zipcode" value="${updateAutoShopDetails.zip}" /><br />
+        </div><hr />
+        <button id="updateSubmitBtn" class="update-button" onClick="submitUpdate(${updateAutoShopDetails.autoShopId})">Update</button><br /><br />
+    `;
+    updateModal.style.display = 'block';
+        } else {
+            console.error('Error fetching auto repair shop details')
+        }
+    } catch (error) {
+        console.error('Error opening update model:', error.message);
+    }
+};
+
+// Function to submit the update
+const submitUpdate = async (autoShopId) => {
+    try {
+        const updateAutoShopName = document.getElementById('updateAutoShopName').value;
+        const updateAddress = document.getElementById('updateAddress').value;
+        const updateCity = document.getElementById('updateCity').value;
+        const updateState = document.getElementById('updateState').value;
+        const updateZip = document.getElementById('updateZip').value;
+
+        // Validate the required fields if needed
+
+        const data = {
+            autoShopName: updateAutoShopName,
+            address: updateAddress,
+            city: updateCity,
+            state: updateState,
+            zip: updateZip,
+            autoShopId: autoShopId
+        };
+
+        console.log(data);
+
+        const response = await axios.put(`http://localhost:8080/app/auto-repair-shops/update/${data.autoShopId}`, data);
+
+        console.log('Auto Repair Shop updated successfully:', response);
+
+        updateModal.style.display = 'none';
+
+        autoshops = await fetchAutoshopList();
+        renderAutoshopList(autoshops, currentPage);
+        renderPagination();
+    } catch (error) {
+        console.error('Error updating auto repair shop information:', error.message);
+        // Handle errors or provide feedback to the user
+    }
+};
+
 closeBtn.onclick = () => {
     modal.style.display = 'none';
 };
 
-addModalCloseBtn.onclick = () => {
-    myAddModal.style.display = 'none';
-}
+// addModalCloseBtn.onclick = () => {
+//     myAddModal.style.display = 'none';
+// }
 
 // Close modal if clicked outside the modal
 window.onclick = (event) => {
@@ -174,6 +251,10 @@ window.onclick = (event) => {
 
     if (event.target === myAddModal) {
         myAddModal.style.display = 'none';
+    }
+
+    if (event.target === updateModal) {
+        updateModal.style.display = 'none';
     }
 };
 
