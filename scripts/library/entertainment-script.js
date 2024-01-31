@@ -203,6 +203,8 @@ const renderPagination = () => {
         button.addEventListener('click', () => onPageClick(i));
         paginationContainer.appendChild(button);
     }
+    const hrElement = document.createElement('hr');
+    paginationContainer.appendChild(hrElement);
 };
 
 const onPageClick = (page) => {
