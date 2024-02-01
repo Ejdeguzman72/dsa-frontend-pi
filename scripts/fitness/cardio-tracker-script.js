@@ -7,6 +7,10 @@ const addModalContent = document.getElementById('addModalContent');
 const addModalButton = document.getElementById('addModalButton');
 const myAddModal = document.getElementById('myAddModal');
 const submitBtn = document.getElementById('submitBtn');
+const updateModal = document.getElementById('myUpdateModal');
+const updateModalContent = document.getElementById('updateModalContent');
+// const updateCloseBtn = document.getElementById('updateCloseBtn');
+const updateSubmitBtn = document.getElementById('updateSubmitBtn');
 let cardioTypesDropdown;
 let userDropdown;
 
@@ -17,6 +21,7 @@ let currentPage = 1;
 let entries = [];
 let cardioTypes = [];
 let users = [];
+let updatedCardioDetails = {};
 
 // Fetch cardio tracker list using Axios
 const fetchCardioList = async () => {
@@ -28,6 +33,16 @@ const fetchCardioList = async () => {
         return [];
     }
 };
+
+const fetchCardioById = async (cardioId) => {
+    try {
+        const response = await axios.get(`http://localhost:8080/app/cardio-tracker-app/cardio/id/${cardioId}`);
+        return response.data.cardio;
+    } catch (error) {
+        console.error('Error fetching cardio information:', error.message);
+        return [];
+    }
+}
 
 const fetchCardioTypes = async () => {
     try {
@@ -107,7 +122,7 @@ const openModal = (cardio) => {
         <p>Time: ${cardio.cTime}</p>
         <p>Username: ${cardio.username}</p>
         <p>Date: ${cardio.cDate}</p>
-        <button onClick="updateEntry(${cardio.cardioId})" class="update-button">Update</button>
+        <button onClick="openUpdateModal(${cardio.cardioId})" class="update-button">Update</button>
         <button onClick="confirmDeleteCardio(${cardio.cardioId})" class="delete-button">Delete</button>
     `;
     modal.style.display = 'block';
@@ -197,6 +212,81 @@ const submitInfo = async () => {
     }
 }
 
+const openUpdateModal = async (cardioId) => {
+    try {
+        updatedCardioDetails = await fetchCardioById(cardioId);
+        if (updatedCardioDetails) {
+            console.log(updatedCardioDetails);
+            modal.style.display = 'none';
+            updateModalContent.innerHTML = `
+        <h2>Update Cardio Information Shop</h2>
+        <hr />
+        <div class="modal-body">
+            <select id="cardioTypesDropdown" name="updateCardioTypeId"></select>
+            <input class="input" type="date" name="updateCDate" placeholder="Date" value="${updatedCardioDetails.cDate}" id="updateCDate" /><br />
+            <input class="input" type="number" name="updateCDistance" placeholder="Distance(miles)" value="${updatedCardioDetails.cDistance}" id="updateCDistance" /><br />
+            <input class="input" type="text" name="updateCTime" placeholder="Time" value="${updatedCardioDetails.cTime}" id="updateCTime" /><br />
+            <select id="userDropdown" name="updateUserId"></select>
+        </div><hr />
+        <button id="updateSubmitBtn" class="update-button" onClick="submitUpdate(${updatedCardioDetails.cardioId})">Update</button><br /><br />
+    `;
+
+    cardioTypesDropdown = document.getElementById('cardioTypesDropdown')
+    userDropdown = document.getElementById('userDropdown');
+
+    await fetchCardioTypes();
+    await fetchUsers();
+
+    renderCardioTypesDropdown();
+    renderUserDropdown();
+    renderPagination();
+
+    updateModal.style.display = 'block';
+        } else {
+            console.error('Error fetching cardio details')
+        }
+    } catch (error) {
+        console.error('Error opening update model:', error.message);
+    }
+};
+
+// Function to submit the update
+const submitUpdate = async (cardioId) => {
+    // try {
+        const updateCardioTypeId = document.getElementById('cardioTypesDropdown').value;
+        const updateCDate = document.getElementById('updateCDate').value;
+        const updateCDistance = document.getElementById('updateCDistance').value;
+        const updateCTime = document.getElementById('updateCTime').value;
+        const updateUserId = document.getElementById('userDropdown').value;
+
+        // Validate the required fields if needed
+
+        const data = {
+            cardioTypeId: updateCardioTypeId,
+            cDate: updateCDate,
+            cDistance: updateCDistance,
+            cTime: updateCTime,
+            userId: updateUserId,
+            cardioId: cardioId
+        };
+
+        console.log(data);
+
+        const response = await axios.put(`http://localhost:8080/app/cardio-tracker-app/update/${data.cardioId}`, data);
+
+        console.log('Cardio Entry updated successfully:', response);
+
+        updateModal.style.display = 'none';
+
+        entries = await fetchCardioList();
+        renderCardioList(entries, currentPage);
+        renderPagination();
+    // } catch (error) {
+        console.error('Error updating auto repair shop information:', error.message);
+        // Handle errors or provide feedback to the user
+    // }
+};
+
 // Close modal
 closeBtn.onclick = () => {
     modal.style.display = 'none';
@@ -210,6 +300,10 @@ window.onclick = (event) => {
 
     if (event.target === myAddModal) {
         myAddModal.style.display = 'none';
+    }
+
+    if (event.target === updateModal) {
+        updateModal.style.display = 'none';
     }
 };
 
@@ -231,6 +325,8 @@ const renderPagination = () => {
         button.addEventListener('click', () => onPageClick(i));
         paginationContainer.appendChild(button);
     }
+    const hrElement = document.createElement('hr');
+    paginationContainer.appendChild(hrElement);
 };
 
 // Handle pagination button click

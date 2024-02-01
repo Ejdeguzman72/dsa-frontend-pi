@@ -7,6 +7,10 @@ const addModalContent = document.getElementById('addModalContent');
 const addModalButton = document.getElementById('addModalButton');
 const myAddModal = document.getElementById('myAddModal');
 const submitBtn = document.getElementById('submitBtn');
+const updateModal = document.getElementById('myUpdateModal');
+const updateModalContent = document.getElementById('updateModalContent');
+// const updateCloseBtn = document.getElementById('updateCloseBtn');
+const updateSubmitBtn = document.getElementById('updateSubmitBtn');
 let exerciseTypesDropdown;
 let userDropdown;
 
@@ -17,6 +21,7 @@ let currentPage = 1;
 let entries = [];
 let exerciseTypes = [];
 let users = [];
+let updatedExerciseEnty = {};
 
 // Fetch gym tracker list using Axios
 const fetchGymTrackerList = async () => {
@@ -28,6 +33,16 @@ const fetchGymTrackerList = async () => {
         return [];
     }
 };
+
+const fetchExerciseEntry = async (exerciseId) => {
+    try {
+        const response = await axios.get(`http://localhost:8080/app/gym-tracker/exercise/search/id/${exerciseId}`);
+        return response.data.exercise;
+    } catch (error) {
+        console.error('Error fetching exercise entry:', error.message);
+        return [];
+    } 
+}
 
 const fetchExerciseTypes = async () => {
     try {
@@ -204,7 +219,6 @@ const submitInfo = async () => {
     }
 }
 
-
 // Close modal
 closeBtn.onclick = () => {
     modal.style.display = 'none';
@@ -239,6 +253,8 @@ const renderPagination = () => {
         button.addEventListener('click', () => onPageClick(i));
         paginationContainer.appendChild(button);
     }
+    const hrElement = document.createElement('hr');
+    paginationContainer.appendChild(hrElement);
 };
 
 // Handle pagination button click
