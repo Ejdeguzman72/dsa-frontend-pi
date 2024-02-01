@@ -7,6 +7,10 @@ const addModalContent = document.getElementById('addModalContent');
 const addModalButton = document.getElementById('addModalButton');
 const myAddModal = document.getElementById('myAddModal');
 const submitBtn = document.getElementById('submitBtn');
+const updateModal = document.getElementById('myUpdateModal');
+const updateModalContent = document.getElementById('updateModalContent');
+// const updateCloseBtn = document.getElementById('updateCloseBtn');
+const updateSubmitBtn = document.getElementById('updateSubmitBtn');
 let medicalOfficeDropdown;
 let trxTypeDropdown;
 let userDropdown;
@@ -18,6 +22,7 @@ let transactions = [];
 let medicalOffices = [];
 let transactionTypes = [];
 let users = [];
+let updatedMedicalTransaction = {};
 
 // Fetch medical trx list using Axios
 const fetchMedicalTrxList = async () => {
@@ -29,6 +34,16 @@ const fetchMedicalTrxList = async () => {
         return [];
     }
 };
+
+const fetchMedicalTrxById = async (medTrxId) => {
+    try {
+        const response = await axios.get(`http://localhost:8080/app/medical-transactions/transaction/search/id/${medTrxId}`);
+        return response.data.transaction;
+    } catch (error) {
+        console.error('Error fetching medical transaction:', error.message);
+        return [];
+    }
+}
 
 const fetchMedicalOfficesList = async () => {
     try {
@@ -130,7 +145,7 @@ const openModal = (transaction) => {
         <p>Office: ${transaction.facilityName} - ${transaction.address} ${transaction.city} ${transaction.state} ${transaction.zip} </p>
         <p>Transaction Type: ${transaction.transactionTypeDescr}</p>
         <p>Username: ${transaction.username}</p>
-        <button onClick="updateEntry(${transaction.medTrxId})" class="update-button">Update</button>
+        <button onClick="openUpdateModal(${transaction.medTrxId})" class="update-button">Update</button>
         <button onClick="confirmDeleteEntry(${transaction.medTrxId})" class="delete-button">Delete</button>
     `;
     modal.style.display = 'block';
@@ -224,6 +239,81 @@ const submitInfo = async () => {
     }
 }
 
+
+const openUpdateModal = async (medTrxId) => {
+    try {
+        updatedMedicalTransaction = await fetchMedicalTrxById(medTrxId);
+        if (updatedMedicalTransaction) {
+            modal.style.display = 'none';
+            updateModalContent.innerHTML = `
+        <h2>Update Transaction Details</h2>
+        <hr />
+        <div class="modal-body">
+            <input class="input" type="number" id="updateAmount" placeholder="Amount ($0.00)" value=${updatedMedicalTransaction.amount}/><br />
+            <input class="input" type="date" id="updateMedTrxDate" placeholder="Payment Date" value=${updatedMedicalTransaction.medTrxDate}/><br />
+            <select id="medicalOfficeDropdown" ></select>
+            <select id="trxTypeDropdown" ></select>
+            <select id="userDropdown" ></select>
+        </div><hr />
+        <button id="updateSubmitBtn" class="update-button" onClick="submitUpdate(${updatedMedicalTransaction.medTrxDate})">Update</button><br /><br />
+    `;
+    medicalOfficeDropdown = document.getElementById('medicalOfficeDropdown');
+    trxTypeDropdown = document.getElementById('trxTypeDropdown')
+    userDropdown = document.getElementById('userDropdown');
+
+    await fetchTransactionTypesList();
+    await fetchUsers();
+
+    renderMedicalOfficeDropdown();
+    renderTransactionTypeDropdown();
+    renderUserDropdown();
+    renderPagination();
+    updateModal.style.display = 'block';
+        } else {
+            console.error('Error fetching transaction details')
+        }
+    } catch (error) {
+        console.error('Error opening update model:', error.message);
+    }
+};
+
+// Function to submit the update
+const submitUpdate = async (medTrxId) => {
+    try {
+        const updateAmount = document.getElementById('updateAmount').value;
+        const updateMedTrxDate = document.getElementById('updateMedTrxDate').value;
+        const updateMedicalOfficeId = document.getElementById('medicalOfficeDropdown').value;
+        const updateTrxTypeId = document.getElementById('trxTypeDropdown').value;
+        const updateUserId = document.getElementById('userDropdown').value;
+
+        // Validate the required fields if needed
+
+        const data = {
+            amount: updateAmount,
+            medTrxDate: updateMedTrxDate,
+            medicalOfficeId: updateMedicalOfficeId,
+            trxTypeId: updateTrxTypeId,
+            userId: updateUserId,
+            genTrxId: genTrxId
+        };
+
+        console.log(data);
+
+        const response = await axios.put(`http://localhost:8080/app/medical-transactions/update/${data.medTrxId}`, data);
+
+        console.log('Transaction updated successfully:', response);
+
+        updateModal.style.display = 'none';
+
+        transactions = await fetchMedicalTrxList();
+        renderMedicalTrxList(transactions, currentPage);
+        renderPagination();
+    } catch (error) {
+        console.error('Error updating transaction information:', error.message);
+        // Handle errors or provide feedback to the user
+    }
+};
+
 // Close modal
 closeBtn.onclick = () => {
     modal.style.display = 'none';
@@ -237,6 +327,10 @@ window.onclick = (event) => {
 
     if (event.target === myAddModal) {
         myAddModal.style.display = 'none';
+    }
+
+    if (event.target === updateModal) {
+        updateModal.style,display = 'none';
     }
 };
 

@@ -7,6 +7,10 @@ const addModalContent = document.getElementById('addModalContent');
 const addModalButton = document.getElementById('addModalButton');
 const myAddModal = document.getElementById('myAddModal');
 const submitBtn = document.getElementById('submitBtn');
+const updateModal = document.getElementById('myUpdateModal');
+const updateModalContent = document.getElementById('updateModalContent');
+// const updateCloseBtn = document.getElementById('updateCloseBtn');
+const updateSubmitBtn = document.getElementById('updateSubmitBtn');
 let trxTypeDropdown;
 let userDropdown;
 
@@ -16,6 +20,7 @@ let currentPage = 1;
 let transactions = [];
 let transactionTypes = [];
 let users = [];
+let updatedTransactionDetails = {};
 
 // Fetch general transaction list using Axios
 const fetchGeneralTrxList = async () => {
@@ -27,6 +32,16 @@ const fetchGeneralTrxList = async () => {
         return [];
     }
 };
+
+const fetchTransactionById = async (genTrxId) => {
+    try {
+        const response = await axios.get(`http://localhost:8080/app/general-transactions/transaction/search/id/${genTrxId}`);
+        return response.data.transaction
+    } catch (error) {
+        console.error('Error fetching transaction list:', error.message);
+        return {};
+    }
+}
 
 const fetchTransactionTypesList = async () => {
     try {
@@ -106,7 +121,7 @@ const openModal = (transaction) => {
         <p>Entity: ${transaction.entity}</p>
         <p>Transaction Type: ${transaction.transactionTypeDescr}</p>
         <p>Username: ${transaction.username}</p>
-        <button onClick="updateEntry(${transaction.genTrxId})" class="update-button">Update</button>
+        <button onClick="openUpdateModal(${transaction.genTrxId})" class="update-button">Update</button>
         <button onClick="confirmDeleteEntry(${transaction.genTrxId})" class="delete-button">Delete</button>
     `;
     modal.style.display = 'block';
@@ -195,6 +210,79 @@ const submitInfo = async () => {
     }
 }
 
+const openUpdateModal = async (autoTrxId) => {
+    try {
+        updatedTranasction = await fetchTransactionById(autoTrxId);
+        if (updatedTranasction) {
+            modal.style.display = 'none';
+            updateModalContent.innerHTML = `
+        <h2>Update Transaction Details</h2>
+        <hr />
+        <div class="modal-body">
+            <input class="input" type="number" id="updateAmount" placeholder="Amount ($0.00)" value=${updatedTranasction.amount}/><br />
+            <input class="input" type="date" id="updatePaymentDate" placeholder="Payment Date" value=${updatedTranasction.paymentDate}/><br />
+            <input class="input" type="text" id="updateEntity" placeholder="Payment Date" value=${updatedTranasction.entity}/><br />
+            <select id="trxTypeDropdown" ></select>
+            <select id="userDropdown" ></select>
+        </div><hr />
+        <button id="updateSubmitBtn" class="update-button" onClick="submitUpdate(${updatedTranasction.autoTrxId})">Update</button><br /><br />
+    `;
+    trxTypeDropdown = document.getElementById('trxTypeDropdown')
+    userDropdown = document.getElementById('userDropdown');
+
+    await fetchTransactionTypesList();
+    await fetchUsers();
+
+    renderTransactionTypeDropdown();
+    renderUserDropdown();
+    renderPagination();
+    updateModal.style.display = 'block';
+        } else {
+            console.error('Error fetching transaction details')
+        }
+    } catch (error) {
+        console.error('Error opening update model:', error.message);
+    }
+};
+
+// Function to submit the update
+const submitUpdate = async (genTrxId) => {
+    try {
+        const updateAmount = document.getElementById('updateAmount').value;
+        const updateAutoTrxDate = document.getElementById('updatePaymentDate').value;
+        const updateEntity = document.getElementById('updateEntity').value;
+        const updateTrxTypeId = document.getElementById('trxTypeDropdown').value;
+        const updateUserId = document.getElementById('userDropdown').value;
+
+        // Validate the required fields if needed
+
+        const data = {
+            amount: updateAmount,
+            autoTrxDate: updateAutoTrxDate,
+            entity: updateEntity,
+            trxTypeId: updateTrxTypeId,
+            userId: updateUserId,
+            genTrxId: genTrxId
+        };
+
+        console.log(data);
+
+        const response = await axios.put(`http://localhost:8080/app/general-transactions/update/${data.genTrxId}`, data);
+
+        console.log('Transaction updated successfully:', response);
+
+        updateModal.style.display = 'none';
+
+        transactions = await fetchGeneralTrxList();
+        renderGeneralTrxList(transactions, currentPage);
+        renderPagination();
+    } catch (error) {
+        console.error('Error updating transaction information:', error.message);
+        // Handle errors or provide feedback to the user
+    }
+};
+
+
 // Close modal
 closeBtn.onclick = () => {
     modal.style.display = 'none';
@@ -208,6 +296,10 @@ window.onclick = (event) => {
 
     if (event.target === myAddModal) {
         myAddModal.style.display = 'none';
+    }
+
+    if (event.target === updateModal) {
+        updateModal.style.display = 'none';
     }
 };
 

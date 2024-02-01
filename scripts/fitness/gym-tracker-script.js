@@ -124,7 +124,7 @@ const openModal = (entry) => {
         <p>Date: ${entry.date}</p>
         <p>Exercise Type: ${entry.exerciseTypeName}</p>
         <p>Username: ${entry.username}</p>
-        <button onClick="updateEntry(${entry.exerciseId})" class="update-button">Update</button>
+        <button onClick="openUpdateModal(${entry.exerciseId})" class="update-button">Update</button>
         <button onClick="confirmDeleteEntry(${entry.exerciseId})" class="delete-button">Delete</button>
     `;
     modal.style.display = 'block';
@@ -186,6 +186,46 @@ const openAddModal = async () => {
     myAddModal.style.display = 'block';
 };
 
+const openUpdateModal = async (exerciseId) => {
+    try {
+        updatedExerciseEnty = await fetchExerciseEntry(exerciseId);
+        if (updatedExerciseEnty) {
+            console.log(updatedExerciseEnty);
+            modal.style.display = 'none';
+            updateModalContent.innerHTML = `
+        <h2>Update Exercise Entry</h2>
+        <hr />
+        <div class="modal-body">
+            <select id="exerciseTypesDropdown" name="updateExerciseTypeId"></select>
+            <input class="input" type="text" name="updateExerciseName" placeholder="Exercise Name" value=${updatedExerciseEnty.exerciseName}/><br />
+            <input class="input" type="text" number="updateSets" placeholder="Sets" value=${updatedExerciseEnty.sets}/><br />
+            <input class="input" type="text" number="updateReps" placeholder="reps" value=${updatedExerciseEnty.reps}/><br />
+            <input class="input" type="text" number="updateWeight" placeholder="Weight" value=${updatedExerciseEnty.weight}/><br />
+            <input class="input" type="date" name="updateDate" placeholder="Date" value=${updatedExerciseEnty.date}/><br />
+            <select id="userDropdown" name="updateUserId"></select>
+        </div><hr />
+        <button id="updateSubmitBtn" class="update-button" onClick="submitUpdate(${updatedExerciseEnty.exerciseId})">Update</button><br /><br />
+    `;
+
+    exerciseTypesDropdown = document.getElementById('exerciseTypesDropdown')
+    userDropdown = document.getElementById('userDropdown');
+
+    await fetchExerciseTypes();
+    await fetchUsers();
+
+    renderExerciseTypeDropdown();
+    renderUserDropdown();
+    renderPagination();
+
+    updateModal.style.display = 'block';
+        } else {
+            console.error('Error fetching gym details')
+        }
+    } catch (error) {
+        console.error('Error opening update model:', error.message);
+    }
+};
+
 const submitInfo = async () => {
     try {
         const exerciseName = document.querySelector('input[name="exerciseName"]').value;
@@ -212,12 +252,53 @@ const submitInfo = async () => {
 
         myAddModal.style.display = 'none';
 
-        exerciseEntries = await fetchGymTrackerList();
-        renderGymTrackerList(exerciseEntries, currentPage);
+        entries = await fetchGymTrackerList();
+        renderGymTrackerList(entries, currentPage);
     } catch (error) {
         console.error('Error submitting exercise information:', error.message);
     }
 }
+
+// Function to submit the update
+const submitUpdate = async (exerciseId) => {
+    try {
+        const updateExerciseName = document.getElementsByName('updateExerciseName').value;
+        const updateSets = document.getElementsByName('updateSets').value;
+        const updateReps = document.getElementsByName('updateReps').value;
+        const updateWeight = document.getElementsByName('updateWeight').value;
+        const updateDate = document.getElementsByName('updateDate').value;
+        const updateExerciseTypeId = document.getElementsByName('updateExerciseTypeId').value;
+        const updateUserId = document.getElementsByName('updateUserId').value;
+
+        // Validate the required fields if needed
+
+        const data = {
+            exerciseId: exerciseId,
+            exerciseName: updateExerciseName,
+            sets: updateSets,
+            reps: updateReps,
+            weight: updateWeight,
+            date: updateDate,
+            exerciseTypeId: updateExerciseTypeId,
+            userId: updateUserId
+        };
+
+        console.log(data);
+
+        const response = await axios.put(`http://localhost:8080/app/gym-tracker/update/${data.exerciseId}`, data);
+
+        console.log('Exercise Entry updated successfully:', response);
+
+        updateModal.style.display = 'none';
+
+        entries = await fetchGymTrackerList();
+        renderGymTrackerList(entries, currentPage);
+        renderPagination();
+    } catch (error) {
+        console.error('Error updating auto repair shop information:', error.message);
+        // Handle errors or provide feedback to the user
+    }
+};
 
 // Close modal
 closeBtn.onclick = () => {
@@ -232,6 +313,10 @@ window.onclick = (event) => {
 
     if (event.target === myAddModal) {
         myAddModal.style.display = 'none';
+    }
+
+    if (event.target === updateModal) {
+        updateModal.style.display = 'none';
     }
 };
 

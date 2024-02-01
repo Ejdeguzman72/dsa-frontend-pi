@@ -7,6 +7,10 @@ const addModalContent = document.getElementById('addModalContent');
 const addModalButton = document.getElementById('addModalButton');
 const myAddModal = document.getElementById('myAddModal');
 const submitBtn = document.getElementById('submitBtn');
+const updateModal = document.getElementById('myUpdateModal');
+const updateModalContent = document.getElementById('updateModalContent');
+// const updateCloseBtn = document.getElementById('updateCloseBtn');
+const updateSubmitBtn = document.getElementById('updateSubmitBtn');
 let vehicleDropdown;
 let autoShopDropdown;
 let trxTypeDropdown;
@@ -21,6 +25,7 @@ let vehicles = [];
 let autoShops = [];
 let transactionTypes = [];
 let users = [];
+let updatedTranasction = {};
 
 // Fetch auto transaction list using Axios
 const fetchAutotrxList = async () => {
@@ -32,6 +37,16 @@ const fetchAutotrxList = async () => {
         return [];
     }
 };
+
+const fetchTransactionById = async (autoTrxId) => {
+    try {
+        const response = await axios.get(`http://localhost:8080/app/auto-transactions/transaction/search/id/${autoTrxId}`);
+        return response.data.transaction
+    } catch (error) {
+        console.error('Error fetching transaction list:', error.message);
+        return {};
+    }
+}
 
 const fetchVehicleList = async () => {
     try {
@@ -161,7 +176,7 @@ const openModal = (autoTrx) => {
         <p>Auto Repair Shop: ${autoTrx.autoShopName}</p>
         <p>User: ${autoTrx.username}</p>
         <p>Transaction Type: ${autoTrx.transactionTypeDescr}</p>
-        <button onClick="updateEntry(${autoTrx.autoTrxId})" class="update-button">Update</button>
+        <button onClick="openUpdateModal(${autoTrx.autoTrxId})" class="update-button">Update</button>
         <button onClick="confirmDeleteEntry(${autoTrx.autoTrxId})" class="delete-button">Delete</button>
     `;
     modal.style.display = 'block';
@@ -261,6 +276,92 @@ const submitInfo = async () => {
     }
 }
 
+const openUpdateModal = async (autoTrxId) => {
+    try {
+        updatedTranasction = await fetchTransactionById(autoTrxId);
+        if (updatedTranasction) {
+            modal.style.display = 'none';
+            updateModalContent.innerHTML = `
+        <h2>Update Auto Repair Shop</h2>
+        <hr />
+        <div class="modal-body">
+            <input class="input" type="number" id="updateAmount" placeholder="Amount ($0.00)" value=${updatedTranasction.amount}/><br />
+            <input class="input" type="date" id="updateAutoTrxDate" placeholder="Payment Date" value=${updatedTranasction.autoTrxDate}/><br />
+            <select id="vehicleDropdown" ></select>
+            <select id="autoShopDropdown" ></select>
+            <select id="trxTypeDropdown" ></select>
+            <select id="userDropdown" ></select>
+        </div><hr />
+        <button id="updateSubmitBtn" class="update-button" onClick="submitUpdate(${updatedTranasction.autoTrxId})">Update</button><br /><br />
+    `;
+    autoShopDropdown = document.getElementById('autoShopDropdown');
+    vehicleDropdown = document.getElementById('vehicleDropdown');
+    trxTypeDropdown = document.getElementById('trxTypeDropdown')
+    userDropdown = document.getElementById('userDropdown');
+
+    await fetchVehicleList();
+    await fetchAutoShops();
+    await fetchTransactionTypesList();
+    await fetchUsers();
+
+    renderVehicleDropdown();
+    renderAutoshopDropdown();
+    renderTransactionTypeDropdown();
+    renderUserDropdown();
+    renderPagination();
+    updateModal.style.display = 'block';
+        } else {
+            console.error('Error fetching auto repair shop details')
+        }
+    } catch (error) {
+        console.error('Error opening update model:', error.message);
+    }
+};
+
+// Function to submit the update
+const submitUpdate = async (autoTrxId) => {
+    // try {
+        const updateAmount = document.getElementById('updateAmount').value;
+        console.log(updateAmount);
+        const updateAutoTrxDate = document.getElementById('updateAutoTrxDate').value;
+        console.log(updateAutoTrxDate);
+        const updateVehicleId = document.getElementById('vehicleDropdown').value;
+        console.log(updateVehicleId);
+        const updateAutoShopId = document.getElementById('autoShopDropdown').value;
+        console.log(updateAutoShopId);
+        const updateTrxTypeId = document.getElementById('trxTypeDropdown').value;
+        const updateUserId = document.getElementById('userDropdown').value;
+
+        // Validate the required fields if needed
+
+        const data = {
+            amount: updateAmount,
+            autoTrxDate: updateAutoTrxDate,
+            autoShopId: updateAutoShopId,
+            vehicleId: updateVehicleId,
+            trxTypeId: updateTrxTypeId,
+            userId: updateUserId,
+            autoTrxId: autoTrxId
+        };
+
+        console.log(data);
+
+        const response = await axios.put(`http://localhost:8080/app/auto-transactions/update/${data.autoTrxId}`, data);
+
+        console.log('Transaction updated successfully:', response);
+
+        updateModal.style.display = 'none';
+
+        autoTransactions = await fetchAutotrxList();
+        renderAutotrxList(autoTransactions, currentPage);
+        renderPagination();
+    // } catch (error) {
+        console.error('Error updating transaction information:', error.message);
+        // Handle errors or provide feedback to the user
+    // }
+};
+
+
 // Close modal
 closeBtn.onclick = () => {
     modal.style.display = 'none';
@@ -274,6 +375,10 @@ window.onclick = (event) => {
 
     if (event.target === myAddModal) {
         myAddModal.style.display = 'none';
+    }
+
+    if (event.target === updateModal) {
+        updateModal.style.display = 'none';
     }
 };
 
