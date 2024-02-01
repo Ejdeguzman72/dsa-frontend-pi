@@ -6,6 +6,7 @@
    <meta charset="UTF-8">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <link rel="stylesheet" type="text/css" href="styles/styles.css">
+   <script src="scripts/authentication/login.js"></script>
 </head>
 <nav>
    <ul class="navbar">
@@ -49,10 +50,10 @@
    <div class="container">
       <div class="container-center">
          <h1 class="spacer">DeGuzmanStuffAnywhere Application</h1>
-         <input class="input" type="text" name="username" placeholder="Enter Username" />
-         <input class="input" type="password" name="password" placeholder="Enter password" /><br />
+         <input class="input" type="text" name="username" placeholder="Enter Username" id="username" />
+         <input class="input" type="password" name="password" placeholder="Enter password" id="password"/><br />
          <div class="login-button-container">
-            <button class="login-button" type="button">Login</button><br>
+            <button class="login-button" type="button" onclick="login()">Login</button><br>
             <button class="login-button" type="button">Register</button><br>
          </div>
       </div>

@@ -11,6 +11,7 @@ const updateModal = document.getElementById('myUpdateModal');
 const updateModalContent = document.getElementById('updateModalContent');
 // const updateCloseBtn = document.getElementById('updateCloseBtn');
 const updateSubmitBtn = document.getElementById('updateSubmitBtn');
+
 let vehicleDropdown;
 let autoShopDropdown;
 let trxTypeDropdown;

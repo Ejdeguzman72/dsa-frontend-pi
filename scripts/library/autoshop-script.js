@@ -11,6 +11,7 @@ const updateModal = document.getElementById('myUpdateModal');
 const updateModalContent = document.getElementById('updateModalContent');
 // const updateCloseBtn = document.getElementById('updateCloseBtn');
 const updateSubmitBtn = document.getElementById('updateSubmitBtn');
+let jwt;
 
 // Pagination
 const itemsPerPage = 5;
@@ -18,10 +19,27 @@ let currentPage = 1;
 let autoshops = {};
 let updateAutoShopDetails = {};
 
+const retrieveJwt = async () => {
+    try {
+        let token = localStorage.getItem('DeGuzmanStuffAnywhere');
+        return token;
+    } catch (error) {
+        console.log('Error retrieving jwt token:', error.message);
+    }
+}
+
 // Fetch auto repair shop list using Axios
 const fetchAutoshopList = async () => {
     try {
-        const response = await axios.get('http://localhost:8080/app/auto-repair-shops/all');
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        const response = await axiosWithToken.get('http://localhost:8080/app/auto-repair-shops/all');
         return response.data.list;
     } catch (error) {
         console.error('Error fetching auto repair shop list:', error.message);
@@ -31,7 +49,15 @@ const fetchAutoshopList = async () => {
 
 const fetchAutoShopById = async (autoShopId) => {
     try {
-        const response = await axios.get(`http://localhost:8080/app/auto-repair-shops/repair-shop/search/id/${autoShopId}`);
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        const response = await axiosWithToken.get(`http://localhost:8080/app/auto-repair-shops/repair-shop/search/id/${autoShopId}`);
         return response.data.autoShop;
     } catch (error) {
         console.error('Error fetching auto repair shop with ID: ', updateAutoShopDetails, error.message);
@@ -114,8 +140,17 @@ const submitInfo = async () => {
             zip: zip
         };
 
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+
         // Send a POST request to add the book information
-        const response = await axios.post('http://localhost:8080/app/auto-repair-shops/add', data);
+        const response = await axiosWithToken.post('http://localhost:8080/app/auto-repair-shops/add', data);
 
         // Optionally, handle the response or perform additional actions
         console.log('Office added successfully:', response.data);
@@ -158,8 +193,16 @@ const confirmDeleteAutoShop = (autoShopId) => {
 // Function to handle auto shop deletion
 const deleteAutoShop = async (autoShopId) => {
     try {
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
         // Send a DELETE request to your API endpoint
-        await axios.delete(`http://localhost:8080/app/auto-repair-shops/delete/${autoShopId}`);
+        await axiosWithToken.delete(`http://localhost:8080/app/auto-repair-shops/delete/${autoShopId}`);
 
         // Optionally, you can reload the auto shop list after deletion
         autoshops = await fetchAutoshopList();
@@ -220,7 +263,16 @@ const submitUpdate = async (autoShopId) => {
 
         console.log(data);
 
-        const response = await axios.put(`http://localhost:8080/app/auto-repair-shops/update/${data.autoShopId}`, data);
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        
+        const response = await axiosWithToken.put(`http://localhost:8080/app/auto-repair-shops/update/${data.autoShopId}`, data);
 
         console.log('Auto Repair Shop updated successfully:', response);
 
