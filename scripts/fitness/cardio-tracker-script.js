@@ -248,7 +248,16 @@ const submitInfo = async () => {
             userId: userId
         };
 
-        const response = await axios.post('http://192.168.1.36:8080/app/cardio-tracker-app/add', data);
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+
+        const response = await axiosWithToken.post('http://192.168.1.36:8080/app/cardio-tracker-app/add', data);
 
         console.log('Entry added successfully:', response.data);
 
