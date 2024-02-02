@@ -18,10 +18,28 @@ let currentPage = 1;
 let vehicles = {};
 let updatedVehicleDetails = {};
 
+const retrieveJwt = async () => {
+    try {
+        let token = localStorage.getItem('DeGuzmanStuffAnywhere');
+        console.log('Retrieved token:', token);
+        return token;
+    } catch (error) {
+        console.log('Error retrieving jwt token:', error.message);
+    }
+}
+
 // Fetch vehicle list using Axios
 const fetchVehicleList = async () => {
     try {
-        const response = await axios.get('http://localhost:8080/app/vehicles/all');
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        const response = await axiosWithToken.get('http://localhost:8080/app/vehicles/all');
         return response.data.list;
     } catch (error) {
         console.error('Error fetching vehicle list:', error.message);
@@ -31,7 +49,15 @@ const fetchVehicleList = async () => {
 
 const fetchVehicleById = async (vehicleId) => {
     try {
-        const response = await axios.get(`http://localhost:8080/app/vehicles/vehicle/id/${vehicleId}`);
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        const response = await axiosWithToken.get(`http://localhost:8080/app/vehicles/vehicle/id/${vehicleId}`);
         return response.data.vehicle;
     } catch (error) {
         console.error('Error fetching vehicle with ID: ', updatedVehicleDetails, error.message);
@@ -72,8 +98,15 @@ const confirmDeleteEntry = (vehicleId) => {
 // Function to handle entry deletion
 const deleteEntry = async (vehicleId) => {
     try {
+        const jwtToken = await retrieveJwt();
 
-        await axios.delete(`http://localhost:8080/app/vehicles/delete/${vehicleId}`);
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        await axiosWithToken.delete(`http://localhost:8080/app/vehicles/delete/${vehicleId}`);
 
         // Optionally, you can reload the vehicleId list after deletion
         entries = await fetchVehicleList();
@@ -136,8 +169,17 @@ const submitInfo = async () => {
             capacity: capacity
         };
 
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+
         // Send a POST request to add the book information
-        const response = await axios.post('http://localhost:8080/app/vehicles/add', data);
+        const response = await axiosWithToken.post('http://localhost:8080/app/vehicles/add', data);
 
         // Optionally, handle the response or perform additional actions
         console.log('vehicle added successfully:', response.data);
@@ -229,7 +271,16 @@ const submitUpdate = async (vehicleId) => {
 
         console.log(data);
 
-        const response = await axios.put(`http://localhost:8080/app/vehicles/update/${data.vehicleId}`, data);
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+
+        const response = await axiosWithToken.put(`http://localhost:8080/app/vehicles/update/${data.vehicleId}`, data);
 
         console.log('Vehicle Information updated successfully:', response);
 

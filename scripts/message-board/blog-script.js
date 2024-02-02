@@ -4,10 +4,28 @@ const modal = document.getElementById('myModal');
 const modalContent = document.getElementById('modalContent');
 const closeBtn = document.getElementsByClassName('close')[0];
 
+const retrieveJwt = async () => {
+    try {
+        let token = localStorage.getItem('DeGuzmanStuffAnywhere');
+        console.log('Retrieved token:', token);
+        return token;
+    } catch (error) {
+        console.log('Error retrieving jwt token:', error.message);
+    }
+}
+
 // Fetch blog list using Axios
 const fetchBlogList = async () => {
     try {
-        const response = await axios.get('http://localhost:8080/app/posts/all');
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        const response = await axiosWithToken.get('http://localhost:8080/app/posts/all');
         return response.data.list;
     } catch (error) {
         console.error('Error fetching blog list:', error.message);

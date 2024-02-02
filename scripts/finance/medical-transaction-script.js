@@ -24,10 +24,28 @@ let transactionTypes = [];
 let users = [];
 let updatedMedicalTransaction = {};
 
+const retrieveJwt = async () => {
+    try {
+        let token = localStorage.getItem('DeGuzmanStuffAnywhere');
+        console.log('Retrieved token:', token);
+        return token;
+    } catch (error) {
+        console.log('Error retrieving jwt token:', error.message);
+    }
+}
+
 // Fetch medical trx list using Axios
 const fetchMedicalTrxList = async () => {
     try {
-        const response = await axios.get('http://localhost:8080/app/medical-transactions/all');
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        const response = await axiosWithToken.get('http://localhost:8080/app/medical-transactions/all');
         return response.data.list;
     } catch (error) {
         console.error('Error fetching medical transaction list:', error.message);
@@ -37,7 +55,15 @@ const fetchMedicalTrxList = async () => {
 
 const fetchMedicalTrxById = async (medTrxId) => {
     try {
-        const response = await axios.get(`http://localhost:8080/app/medical-transactions/transaction/search/id/${medTrxId}`);
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        const response = await axiosWithToken.get(`http://localhost:8080/app/medical-transactions/transaction/search/id/${medTrxId}`);
         return response.data.transaction;
     } catch (error) {
         console.error('Error fetching medical transaction:', error.message);
@@ -47,7 +73,15 @@ const fetchMedicalTrxById = async (medTrxId) => {
 
 const fetchMedicalOfficesList = async () => {
     try {
-        const response = await axios.get('http://localhost:8080/app/medical-offices/all');
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        const response = await axiosWithToken.get('http://localhost:8080/app/medical-offices/all');
         medicalOffices = response.data.list;
         console.log(medicalOffices)
     } catch (error) {
@@ -58,7 +92,15 @@ const fetchMedicalOfficesList = async () => {
 
 const fetchTransactionTypesList = async () => {
     try {
-        const response = await axios.get('http://localhost:8080/app/transaction-types/all');
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        const response = await axiosWithToken.get('http://localhost:8080/app/transaction-types/all');
         transactionTypes = response.data.list;
     } catch (error) {
         console.error('Error fetching transaction type list:', error.message);
@@ -68,7 +110,15 @@ const fetchTransactionTypesList = async () => {
 
 const fetchUsers = async () => {
     try {
-        const response = await axios.get('http://localhost:8080/app/users/all');
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        const response = await axiosWithToken.get('http://localhost:8080/app/users/all');
         users = response.data.list;
     } catch (error) {
         console.error('Error fetching user list:', error.message);
@@ -161,8 +211,15 @@ const confirmDeleteEntry = (medTrxId) => {
 // Function to handle entry deletion
 const deleteEntry = async (medTrxId) => {
     try {
-        
-        await axios.delete(`http://localhost:8080/app/medical-transactions/delete/${medTrxId}`);
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        await axiosWithToken.delete(`http://localhost:8080/app/medical-transactions/delete/${medTrxId}`);
         
         // Optionally, you can reload the vehicleId list after deletion
         entries = await fetchMedicalTrxList();
@@ -225,7 +282,16 @@ const submitInfo = async () => {
             userId: userId
         };
 
-        const response = await axios.post('http://localhost:8080/app/medical-transactions/add', data);
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+
+        const response = await axiosWithToken.post('http://localhost:8080/app/medical-transactions/add', data);
 
         console.log('Entry added successfully:', response.data);
 
@@ -299,7 +365,16 @@ const submitUpdate = async (medTrxId) => {
 
         console.log(data);
 
-        const response = await axios.put(`http://localhost:8080/app/medical-transactions/update/${data.medTrxId}`, data);
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+
+        const response = await axiosWithToken.put(`http://localhost:8080/app/medical-transactions/update/${data.medTrxId}`, data);
 
         console.log('Transaction updated successfully:', response);
 

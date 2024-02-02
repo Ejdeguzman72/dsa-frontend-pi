@@ -17,11 +17,30 @@ const itemsPerPage = 5;
 let currentPage = 1;
 let entries = [];
 let updateInventoryDetails = {};
+let jwt;
+
+const retrieveJwt = async () => {
+    try {
+        let token = localStorage.getItem('DeGuzmanStuffAnywhere');
+        console.log('Retrieved token:', token);
+        return token;
+    } catch (error) {
+        console.log('Error retrieving jwt token:', error.message);
+    }
+}
 
 // Fetch garage inventory list using Axios
 const fetchGarageInventoryList = async () => {
     try {
-        const response = await axios.get('http://localhost:8080/app/inventory/all');
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        const response = await axiosWithToken.get('http://localhost:8080/app/inventory/all');
         return response.data.list;
     } catch (error) {
         console.error('Error fetching garage inventory list:', error.message);
@@ -31,7 +50,15 @@ const fetchGarageInventoryList = async () => {
 
 const fetchGarageItemById = async (inventoryId) => {
     try {
-        const response = await axios.get(`http://localhost:8080/app/inventory/search/id/${inventoryId}`);
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        const response = await axiosWithToken.get(`http://localhost:8080/app/inventory/search/id/${inventoryId}`);
         return response.data.inventory;
     } catch (error) {
         console.error('Error fetching inventory:', error.message);
@@ -122,8 +149,17 @@ const submitInfo = async () => {
             quantity: quantity
         };
 
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+
         // Send a POST request to add the book information
-        const response = await axios.post('http://localhost:8080/app/inventory/add', data);
+        const response = await axiosWithToken.post('http://localhost:8080/app/inventory/add', data);
 
         // Optionally, handle the response or perform additional actions
         console.log('Item added successfully:', response.data);
@@ -165,8 +201,15 @@ const confirmDeleteEntry = (inventoryId) => {
 // Function to handle entry deletion
 const deleteEntry = async (inventoryId) => {
     try {
-        
-        await axios.delete(`http://localhost:8080/app/inventory/delete/${inventoryId}`);
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        await axiosWithToken.delete(`http://localhost:8080/app/inventory/delete/${inventoryId}`);
         
         // Optionally, you can reload the contact list after deletion
         entries = await fetchGarageInventoryList();

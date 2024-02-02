@@ -21,10 +21,28 @@ let restaurants = [];
 let restaurantTypes = [];
 let updatedRestaurantDetails = {};
 
+const retrieveJwt = async () => {
+    try {
+        let token = localStorage.getItem('DeGuzmanStuffAnywhere');
+        console.log('Retrieved token:', token);
+        return token;
+    } catch (error) {
+        console.log('Error retrieving jwt token:', error.message);
+    }
+}
+
 // Fetch medical office list using Axios
 const fetchRestaurantList = async () => {
     try {
-        const response = await axios.get('http://localhost:8080/app/restaurants/all');
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        const response = await axiosWithToken.get('http://localhost:8080/app/restaurants/all');
         return response.data.list;
     } catch (error) {
         console.error('Error fetching restaurant list:', error.message);
@@ -34,7 +52,15 @@ const fetchRestaurantList = async () => {
 
 const fetchRestaurantById = async (restaurantId) => {
     try {
-        const response = await axios.get(`http://localhost:8080/app/restaurants/restaurant/search/id/${restaurantId}`);
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        const response = await axiosWithToken.get(`http://localhost:8080/app/restaurants/restaurant/search/id/${restaurantId}`);
         return response.data.restaurant;
     } catch (error) {
         console.error('Error fetching restaurant list:', error.message);
@@ -44,7 +70,15 @@ const fetchRestaurantById = async (restaurantId) => {
 
 const fetchRestaurantTypes = async () => {
     try {
-        const response = await axios.get('http://localhost:8080/app/restaurant-types/all');
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        const response = await axiosWithToken.get('http://localhost:8080/app/restaurant-types/all');
         restaurantTypes = response.data.list;
     } catch (error) {
         console.error('Error fetching restaurant type list:', error.message);
@@ -113,8 +147,15 @@ const confirmDeleteEntry = (restaurantId) => {
 // Function to handle entry deletion
 const deleteEntry = async (restaurantId) => {
     try {
+        const jwtToken = await retrieveJwt();
 
-        await axios.delete(`http://localhost:8080/app/restaurants/delete/${restaurantId}`);
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        await axiosWithToken.delete(`http://localhost:8080/app/restaurants/delete/${restaurantId}`);
 
         // Optionally, you can reload the restaurant list after deletion
         entries = await fetchRestaurantList();
@@ -174,7 +215,16 @@ const submitInfo = async () => {
             restaurantTypeId: restaurantTypeId
         };
 
-        const response = await axios.post('http://localhost:8080/app/restaurants/add', data);
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+
+        const response = await axiosWithToken.post('http://localhost:8080/app/restaurants/add', data);
 
         console.log('Entry added successfully:', response.data);
 
@@ -242,7 +292,16 @@ const submitUpdate = async (restaurantId) => {
 
         console.log(data);
 
-        const response = await axios.put(`http://localhost:8080/app/restaurants/update/${data.restaurantId}`, data);
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+
+        const response = await axiosWithToken.put(`http://localhost:8080/app/restaurants/update/${data.restaurantId}`, data);
 
         console.log('Restaurant updated successfully:', response);
 

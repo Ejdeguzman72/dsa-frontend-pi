@@ -18,11 +18,30 @@ const itemsPerPage = 5;
 let currentPage = 1;
 let entries = [];
 let updateContactDetails = {};
+let jwt;
+
+const retrieveJwt = async () => {
+    try {
+        let token = localStorage.getItem('DeGuzmanStuffAnywhere');
+        console.log('Retrieved token:', token);
+        return token;
+    } catch (error) {
+        console.log('Error retrieving jwt token:', error.message);
+    }
+}
 
 // Fetch contact info list using Axios
 const fetchContactList = async () => {
     try {
-        const response = await axios.get('http://localhost:8080/app/person-info/all');
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        const response = await axiosWithToken.get('http://localhost:8080/app/person-info/all');
         return response.data.list;
     } catch (error) {
         console.error('Error fetching conatact list:', error.message);
@@ -32,7 +51,15 @@ const fetchContactList = async () => {
 
 const fetchContactById = async (personId) => {
     try {
-        const response = await axios.get(`http://localhost:8080/app/person-info/contact/id/${personId}`);
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        const response = await axiosWithToken.get(`http://localhost:8080/app/person-info/contact/id/${personId}`);
         return response.data.person;
     } catch (error) {
         console.error('Error fetching person:', error.message);
@@ -125,8 +152,17 @@ const submitInfo = async () => {
             birthdate: birthdate
         };
 
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+
         // Send a POST request to add the contact information
-        const response = await axios.post('http://localhost:8080/app/person-info/add', data);
+        const response = await axiosWithToken.post('http://localhost:8080/app/person-info/add', data);
 
         // Optionally, handle the response or perform additional actions
         console.log('Contact added successfully:', response.data);
@@ -169,8 +205,15 @@ const confirmDeleteContact = (personId) => {
 // Function to handle contact deletion
 const deleteEntry = async (personId) => {
     try {
-        
-        await axios.delete(`http://localhost:8080/app/person-info/delete/${personId}`);
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        await axiosWithToken.delete(`http://localhost:8080/app/person-info/delete/${personId}`);
         
         // Optionally, you can reload the contact list after deletion
         entries = await fetchContactList();
@@ -253,7 +296,16 @@ const submitUpdate = async (personId) => {
 
         console.log(data);
 
-        const response = await axios.put(`http://localhost:8080/app/person-info/update/${data.personId}`, data);
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+
+        const response = await axiosWithToken.put(`http://localhost:8080/app/person-info/update/${data.personId}`, data);
 
         console.log('Contact Info updated successfully:', response);
 

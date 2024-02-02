@@ -19,10 +19,28 @@ let currentPage = 1;
 let medicalOffices = [];
 let updateMedicalOfficeDetails = {};
 
+const retrieveJwt = async () => {
+    try {
+        let token = localStorage.getItem('DeGuzmanStuffAnywhere');
+        console.log('Retrieved token:', token);
+        return token;
+    } catch (error) {
+        console.log('Error retrieving jwt token:', error.message);
+    }
+}
+
 // Fetch medical office list using Axios
 const fetchMedicalOfficeList = async () => {
     try {
-        const response = await axios.get('http://localhost:8080/app/medical-offices/all');
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        const response = await axiosWithToken.get('http://localhost:8080/app/medical-offices/all');
         return response.data.list;
     } catch (error) {
         console.error('Error fetching medical office list:', error.message);
@@ -32,7 +50,15 @@ const fetchMedicalOfficeList = async () => {
 
 const fetchMedicalOfficeById = async (medicalOfficeId) => {
     try {
-        const response = await axios.get(`http://localhost:8080/app/medical-offices/offices/search/id/${medicalOfficeId}`);
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        const response = await axiosWithToken.get(`http://localhost:8080/app/medical-offices/offices/search/id/${medicalOfficeId}`);
         return response.data.medicalOffice;
     } catch (error) {
         console.error('Error fetching medical office:', error.message);
@@ -107,8 +133,17 @@ const submitInfo = async () => {
             zip: zip
         };
 
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+
         // Send a POST request to add the book information
-        const response = await axios.post('http://localhost:8080/app/medical-offices/add', data);
+        const response = await axiosWithToken.post('http://localhost:8080/app/medical-offices/add', data);
 
         // Optionally, handle the response or perform additional actions
         console.log('Office added successfully:', response.data);
@@ -150,8 +185,15 @@ const confirmDeleteEntry = (medicalOfficeId) => {
 // Function to handle office deletion
 const deleteEntry = async (medicalOfficeId) => {
     try {
-        
-        await axios.delete(`http://localhost:8080/app/medical-offices/delete/${medicalOfficeId}`);
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        await axiosWithToken.delete(`http://localhost:8080/app/medical-offices/delete/${medicalOfficeId}`);
         
         // Optionally, you can reload the contact list after deletion
         entries = await fetchMedicalOfficeList();
@@ -212,7 +254,16 @@ const submitUpdate = async (medicalOfficeId) => {
 
         console.log(data);
 
-        const response = await axios.put(`http://localhost:8080/app/medical-offices/update/${data.medicalOfficeId}`, data);
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+
+        const response = await axiosWithToken.put(`http://localhost:8080/app/medical-offices/update/${data.medicalOfficeId}`, data);
 
         console.log('Medical Office updated successfully:', response);
 

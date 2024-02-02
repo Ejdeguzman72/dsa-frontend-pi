@@ -23,10 +23,29 @@ let exerciseTypes = [];
 let users = [];
 let updatedExerciseEnty = {};
 
+const retrieveJwt = async () => {
+    try {
+        let token = localStorage.getItem('DeGuzmanStuffAnywhere');
+        console.log('Retrieved token:', token);
+        return token;
+    } catch (error) {
+        console.log('Error retrieving jwt token:', error.message);
+    }
+}
+
+
 // Fetch gym tracker list using Axios
 const fetchGymTrackerList = async () => {
     try {
-        const response = await axios.get('http://localhost:8080/app/gym-tracker/all');
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        const response = await axiosWithToken.get('http://localhost:8080/app/gym-tracker/all');
         return response.data.list;
     } catch (error) {
         console.error('Error fetching gym tracker list:', error.message);
@@ -36,7 +55,15 @@ const fetchGymTrackerList = async () => {
 
 const fetchExerciseEntry = async (exerciseId) => {
     try {
-        const response = await axios.get(`http://localhost:8080/app/gym-tracker/exercise/search/id/${exerciseId}`);
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        const response = await axiosWithToken.get(`http://localhost:8080/app/gym-tracker/exercise/search/id/${exerciseId}`);
         return response.data.exercise;
     } catch (error) {
         console.error('Error fetching exercise entry:', error.message);
@@ -46,7 +73,15 @@ const fetchExerciseEntry = async (exerciseId) => {
 
 const fetchExerciseTypes = async () => {
     try {
-        const response = await axios.get('http://localhost:8080/app/exercise-type/all');
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        const response = await axiosWithToken.get('http://localhost:8080/app/exercise-type/all');
         exerciseTypes = response.data.list;
     } catch (error) {
         console.error('Error fetching exercise type list:', error.message);
@@ -56,7 +91,15 @@ const fetchExerciseTypes = async () => {
 
 const fetchUsers = async () => {
     try {
-        const response = await axios.get('http://localhost:8080/app/users/all');
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        const response = await axiosWithToken.get('http://localhost:8080/app/users/all');
         users = response.data.list;
     } catch (error) {
         console.error('Error fetching user type list:', error.message);
@@ -140,8 +183,15 @@ const confirmDeleteEntry = (exerciseId) => {
 // Function to handle entry deletion
 const deleteEntry = async (exerciseId) => {
     try {
-        
-        await axios.delete(`http://localhost:8080/app/gym-tracker/delete/${exerciseId}`);
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        await axiosWithToken.delete(`http://localhost:8080/app/gym-tracker/delete/${exerciseId}`);
         
         // Optionally, you can reload the vehicleId list after deletion
         entries = await fetchGymTrackerList();
@@ -246,7 +296,16 @@ const submitInfo = async () => {
             userId: userId
         };
 
-        const response = await axios.post('http://localhost:8080/app/gym-tracker/add', data);
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+
+        const response = await axiosWithToken.post('http://localhost:8080/app/gym-tracker/add', data);
 
         console.log('Entry added successfully:', response.data);
 
@@ -285,7 +344,16 @@ const submitUpdate = async (exerciseId) => {
 
         console.log(data);
 
-        const response = await axios.put(`http://localhost:8080/app/gym-tracker/update/${data.exerciseId}`, data);
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+
+        const response = await axiosWithToken.put(`http://localhost:8080/app/gym-tracker/update/${data.exerciseId}`, data);
 
         console.log('Exercise Entry updated successfully:', response);
 

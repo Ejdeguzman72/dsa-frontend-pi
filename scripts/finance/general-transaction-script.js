@@ -22,10 +22,28 @@ let transactionTypes = [];
 let users = [];
 let updatedTransactionDetails = {};
 
+const retrieveJwt = async () => {
+    try {
+        let token = localStorage.getItem('DeGuzmanStuffAnywhere');
+        console.log('Retrieved token:', token);
+        return token;
+    } catch (error) {
+        console.log('Error retrieving jwt token:', error.message);
+    }
+}
+
 // Fetch general transaction list using Axios
 const fetchGeneralTrxList = async () => {
     try {
-        const response = await axios.get('http://localhost:8080/app/general-transactions/all');
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        const response = await axiosWithToken.get('http://localhost:8080/app/general-transactions/all');
         return response.data.list;
     } catch (error) {
         console.error('Error fetching general transaction list:', error.message);
@@ -35,7 +53,15 @@ const fetchGeneralTrxList = async () => {
 
 const fetchTransactionById = async (genTrxId) => {
     try {
-        const response = await axios.get(`http://localhost:8080/app/general-transactions/transaction/search/id/${genTrxId}`);
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        const response = await axiosWithToken.get(`http://localhost:8080/app/general-transactions/transaction/search/id/${genTrxId}`);
         return response.data.transaction
     } catch (error) {
         console.error('Error fetching transaction list:', error.message);
@@ -45,7 +71,15 @@ const fetchTransactionById = async (genTrxId) => {
 
 const fetchTransactionTypesList = async () => {
     try {
-        const response = await axios.get('http://localhost:8080/app/transaction-types/all');
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        const response = await axiosWithToken.get('http://localhost:8080/app/transaction-types/all');
         transactionTypes = response.data.list;
     } catch (error) {
         console.error('Error fetching transaction type list:', error.message);
@@ -55,7 +89,15 @@ const fetchTransactionTypesList = async () => {
 
 const fetchUsers = async () => {
     try {
-        const response = await axios.get('http://localhost:8080/app/users/all');
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        const response = await axiosWithToken.get('http://localhost:8080/app/users/all');
         users = response.data.list;
     } catch (error) {
         console.error('Error fetching user list:', error.message);
@@ -137,8 +179,15 @@ const confirmDeleteEntry = (genTrxId) => {
 // Function to handle entry deletion
 const deleteEntry = async (genTrxId) => {
     try {
-        
-        await axios.delete(`http://localhost:8080/app/general-transactions/delete/${genTrxId}`);
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        await axiosWithToken.delete(`http://localhost:8080/app/general-transactions/delete/${genTrxId}`);
         
         // Optionally, you can reload the vehicleId list after deletion
         entries = await fetchGeneralTrxList();
@@ -197,7 +246,16 @@ const submitInfo = async () => {
             userId: userId
         };
 
-        const response = await axios.post('http://localhost:8080/app/general-transactions/add', data);
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+
+        const response = await axiosWithToken.post('http://localhost:8080/app/general-transactions/add', data);
 
         console.log('Entry added successfully:', response.data);
 
@@ -267,7 +325,16 @@ const submitUpdate = async (genTrxId) => {
 
         console.log(data);
 
-        const response = await axios.put(`http://localhost:8080/app/general-transactions/update/${data.genTrxId}`, data);
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+
+        const response = await axiosWithToken.put(`http://localhost:8080/app/general-transactions/update/${data.genTrxId}`, data);
 
         console.log('Transaction updated successfully:', response);
 

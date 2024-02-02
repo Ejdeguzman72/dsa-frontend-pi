@@ -22,11 +22,30 @@ let currentPage = 1;
 let entertainmentEntries = [];
 let entertainmentTypes = [];
 let updateEntertainmentDetails = {};
+let jwt;
+
+const retrieveJwt = async () => {
+    try {
+        let token = localStorage.getItem('DeGuzmanStuffAnywhere');
+        console.log('Retrieved token:', token);
+        return token;
+    } catch (error) {
+        console.log('Error retrieving jwt token:', error.message);
+    }
+}
 
 // Fetch entertainment list using Axios
 const fetchEntertainmentList = async () => {
     try {
-        const response = await axios.get('http://localhost:8080/app/entertainment/all');
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        const response = await axiosWithToken.get('http://localhost:8080/app/entertainment/all');
         return response.data.list || [];
     } catch (error) {
         console.error('Error fetching entertainment list:', error.message);
@@ -36,18 +55,34 @@ const fetchEntertainmentList = async () => {
 
 const fetchEntertainmentById = async (entityId) => {
     try {
-        const response = await axios.get(`http://localhost:8080/app/entertainment/search/id/${entityId}`);
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        const response = await axiosWithToken.get(`http://localhost:8080/app/entertainment/search/id/${entityId}`);
         return response.data.entertainment;
     } catch (error) {
         console.error('Error fetching entertainment list:', error.message);
-        return [];
+        return {};
     }
 }
 
 // Fetch entertainment types
 const fetchEntertainmentTypes = async () => {
     try {
-        const response = await axios.get('http://localhost:8080/app/entertainment-types/all');
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        const response = await axiosWithToken.get('http://localhost:8080/app/entertainment-types/all');
         entertainmentTypes = response.data.list; // Store entertainment types in state
     } catch (error) {
         console.error('Error fetching entertainment types:', error);
@@ -106,7 +141,15 @@ const confirmDeleteEntertainment = (entityId) => {
 
 const deleteEntry = async (entityId) => {
     try {
-        await axios.delete(`http://localhost:8080/app/entertainment/delete/${entityId}`);
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        await axiosWithToken.delete(`http://localhost:8080/app/entertainment/delete/${entityId}`);
         
         entertainmentEntries = await fetchEntertainmentList();
         renderEntertainmentList(entertainmentEntries, currentPage);
@@ -152,7 +195,16 @@ const submitInfo = async () => {
             entertainmentTypeId: entertainmentTypeId
         };
 
-        const response = await axios.post('http://localhost:8080/app/entertainment/add', data);
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+
+        const response = await axiosWithToken.post('http://localhost:8080/app/entertainment/add', data);
 
         console.log('Entry added successfully:', response.data);
 

@@ -28,10 +28,28 @@ let transactionTypes = [];
 let users = [];
 let updatedTranasction = {};
 
+const retrieveJwt = async () => {
+    try {
+        let token = localStorage.getItem('DeGuzmanStuffAnywhere');
+        console.log('Retrieved token:', token);
+        return token;
+    } catch (error) {
+        console.log('Error retrieving jwt token:', error.message);
+    }
+}
+
 // Fetch auto transaction list using Axios
 const fetchAutotrxList = async () => {
     try {
-        const response = await axios.get('http://localhost:8080/app/auto-transactions/all');
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        const response = await axiosWithToken.get('http://localhost:8080/app/auto-transactions/all');
         return response.data.list;
     } catch (error) {
         console.error('Error fetching auto repair transaction list:', error.message);
@@ -41,7 +59,15 @@ const fetchAutotrxList = async () => {
 
 const fetchTransactionById = async (autoTrxId) => {
     try {
-        const response = await axios.get(`http://localhost:8080/app/auto-transactions/transaction/search/id/${autoTrxId}`);
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        const response = await axiosWithToken.get(`http://localhost:8080/app/auto-transactions/transaction/search/id/${autoTrxId}`);
         return response.data.transaction
     } catch (error) {
         console.error('Error fetching transaction list:', error.message);
@@ -51,7 +77,15 @@ const fetchTransactionById = async (autoTrxId) => {
 
 const fetchVehicleList = async () => {
     try {
-        const response = await axios.get('http://localhost:8080/app/vehicles/all');
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        const response = await axiosWithToken.get('http://localhost:8080/app/vehicles/all');
         vehicles = response.data.list;
     } catch (error) {
         console.error('Error fetching vehicle list:', error.message);
@@ -61,7 +95,15 @@ const fetchVehicleList = async () => {
 
 const fetchAutoShops = async () => {
     try {
-        const response = await axios.get('http://localhost:8080/app/auto-repair-shops/all');
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        const response = await axiosWithToken.get('http://localhost:8080/app/auto-repair-shops/all');
         autoShops = response.data.list;
     } catch (error) {
         console.error('Error fetching auto repair shop list:', error.message);
@@ -71,7 +113,15 @@ const fetchAutoShops = async () => {
 
 const fetchTransactionTypesList = async () => {
     try {
-        const response = await axios.get('http://localhost:8080/app/transaction-types/all');
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        const response = await axiosWithToken.get('http://localhost:8080/app/transaction-types/all');
         transactionTypes = response.data.list;
     } catch (error) {
         console.error('Error fetching transaction type list:', error.message);
@@ -81,7 +131,15 @@ const fetchTransactionTypesList = async () => {
 
 const fetchUsers = async () => {
     try {
-        const response = await axios.get('http://localhost:8080/app/users/all');
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        const response = await axiosWithToken.get('http://localhost:8080/app/users/all');
         users = response.data.list;
     } catch (error) {
         console.error('Error fetching user list:', error.message);
@@ -193,8 +251,15 @@ const confirmDeleteEntry = (autoTrxId) => {
 // Function to handle entry deletion
 const deleteEntry = async (autoTrxId) => {
     try {
-        
-        await axios.delete(`http://localhost:8080/app/auto-transactions/delete/${autoTrxId}`);
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        await axiosWithToken.delete(`http://localhost:8080/app/auto-transactions/delete/${autoTrxId}`);
         
         // Optionally, you can reload the vehicleId list after deletion
         entries = await fetchAutotrxList();
@@ -263,7 +328,16 @@ const submitInfo = async () => {
             userId: userId
         };
 
-        const response = await axios.post('http://localhost:8080/app/auto-transactions/add', data);
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+
+        const response = await axiosWithToken.post('http://localhost:8080/app/auto-transactions/add', data);
 
         console.log('Entry added successfully:', response.data);
 
@@ -347,7 +421,16 @@ const submitUpdate = async (autoTrxId) => {
 
         console.log(data);
 
-        const response = await axios.put(`http://localhost:8080/app/auto-transactions/update/${data.autoTrxId}`, data);
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+
+        const response = await axiosWithToken.put(`http://localhost:8080/app/auto-transactions/update/${data.autoTrxId}`, data);
 
         console.log('Transaction updated successfully:', response);
 

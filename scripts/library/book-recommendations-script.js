@@ -11,6 +11,7 @@ const updateModal = document.getElementById('myUpdateModal');
 const updateModalContent = document.getElementById('updateModalContent');
 // const updateCloseBtn = document.getElementById('updateCloseBtn');
 const updateSubmitBtn = document.getElementById('updateSubmitBtn');
+let jwt;
 
 // Pagination
 const itemsPerPage = 5;
@@ -19,10 +20,28 @@ let currentPage = 1;
 let books = {};
 let updateBookDetais = {};
 
+const retrieveJwt = async () => {
+    try {
+        let token = localStorage.getItem('DeGuzmanStuffAnywhere');
+        console.log('Retrieved token:', token);
+        return token;
+    } catch (error) {
+        console.log('Error retrieving jwt token:', error.message);
+    }
+}
+
 // Fetch book list using Axios
 const fetchBookList = async () => {
     try {
-        const response = await axios.get('http://localhost:8080/app/books/all');
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        const response = await axiosWithToken.get('http://localhost:8080/app/books/all');
         return response.data.list;
     } catch (error) {
         console.error('Error fetching book list:', error.message);
@@ -32,7 +51,15 @@ const fetchBookList = async () => {
 
 const fetchBookById = async (bookId) => {
     try {
-        const response = await axios.get(`http://localhost:8080/app/books/book/search/id/${bookId}`);
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        const response = await axiosWithToken.get(`http://localhost:8080/app/books/book/search/id/${bookId}`);
         return response.data.book;
     } catch (error) {
         console.error('Error fetching book with ID: ', updateBookDetais, error.message);
@@ -105,8 +132,17 @@ const submitInfo = async () => {
             descr: description
         };
 
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        
         // Send a POST request to add the book information
-        const response = await axios.post('http://localhost:8080/app/books/add', bookData);
+        const response = await axiosWithToken.post('http://localhost:8080/app/books/add', bookData);
 
         // Optionally, handle the response or perform additional actions
         console.log('Book added successfully:', response.data);
@@ -147,8 +183,15 @@ const confirmDeleteBook = (bookId) => {
 // Function to handle auto shop deletion
 const deleteBook = async (bookId) => {
     try {
+        const jwtToken = await retrieveJwt();
 
-        await axios.delete(`http://localhost:8080/app/books/delete/${bookId}`);
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        await axiosWithToken.delete(`http://localhost:8080/app/books/delete/${bookId}`);
 
         // Optionally, you can reload the auto shop list after deletion
         books = await fetchBookList();

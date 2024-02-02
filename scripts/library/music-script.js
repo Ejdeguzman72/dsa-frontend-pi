@@ -17,11 +17,30 @@ const itemsPerPage = 5;
 let currentPage = 1;
 let musicEntries = [];
 let updateMusicDetails = {};
+let jwt;
+
+const retrieveJwt = async () => {
+    try {
+        let token = localStorage.getItem('DeGuzmanStuffAnywhere');
+        console.log('Retrieved token:', token);
+        return token;
+    } catch (error) {
+        console.log('Error retrieving jwt token:', error.message);
+    }
+}
 
 // Fetch book list using Axios
 const fetchMusicList = async () => {
     try {
-        const response = await axios.get('http://localhost:8080/app/music/all');
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        const response = await axiosWithToken.get('http://localhost:8080/app/music/all');
         return response.data.list;
     } catch (error) {
         console.error('Error fetching music list:', error.message);
@@ -31,7 +50,15 @@ const fetchMusicList = async () => {
 
 const fetchMusicById = async (songId) => {
     try {
-        const response = await axios.get(`http://localhost:8080/app/music/song/id/${songId}`);
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        const response = await axiosWithToken.get(`http://localhost:8080/app/music/song/id/${songId}`);
         return response.data.song;
     } catch (error) {
         console.error('Error fetching music:', error.message);
@@ -96,8 +123,17 @@ const submitInfo = async () => {
             genre: genre
         };
 
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+
         // Send a POST request to add the book information
-        const response = await axios.post('http://localhost:8080/app/music/add-song-information', data);
+        const response = await axiosWithToken.post('http://localhost:8080/app/music/add-song-information', data);
 
         // Optionally, handle the response or perform additional actions
         console.log('Book added successfully:', response.data);
@@ -137,8 +173,15 @@ const confirmDeleteEntry = (songId) => {
 // Function to handle music deletion
 const deleteEntry = async (songId) => {
     try {
-        
-        await axios.delete(`http://localhost:8080/app/music/delete/${songId}`);
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        await axiosWithToken.delete(`http://localhost:8080/app/music/delete/${songId}`);
         
         // Optionally, you can reload the music list after deletion
         entries = await fetchMusicList();
@@ -193,7 +236,16 @@ const submitUpdate = async (songId) => {
 
         console.log(data);
 
-        const response = await axios.put(`http://localhost:8080/app/music/update/${data.songId}`, data);
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+
+        const response = await axiosWithToken.put(`http://localhost:8080/app/music/update/${data.songId}`, data);
 
         console.log('Song Information updated successfully:', response);
 

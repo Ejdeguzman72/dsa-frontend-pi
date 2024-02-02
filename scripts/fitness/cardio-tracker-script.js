@@ -23,10 +23,28 @@ let cardioTypes = [];
 let users = [];
 let updatedCardioDetails = {};
 
+const retrieveJwt = async () => {
+    try {
+        let token = localStorage.getItem('DeGuzmanStuffAnywhere');
+        console.log('Retrieved token:', token);
+        return token;
+    } catch (error) {
+        console.log('Error retrieving jwt token:', error.message);
+    }
+}
+
 // Fetch cardio tracker list using Axios
 const fetchCardioList = async () => {
     try {
-        const response = await axios.get('http://localhost:8080/app/cardio-tracker-app/all');
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        const response = await axiosWithToken.get('http://localhost:8080/app/cardio-tracker-app/all');
         return response.data.list;
     } catch (error) {
         console.error('Error fetching cardio tracker list:', error.message);
@@ -36,7 +54,15 @@ const fetchCardioList = async () => {
 
 const fetchCardioById = async (cardioId) => {
     try {
-        const response = await axios.get(`http://localhost:8080/app/cardio-tracker-app/cardio/id/${cardioId}`);
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        const response = await axiosWithToken.get(`http://localhost:8080/app/cardio-tracker-app/cardio/id/${cardioId}`);
         return response.data.cardio;
     } catch (error) {
         console.error('Error fetching cardio information:', error.message);
@@ -46,7 +72,15 @@ const fetchCardioById = async (cardioId) => {
 
 const fetchCardioTypes = async () => {
     try {
-        const response = await axios.get('http://localhost:8080/app/cardio-types/all');
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        const response = await axiosWithToken.get('http://localhost:8080/app/cardio-types/all');
         cardioTypes = response.data.list;
     } catch (error) {
         console.error('Error fetching cardio type list:', error.message);
@@ -56,7 +90,15 @@ const fetchCardioTypes = async () => {
 
 const fetchUsers = async () => {
     try {
-        const response = await axios.get('http://localhost:8080/app/users/all');
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        const response = await axiosWithToken.get('http://localhost:8080/app/users/all');
         users = response.data.list;
     } catch (error) {
         console.error('Error fetching user list:', error.message);
@@ -139,8 +181,15 @@ const confirmDeleteCardio = (cardioId) => {
 // Function to handle cardio deletion
 const deleteEntry = async (cardioId) => {
     try {
-        
-        await axios.delete(`http://localhost:8080/app/cardio-tracker-app/delete/${cardioId}`);
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        await axiosWithToken.delete(`http://localhost:8080/app/cardio-tracker-app/delete/${cardioId}`);
         console.log("Deleting entry with ID: " + cardioId);
         // Optionally, you can reload the cardio list after deletion
         entries = await fetchCardioList();
@@ -272,7 +321,16 @@ const submitUpdate = async (cardioId) => {
 
         console.log(data);
 
-        const response = await axios.put(`http://localhost:8080/app/cardio-tracker-app/update/${data.cardioId}`, data);
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+
+        const response = await axiosWithToken.put(`http://localhost:8080/app/cardio-tracker-app/update/${data.cardioId}`, data);
 
         console.log('Cardio Entry updated successfully:', response);
 
