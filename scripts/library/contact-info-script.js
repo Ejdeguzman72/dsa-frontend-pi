@@ -41,7 +41,7 @@ const fetchContactList = async () => {
                 'Content-Type': 'application/json',
             },
         });
-        const response = await axiosWithToken.get('http://localhost:8080/app/person-info/all');
+        const response = await axiosWithToken.get('http://192.168.1.36:8080/app/person-info/all');
         return response.data.list;
     } catch (error) {
         console.error('Error fetching conatact list:', error.message);
@@ -59,7 +59,7 @@ const fetchContactById = async (personId) => {
                 'Content-Type': 'application/json',
             },
         });
-        const response = await axiosWithToken.get(`http://localhost:8080/app/person-info/contact/id/${personId}`);
+        const response = await axiosWithToken.get(`http://192.168.1.36:8080/app/person-info/contact/id/${personId}`);
         return response.data.person;
     } catch (error) {
         console.error('Error fetching person:', error.message);
@@ -162,7 +162,7 @@ const submitInfo = async () => {
         });
 
         // Send a POST request to add the contact information
-        const response = await axiosWithToken.post('http://localhost:8080/app/person-info/add', data);
+        const response = await axiosWithToken.post('http://192.168.1.36:8080/app/person-info/add', data);
 
         // Optionally, handle the response or perform additional actions
         console.log('Contact added successfully:', response.data);
@@ -213,7 +213,7 @@ const deleteEntry = async (personId) => {
                 'Content-Type': 'application/json',
             },
         });
-        await axiosWithToken.delete(`http://localhost:8080/app/person-info/delete/${personId}`);
+        await axiosWithToken.delete(`http://192.168.1.36:8080/app/person-info/delete/${personId}`);
         
         // Optionally, you can reload the contact list after deletion
         entries = await fetchContactList();
@@ -305,7 +305,7 @@ const submitUpdate = async (personId) => {
             },
         });
 
-        const response = await axiosWithToken.put(`http://localhost:8080/app/person-info/update/${data.personId}`, data);
+        const response = await axiosWithToken.put(`http://192.168.1.36:8080/app/person-info/update/${data.personId}`, data);
 
         console.log('Contact Info updated successfully:', response);
 

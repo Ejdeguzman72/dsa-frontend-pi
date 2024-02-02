@@ -45,7 +45,7 @@ const fetchMedicalTrxList = async () => {
                 'Content-Type': 'application/json',
             },
         });
-        const response = await axiosWithToken.get('http://localhost:8080/app/medical-transactions/all');
+        const response = await axiosWithToken.get('http://192.168.1.36:8080/app/medical-transactions/all');
         return response.data.list;
     } catch (error) {
         console.error('Error fetching medical transaction list:', error.message);
@@ -63,7 +63,7 @@ const fetchMedicalTrxById = async (medTrxId) => {
                 'Content-Type': 'application/json',
             },
         });
-        const response = await axiosWithToken.get(`http://localhost:8080/app/medical-transactions/transaction/search/id/${medTrxId}`);
+        const response = await axiosWithToken.get(`http://192.168.1.36:8080/app/medical-transactions/transaction/search/id/${medTrxId}`);
         return response.data.transaction;
     } catch (error) {
         console.error('Error fetching medical transaction:', error.message);
@@ -81,7 +81,7 @@ const fetchMedicalOfficesList = async () => {
                 'Content-Type': 'application/json',
             },
         });
-        const response = await axiosWithToken.get('http://localhost:8080/app/medical-offices/all');
+        const response = await axiosWithToken.get('http://192.168.1.36:8080/app/medical-offices/all');
         medicalOffices = response.data.list;
         console.log(medicalOffices)
     } catch (error) {
@@ -100,7 +100,7 @@ const fetchTransactionTypesList = async () => {
                 'Content-Type': 'application/json',
             },
         });
-        const response = await axiosWithToken.get('http://localhost:8080/app/transaction-types/all');
+        const response = await axiosWithToken.get('http://192.168.1.36:8080/app/transaction-types/all');
         transactionTypes = response.data.list;
     } catch (error) {
         console.error('Error fetching transaction type list:', error.message);
@@ -118,7 +118,7 @@ const fetchUsers = async () => {
                 'Content-Type': 'application/json',
             },
         });
-        const response = await axiosWithToken.get('http://localhost:8080/app/users/all');
+        const response = await axiosWithToken.get('http://192.168.1.36:8080/app/users/all');
         users = response.data.list;
     } catch (error) {
         console.error('Error fetching user list:', error.message);
@@ -219,7 +219,7 @@ const deleteEntry = async (medTrxId) => {
                 'Content-Type': 'application/json',
             },
         });
-        await axiosWithToken.delete(`http://localhost:8080/app/medical-transactions/delete/${medTrxId}`);
+        await axiosWithToken.delete(`http://192.168.1.36:8080/app/medical-transactions/delete/${medTrxId}`);
         
         // Optionally, you can reload the vehicleId list after deletion
         entries = await fetchMedicalTrxList();
@@ -291,7 +291,7 @@ const submitInfo = async () => {
             },
         });
 
-        const response = await axiosWithToken.post('http://localhost:8080/app/medical-transactions/add', data);
+        const response = await axiosWithToken.post('http://192.168.1.36:8080/app/medical-transactions/add', data);
 
         console.log('Entry added successfully:', response.data);
 
@@ -374,7 +374,7 @@ const submitUpdate = async (medTrxId) => {
             },
         });
 
-        const response = await axiosWithToken.put(`http://localhost:8080/app/medical-transactions/update/${data.medTrxId}`, data);
+        const response = await axiosWithToken.put(`http://192.168.1.36:8080/app/medical-transactions/update/${data.medTrxId}`, data);
 
         console.log('Transaction updated successfully:', response);
 
