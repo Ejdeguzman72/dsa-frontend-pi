@@ -712,3 +712,34 @@ footer p {
 .textarea {
    width: 80%;
 }
+
+.logout-container {
+   float: right;
+}
+
+.logout-button {
+   float: right;
+   display: block;
+   color: black;
+   text-align: center;
+   /* padding: 10px; */
+   text-decoration: none;
+}
+
+.logout-button button {
+   background-color: #333;
+   color: white;
+   border-radius: 10px;
+   margin: 0;
+   font-size: 20px;
+   padding: 10px;
+   float: right;
+}
+
+.logout-button button:hover {
+   background-color: whitesmoke;
+   color: black;
+}
+
+
+
