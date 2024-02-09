@@ -10,19 +10,23 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 });
 
+const convertKelvinToFahrenheit = (kelvin) => {
+    return Math.round((kelvin - 273.15) * 1.8 + 32)
+}
+
 function renderWeatherInfo(data) {
     const weatherInfoContainer = document.getElementById('weather-info');
     
     // Extract relevant information from the JSON data
     const cityName = data.name;
-    const temperature = data.main.temp;
+    const temperature = convertKelvinToFahrenheit(data.main.temp);
     const description = data.weather[0].description;
     const windSpeed = data.wind.speed;
 
     // Create HTML structure for weather information
     const htmlContent = `
         <p>Current Location: ${cityName}</p>
-        <p>Temperature: ${temperature} K</p>
+        <p>Temperature: ${temperature} F</p>
         <p>Description: ${description}</p>
         <p>Wind Speed: ${windSpeed} m/s</p>
     `;

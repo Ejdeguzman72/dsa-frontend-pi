@@ -100,7 +100,7 @@ const renderAutoshopList = (autoshops, page) => {
     });
 };
 
-addModalButton.addEventListener('click', () => openAddModal());
+// addModalButton.addEventListener('click', () => openAddModal());
 
 const openAddModal = () => {
     // Clear the modal content (if needed)
@@ -287,9 +287,9 @@ const submitUpdate = async (autoShopId) => {
     }
 };
 
-closeBtn.onclick = () => {
-    modal.style.display = 'none';
-};
+// closeBtn.onclick = () => {
+//     modal.style.display = 'none';
+// };
 
 // addModalCloseBtn.onclick = () => {
 //     myAddModal.style.display = 'none';
