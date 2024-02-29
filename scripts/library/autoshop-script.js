@@ -1,3 +1,4 @@
+document.addEventListener('DOMContentLoaded', () => {
 const autoShopListContainer = document.getElementById('autoShopList');
 const paginationContainer = document.getElementById('pagination');
 const modal = document.getElementById('myModal');
@@ -16,10 +17,10 @@ let jwt;
 // Pagination
 const itemsPerPage = 5;
 let currentPage = 1;
-let autoshops = {};
+let autoshops = [];
 let updateAutoShopDetails = {};
 
-const retrieveJwt = async () => {
+retrieveJwt = async () => {
     try {
         let token = localStorage.getItem('DeGuzmanStuffAnywhere');
         return token;
@@ -29,7 +30,7 @@ const retrieveJwt = async () => {
 }
 
 // Fetch auto repair shop list using Axios
-const fetchAutoshopList = async () => {
+fetchAutoshopList = async () => {
     try {
         const jwtToken = await retrieveJwt();
 
@@ -39,7 +40,7 @@ const fetchAutoshopList = async () => {
                 'Content-Type': 'application/json',
             },
         });
-        const response = await axiosWithToken.get('http://192.168.1.36:8080/app/auto-repair-shops/all');
+        const response = await axiosWithToken.get('http://localhost:8080/app/auto-repair-shops/all');
         return response.data.list;
     } catch (error) {
         console.error('Error fetching auto repair shop list:', error.message);
@@ -47,7 +48,7 @@ const fetchAutoshopList = async () => {
     }
 };
 
-const fetchAutoShopById = async (autoShopId) => {
+fetchAutoShopById = async (autoShopId) => {
     try {
         const jwtToken = await retrieveJwt();
 
@@ -57,7 +58,7 @@ const fetchAutoShopById = async (autoShopId) => {
                 'Content-Type': 'application/json',
             },
         });
-        const response = await axiosWithToken.get(`http://192.168.1.36:8080/app/auto-repair-shops/repair-shop/search/id/${autoShopId}`);
+        const response = await axiosWithToken.get(`http://localhost:8080/app/auto-repair-shops/repair-shop/search/id/${autoShopId}`);
         return response.data.autoShop;
     } catch (error) {
         console.error('Error fetching auto repair shop with ID: ', updateAutoShopDetails, error.message);
@@ -65,7 +66,7 @@ const fetchAutoShopById = async (autoShopId) => {
 }
 
 // Render auto repair shop list items
-const renderAutoshopList = (autoshops, page) => {
+renderAutoshopList = (autoshops, page) => {
     const startIdx = (page - 1) * itemsPerPage;
     const endIdx = startIdx + itemsPerPage;
     const autoshopsToDisplay = autoshops.slice(startIdx, endIdx);
@@ -73,6 +74,7 @@ const renderAutoshopList = (autoshops, page) => {
     autoShopListContainer.innerHTML = '';
 
     autoshopsToDisplay.forEach((autoshop, index) => {
+        console.log(autoshop)
         const autoshopElement = document.createElement('div');
         autoshopElement.classList.add('autoshop-element');
         autoshopElement.dataset.index = startIdx + index;
@@ -95,32 +97,38 @@ const renderAutoshopList = (autoshops, page) => {
         autoshopElement.appendChild(nameElement);
 
         autoshopElement.addEventListener('click', () => openModal(autoshop));
+        console.log(autoshopElement)
 
         autoShopListContainer.appendChild(autoshopElement);
     });
 };
 
-// addModalButton.addEventListener('click', () => openAddModal());
+addModalButton.addEventListener('click', () => openAddModal());
 
 const openAddModal = () => {
-    // Clear the modal content (if needed)
-    addModalContent.innerHTML = `
-        <h2>Add Repair Shop</h2>
-        <hr />
-        <div class="modal-body">
-            <input class="input" type="text" name="autoShopName" placeholder="Repair Shop Name" />
-            <input class="input" type="text" name="address" placeholder="Address" /><br />
-            <input class="input" type="text" name="city" placeholder="City" /><br />
-            <input class="input" type="text" name="state" placeholder="State" /><br />
-            <input class="input" type="text" name="zip" placeholder="Zipcode" /><br />
-        </div><hr />
-        <button id="submitBtn" class="add-button" onClick=submitInfo()>Submit</button><br /><br />
-        <script>submitBtn.addEventListener('click', () => submitInfo())</script>
-    `;
-    myAddModal.style.display = 'block';
+    try {
+        // Clear the modal content (if needed)
+        addModalContent.innerHTML = `
+            <h2>Add Repair Shop</h2>
+            <hr />
+            <div class="modal-body">
+                <input class="input" type="text" name="autoShopName" placeholder="Repair Shop Name" />
+                <input class="input" type="text" name="address" placeholder="Address" /><br />
+                <input class="input" type="text" name="city" placeholder="City" /><br />
+                <input class="input" type="text" name="state" placeholder="State" /><br />
+                <input class="input" type="text" name="zip" placeholder="Zipcode" /><br />
+            </div><hr />
+            <button id="submitBtn" class="add-button" onClick="submitInfo()">Submit</button><br /><br />
+            <script>submitBtn.addEventListener('click', () => submitInfo())</script>
+        `;
+        myAddModal.style.display = 'block';
+    } catch (error) {
+        console.error('Error opening add modal:', error);
+    }
 };
 
-const submitInfo = async () => {
+
+submitInfo = async () => {
     try {
         // Get book information from the form or wherever it's stored
         const autoShopName = document.querySelector('input[name="autoShopName"]').value;
@@ -150,7 +158,7 @@ const submitInfo = async () => {
         });
 
         // Send a POST request to add the book information
-        const response = await axiosWithToken.post('http://192.168.1.36:8080/app/auto-repair-shops/add', data);
+        const response = await axiosWithToken.post('http://localhost:8080/app/auto-repair-shops/add', data);
 
         // Optionally, handle the response or perform additional actions
         console.log('Office added successfully:', response.data);
@@ -169,7 +177,7 @@ const submitInfo = async () => {
 }
 
 // Open modal with auto repair shop details
-const openModal = (autoshop) => {
+openModal = (autoshop) => {
     modalContent.innerHTML = `
         <h2>${autoshop.autoShopName}</h2><hr />
         <p>Address: ${autoshop.address}</p>
@@ -183,7 +191,7 @@ const openModal = (autoshop) => {
 };
 
 // Function to confirm auto shop deletion
-const confirmDeleteAutoShop = (autoShopId) => {
+confirmDeleteAutoShop = (autoShopId) => {
     const confirmModal = window.confirm('Are you sure you want to delete this auto repair shop?');
     if (confirmModal) {
         deleteAutoShop(autoShopId);
@@ -191,7 +199,7 @@ const confirmDeleteAutoShop = (autoShopId) => {
 };
 
 // Function to handle auto shop deletion
-const deleteAutoShop = async (autoShopId) => {
+deleteAutoShop = async (autoShopId) => {
     try {
         const jwtToken = await retrieveJwt();
 
@@ -202,7 +210,7 @@ const deleteAutoShop = async (autoShopId) => {
             },
         });
         // Send a DELETE request to your API endpoint
-        await axiosWithToken.delete(`http://192.168.1.36:8080/app/auto-repair-shops/delete/${autoShopId}`);
+        await axiosWithToken.delete(`http://localhost:8080/app/auto-repair-shops/delete/${autoShopId}`);
 
         // Optionally, you can reload the auto shop list after deletion
         autoshops = await fetchAutoshopList();
@@ -215,7 +223,7 @@ const deleteAutoShop = async (autoShopId) => {
     }
 };
 
-const openUpdateModal = async (autoShopId) => {
+openUpdateModal = async (autoShopId) => {
     try {
         updateAutoShopDetails = await fetchAutoShopById(autoShopId);
         if (updateAutoShopDetails) {
@@ -242,7 +250,7 @@ const openUpdateModal = async (autoShopId) => {
 };
 
 // Function to submit the update
-const submitUpdate = async (autoShopId) => {
+submitUpdate = async (autoShopId) => {
     try {
         const updateAutoShopName = document.getElementById('updateAutoShopName').value;
         const updateAddress = document.getElementById('updateAddress').value;
@@ -272,7 +280,7 @@ const submitUpdate = async (autoShopId) => {
             },
         });
         
-        const response = await axiosWithToken.put(`http://192.168.1.36:8080/app/auto-repair-shops/update/${data.autoShopId}`, data);
+        const response = await axiosWithToken.put(`http://localhost:8080/app/auto-repair-shops/update/${data.autoShopId}`, data);
 
         console.log('Auto Repair Shop updated successfully:', response);
 
@@ -314,6 +322,7 @@ window.onclick = (event) => {
 // Initialize page
 const initPage = async () => {
     autoshops = await fetchAutoshopList();
+    console.log(autoshops)
     renderAutoshopList(autoshops, currentPage);
     renderPagination();
 };
@@ -341,3 +350,6 @@ const onPageClick = (page) => {
 
 // Initialize the page
 initPage();
+
+});
+
