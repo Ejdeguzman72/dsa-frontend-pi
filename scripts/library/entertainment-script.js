@@ -45,7 +45,7 @@ const fetchEntertainmentList = async () => {
                 'Content-Type': 'application/json',
             },
         });
-        const response = await axiosWithToken.get('http://192.168.1.36:8080/app/entertainment/all');
+        const response = await axiosWithToken.get('http://localhost:8080/app/entertainment/all');
         return response.data.list || [];
     } catch (error) {
         console.error('Error fetching entertainment list:', error.message);
@@ -63,7 +63,7 @@ const fetchEntertainmentById = async (entityId) => {
                 'Content-Type': 'application/json',
             },
         });
-        const response = await axiosWithToken.get(`http://192.168.1.36:8080/app/entertainment/search/id/${entityId}`);
+        const response = await axiosWithToken.get(`http://localhost:8080/app/entertainment/search/id/${entityId}`);
         return response.data.entertainment;
     } catch (error) {
         console.error('Error fetching entertainment list:', error.message);
@@ -82,7 +82,7 @@ const fetchEntertainmentTypes = async () => {
                 'Content-Type': 'application/json',
             },
         });
-        const response = await axiosWithToken.get('http://192.168.1.36:8080/app/entertainment-types/all');
+        const response = await axiosWithToken.get('http://localhost:8080/app/entertainment-types/all');
         entertainmentTypes = response.data.list; // Store entertainment types in state
     } catch (error) {
         console.error('Error fetching entertainment types:', error);
@@ -149,7 +149,7 @@ const deleteEntry = async (entityId) => {
                 'Content-Type': 'application/json',
             },
         });
-        await axiosWithToken.delete(`http://192.168.1.36:8080/app/entertainment/delete/${entityId}`);
+        await axiosWithToken.delete(`http://localhost:8080/app/entertainment/delete/${entityId}`);
         
         entertainmentEntries = await fetchEntertainmentList();
         renderEntertainmentList(entertainmentEntries, currentPage);
@@ -204,7 +204,7 @@ const submitInfo = async () => {
             },
         });
 
-        const response = await axiosWithToken.post('http://192.168.1.36:8080/app/entertainment/add', data);
+        const response = await axiosWithToken.post('http://localhost:8080/app/entertainment/add', data);
 
         console.log('Entry added successfully:', response.data);
 

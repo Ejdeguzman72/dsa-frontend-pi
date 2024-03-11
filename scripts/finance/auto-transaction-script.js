@@ -49,7 +49,7 @@ const fetchAutotrxList = async () => {
                 'Content-Type': 'application/json',
             },
         });
-        const response = await axiosWithToken.get('http://192.168.1.36:8080/app/auto-transactions/all');
+        const response = await axiosWithToken.get('http://localhost:8080/app/auto-transactions/all');
         return response.data.list;
     } catch (error) {
         console.error('Error fetching auto repair transaction list:', error.message);
@@ -67,7 +67,7 @@ const fetchTransactionById = async (autoTrxId) => {
                 'Content-Type': 'application/json',
             },
         });
-        const response = await axiosWithToken.get(`http://192.168.1.36:8080/app/auto-transactions/transaction/search/id/${autoTrxId}`);
+        const response = await axiosWithToken.get(`http://localhost:8080/app/auto-transactions/transaction/search/id/${autoTrxId}`);
         return response.data.transaction
     } catch (error) {
         console.error('Error fetching transaction list:', error.message);
@@ -85,7 +85,7 @@ const fetchVehicleList = async () => {
                 'Content-Type': 'application/json',
             },
         });
-        const response = await axiosWithToken.get('http://192.168.1.36:8080/app/vehicles/all');
+        const response = await axiosWithToken.get('http://localhost:8080/app/vehicles/all');
         vehicles = response.data.list;
     } catch (error) {
         console.error('Error fetching vehicle list:', error.message);
@@ -103,7 +103,7 @@ const fetchAutoShops = async () => {
                 'Content-Type': 'application/json',
             },
         });
-        const response = await axiosWithToken.get('http://192.168.1.36:8080/app/auto-repair-shops/all');
+        const response = await axiosWithToken.get('http://localhost:8080/app/auto-repair-shops/all');
         autoShops = response.data.list;
     } catch (error) {
         console.error('Error fetching auto repair shop list:', error.message);
@@ -121,7 +121,7 @@ const fetchTransactionTypesList = async () => {
                 'Content-Type': 'application/json',
             },
         });
-        const response = await axiosWithToken.get('http://192.168.1.36:8080/app/transaction-types/all');
+        const response = await axiosWithToken.get('http://localhost:8080/app/transaction-types/all');
         transactionTypes = response.data.list;
     } catch (error) {
         console.error('Error fetching transaction type list:', error.message);
@@ -139,7 +139,7 @@ const fetchUsers = async () => {
                 'Content-Type': 'application/json',
             },
         });
-        const response = await axiosWithToken.get('http://192.168.1.36:8080/app/users/all');
+        const response = await axiosWithToken.get('http://localhost:8080/app/users/all');
         users = response.data.list;
     } catch (error) {
         console.error('Error fetching user list:', error.message);
@@ -259,7 +259,7 @@ const deleteEntry = async (autoTrxId) => {
                 'Content-Type': 'application/json',
             },
         });
-        await axiosWithToken.delete(`http://192.168.1.36:8080/app/auto-transactions/delete/${autoTrxId}`);
+        await axiosWithToken.delete(`http://localhost:8080/app/auto-transactions/delete/${autoTrxId}`);
         
         // Optionally, you can reload the vehicleId list after deletion
         entries = await fetchAutotrxList();
@@ -337,7 +337,7 @@ const submitInfo = async () => {
             },
         });
 
-        const response = await axiosWithToken.post('http://192.168.1.36:8080/app/auto-transactions/add', data);
+        const response = await axiosWithToken.post('http://localhost:8080/app/auto-transactions/add', data);
 
         console.log('Entry added successfully:', response.data);
 
@@ -430,7 +430,7 @@ const submitUpdate = async (autoTrxId) => {
             },
         });
 
-        const response = await axiosWithToken.put(`http://192.168.1.36:8080/app/auto-transactions/update/${data.autoTrxId}`, data);
+        const response = await axiosWithToken.put(`http://localhost:8080/app/auto-transactions/update/${data.autoTrxId}`, data);
 
         console.log('Transaction updated successfully:', response);
 

@@ -4,7 +4,7 @@ async function login() {
 
     try {
         // Make a request to your authentication API endpoint
-        const response = await fetch('http://192.168.1.36:8080/api/auth/signin', {
+        const response = await fetch('http://localhost:8080/api/auth/signin', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

@@ -45,7 +45,7 @@ const fetchGymTrackerList = async () => {
                 'Content-Type': 'application/json',
             },
         });
-        const response = await axiosWithToken.get('http://192.168.1.36:8080/app/gym-tracker/all');
+        const response = await axiosWithToken.get('http://localhost:8080/app/gym-tracker/all');
         return response.data.list;
     } catch (error) {
         console.error('Error fetching gym tracker list:', error.message);
@@ -63,7 +63,7 @@ const fetchExerciseEntry = async (exerciseId) => {
                 'Content-Type': 'application/json',
             },
         });
-        const response = await axiosWithToken.get(`http://192.168.1.36:8080/app/gym-tracker/exercise/search/id/${exerciseId}`);
+        const response = await axiosWithToken.get(`http://localhost:8080/app/gym-tracker/exercise/search/id/${exerciseId}`);
         return response.data.exercise;
     } catch (error) {
         console.error('Error fetching exercise entry:', error.message);
@@ -81,7 +81,7 @@ const fetchExerciseTypes = async () => {
                 'Content-Type': 'application/json',
             },
         });
-        const response = await axiosWithToken.get('http://192.168.1.36:8080/app/exercise-type/all');
+        const response = await axiosWithToken.get('http://localhost:8080/app/exercise-type/all');
         exerciseTypes = response.data.list;
     } catch (error) {
         console.error('Error fetching exercise type list:', error.message);
@@ -99,7 +99,7 @@ const fetchUsers = async () => {
                 'Content-Type': 'application/json',
             },
         });
-        const response = await axiosWithToken.get('http://192.168.1.36:8080/app/users/all');
+        const response = await axiosWithToken.get('http://localhost:8080/app/users/all');
         users = response.data.list;
     } catch (error) {
         console.error('Error fetching user type list:', error.message);
@@ -191,7 +191,7 @@ const deleteEntry = async (exerciseId) => {
                 'Content-Type': 'application/json',
             },
         });
-        await axiosWithToken.delete(`http://192.168.1.36:8080/app/gym-tracker/delete/${exerciseId}`);
+        await axiosWithToken.delete(`http://localhost:8080/app/gym-tracker/delete/${exerciseId}`);
         
         // Optionally, you can reload the vehicleId list after deletion
         entries = await fetchGymTrackerList();
@@ -305,7 +305,7 @@ const submitInfo = async () => {
             },
         });
 
-        const response = await axiosWithToken.post('http://192.168.1.36:8080/app/gym-tracker/add', data);
+        const response = await axiosWithToken.post('http://localhost:8080/app/gym-tracker/add', data);
 
         console.log('Entry added successfully:', response.data);
 
@@ -353,7 +353,7 @@ const submitUpdate = async (exerciseId) => {
             },
         });
 
-        const response = await axiosWithToken.put(`http://192.168.1.36:8080/app/gym-tracker/update/${data.exerciseId}`, data);
+        const response = await axiosWithToken.put(`http://localhost:8080/app/gym-tracker/update/${data.exerciseId}`, data);
 
         console.log('Exercise Entry updated successfully:', response);
 

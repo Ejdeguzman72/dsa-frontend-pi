@@ -40,7 +40,7 @@ const fetchMusicList = async () => {
                 'Content-Type': 'application/json',
             },
         });
-        const response = await axiosWithToken.get('http://192.168.1.36:8080/app/music/all');
+        const response = await axiosWithToken.get('http://localhost:8080/app/music/all');
         return response.data.list;
     } catch (error) {
         console.error('Error fetching music list:', error.message);
@@ -58,7 +58,7 @@ const fetchMusicById = async (songId) => {
                 'Content-Type': 'application/json',
             },
         });
-        const response = await axiosWithToken.get(`http://192.168.1.36:8080/app/music/song/id/${songId}`);
+        const response = await axiosWithToken.get(`http://localhost:8080/app/music/song/id/${songId}`);
         return response.data.song;
     } catch (error) {
         console.error('Error fetching music:', error.message);
@@ -133,7 +133,7 @@ const submitInfo = async () => {
         });
 
         // Send a POST request to add the book information
-        const response = await axiosWithToken.post('http://192.168.1.36:8080/app/music/add-song-information', data);
+        const response = await axiosWithToken.post('http://localhost:8080/app/music/add-song-information', data);
 
         // Optionally, handle the response or perform additional actions
         console.log('Book added successfully:', response.data);
@@ -181,7 +181,7 @@ const deleteEntry = async (songId) => {
                 'Content-Type': 'application/json',
             },
         });
-        await axiosWithToken.delete(`http://192.168.1.36:8080/app/music/delete/${songId}`);
+        await axiosWithToken.delete(`http://localhost:8080/app/music/delete/${songId}`);
         
         // Optionally, you can reload the music list after deletion
         entries = await fetchMusicList();
@@ -245,7 +245,7 @@ const submitUpdate = async (songId) => {
             },
         });
 
-        const response = await axiosWithToken.put(`http://192.168.1.36:8080/app/music/update/${data.songId}`, data);
+        const response = await axiosWithToken.put(`http://localhost:8080/app/music/update/${data.songId}`, data);
 
         console.log('Song Information updated successfully:', response);
 

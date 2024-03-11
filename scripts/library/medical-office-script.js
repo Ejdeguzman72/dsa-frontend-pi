@@ -40,7 +40,7 @@ const fetchMedicalOfficeList = async () => {
                 'Content-Type': 'application/json',
             },
         });
-        const response = await axiosWithToken.get('http://192.168.1.36:8080/app/medical-offices/all');
+        const response = await axiosWithToken.get('http://localhost:8080/app/medical-offices/all');
         return response.data.list;
     } catch (error) {
         console.error('Error fetching medical office list:', error.message);
@@ -58,7 +58,7 @@ const fetchMedicalOfficeById = async (medicalOfficeId) => {
                 'Content-Type': 'application/json',
             },
         });
-        const response = await axiosWithToken.get(`http://192.168.1.36:8080/app/medical-offices/offices/search/id/${medicalOfficeId}`);
+        const response = await axiosWithToken.get(`http://localhost:8080/app/medical-offices/offices/search/id/${medicalOfficeId}`);
         return response.data.medicalOffice;
     } catch (error) {
         console.error('Error fetching medical office:', error.message);
@@ -143,7 +143,7 @@ const submitInfo = async () => {
         });
 
         // Send a POST request to add the book information
-        const response = await axiosWithToken.post('http://192.168.1.36:8080/app/medical-offices/add', data);
+        const response = await axiosWithToken.post('http://localhost:8080/app/medical-offices/add', data);
 
         // Optionally, handle the response or perform additional actions
         console.log('Office added successfully:', response.data);
@@ -193,7 +193,7 @@ const deleteEntry = async (medicalOfficeId) => {
                 'Content-Type': 'application/json',
             },
         });
-        await axiosWithToken.delete(`http://192.168.1.36:8080/app/medical-offices/delete/${medicalOfficeId}`);
+        await axiosWithToken.delete(`http://localhost:8080/app/medical-offices/delete/${medicalOfficeId}`);
         
         // Optionally, you can reload the contact list after deletion
         entries = await fetchMedicalOfficeList();
@@ -263,7 +263,7 @@ const submitUpdate = async (medicalOfficeId) => {
             },
         });
 
-        const response = await axiosWithToken.put(`http://192.168.1.36:8080/app/medical-offices/update/${data.medicalOfficeId}`, data);
+        const response = await axiosWithToken.put(`http://localhost:8080/app/medical-offices/update/${data.medicalOfficeId}`, data);
 
         console.log('Medical Office updated successfully:', response);
 

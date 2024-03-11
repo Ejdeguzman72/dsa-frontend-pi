@@ -40,7 +40,7 @@ const fetchGarageInventoryList = async () => {
                 'Content-Type': 'application/json',
             },
         });
-        const response = await axiosWithToken.get('http://192.168.1.36:8080/app/inventory/all');
+        const response = await axiosWithToken.get('http://localhost:8080/app/inventory/all');
         return response.data.list;
     } catch (error) {
         console.error('Error fetching garage inventory list:', error.message);
@@ -58,7 +58,7 @@ const fetchGarageItemById = async (inventoryId) => {
                 'Content-Type': 'application/json',
             },
         });
-        const response = await axiosWithToken.get(`http://192.168.1.36:8080/app/inventory/search/id/${inventoryId}`);
+        const response = await axiosWithToken.get(`http://localhost:8080/app/inventory/search/id/${inventoryId}`);
         return response.data.inventory;
     } catch (error) {
         console.error('Error fetching inventory:', error.message);
@@ -159,7 +159,7 @@ const submitInfo = async () => {
         });
 
         // Send a POST request to add the book information
-        const response = await axiosWithToken.post('http://192.168.1.36:8080/app/inventory/add', data);
+        const response = await axiosWithToken.post('http://localhost:8080/app/inventory/add', data);
 
         // Optionally, handle the response or perform additional actions
         console.log('Item added successfully:', response.data);
@@ -209,7 +209,7 @@ const deleteEntry = async (inventoryId) => {
                 'Content-Type': 'application/json',
             },
         });
-        await axiosWithToken.delete(`http://192.168.1.36:8080/app/inventory/delete/${inventoryId}`);
+        await axiosWithToken.delete(`http://localhost:8080/app/inventory/delete/${inventoryId}`);
         
         // Optionally, you can reload the contact list after deletion
         entries = await fetchGarageInventoryList();
@@ -278,7 +278,7 @@ const submitUpdate = async (inventoryId) => {
 
         console.log(data);
 
-        const response = await axios.put(`http://192.168.1.36:8080/app/inventory/update/${data.inventoryId}`, data);
+        const response = await axios.put(`http://localhost:8080/app/inventory/update/${data.inventoryId}`, data);
 
         console.log('Inventory updated successfully:', response);
 
