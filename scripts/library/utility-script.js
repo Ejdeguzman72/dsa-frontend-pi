@@ -13,13 +13,14 @@ const updateModal = document.getElementById('myUpdateModal');
 const updateModalContent = document.getElementById('updateModalContent');
 // const updateCloseBtn = document.getElementById('updateCloseBtn');
 const updateSubmitBtn = document.getElementById('updateSubmitBtn');
-let jwt;
+let utilityTypesDropdown;
 
 // Pagination
 const itemsPerPage = 5;
 
 let currentPage = 1;
 let utilities = [];
+let utilityTypes = [];
 let updatedUtilityDetails = {};
 
 const retrieveJwt = async () => {
@@ -50,6 +51,35 @@ const fetchUtilityList = async () => {
         return [];
     }
 };
+
+const fetchUtilityTypes = async () => {
+    try {
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        const response = await axiosWithToken.get('http://localhost:8080/app/utility-types/all');
+        utilityTypes = response.data.list;
+    } catch (error) {
+        console.error('Error fetching utility type list:', error.message);
+        return [];
+    }
+}
+
+const renderUtilityTypesDropdown = () => {
+    utilityTypesDropdown.innerHTML = '';
+
+    utilityTypes.forEach(type => {
+        const option = document.createElement("option");
+        option.value = type.utilityTypeId;
+        option.text = type.utilityTypeDescr;
+        utilityTypesDropdown.add(option);
+    });
+}
 
 const fetchUtilityById = async (utilityId) => {
     try {
@@ -84,22 +114,10 @@ const renderUtilityList = (utilityList, page) => {
         const nameElement = document.createElement('h3');
         nameElement.textContent = utility.name;
 
-        const phoneElement = document.createElement('p');
-        phoneElement.textContent = `Phone: ${utility.phone}`;
-
-        const urlElement = document.createElement('p');
-        urlElement.textContent = utility.url;
-
-        const dueDateElement = document.createElement('p');
-        dueDateElement.textContent = utility.dueDate;
-
         const utilityTypeDescrElement = document.createElement('p');
         utilityTypeDescrElement.textContent = utility.utilityTypeDescr;
 
         utilityElement.appendChild(nameElement);
-        utilityElement.appendChild(phoneElement);
-        utilityElement.appendChild(urlElement);
-        utilityElement.appendChild(dueDateElement);
         utilityElement.appendChild(utilityTypeDescrElement);
 
         utilityElement.addEventListener('click', () => openModal(utility));
@@ -108,9 +126,9 @@ const renderUtilityList = (utilityList, page) => {
     });
 };
 
-// addModalButton.addEventListener('click', () => openAddModal());
+addModalButton.addEventListener('click', () => openAddModal());
 
-const openAddModal = () => {
+const openAddModal = async () => {
     // Clear the modal content (if needed)
     addModalContent.innerHTML = `
         <h2>Add Utility Information</h2><hr />
@@ -119,10 +137,15 @@ const openAddModal = () => {
             <input class="input" type="text" name="phone" placeholder="Phone" /><br />
             <input class="input" type="text" name="url" placeholder="URL" /><br />
             <input class="input" type="text" name="phone" placeholder="Due Date" /><br />
+            <select id="utilityTypesDropdown name="utilityTypeId"></select>
         </div><hr />
         <button id="submitBtn" class="add-button" onClick=submitInfo()>Submit</button><br /><br />
         <script>submitBtn.addEventListener('click', () => submitInfo())</script>
     `;
+    utilityTypesDropdown = document.getElementById('utilityTypesDropdown');
+    await fetchUtilityTypes();
+    renderPagination();
+    renderUtilityTypesDropdown();
     myAddModal.style.display = 'block';
 };
 
@@ -177,18 +200,18 @@ const submitInfo = async () => {
 const openModal = (utility) => {
     modalContent.innerHTML = `
         <h2>${utility.name}</h2><hr />
-        <p>Author: ${utility.phone}</p>
-        <p>${utility.url}</p>
-        <p>${utility.dueDate}</p>
-        <p>${utility.utilityTypeDescr}</p>
+        <p>Phone: ${utility.phone}</p>
+        <p>Rntity URL - ${utility.url}</p>
+        <p>Due Date: ${utility.dueDate}</p>
+        <p>Type: ${utility.utilityTypeDescr}</p>
         <button onClick="openUpdateModal(${utility.utilityId})" class="update-button">Update</button>
-        <button onClick="confirmDeleteUtility(${utility.utilityId})" class="delete-button">Delete</button>
+        <button onClick="confirmDeleteEntry(${utility.utilityId})" class="delete-button">Delete</button>
     `;
     modal.style.display = 'block';
 };
 
 // Function to confirm utility deletion
-const confirmDeleteUtility = (utilityId) => {
+const confirmDeleteEntry = (utilityId) => {
     const confirmModal = window.confirm('Are you sure you want to delete these utility details?');
     if (confirmModal) {
         deleteUtility(utilityId);
@@ -196,7 +219,7 @@ const confirmDeleteUtility = (utilityId) => {
 };
 
 // Function to handle utility deletion
-const deleteUtility = async (utilityId) => {
+const deleteEntry = async (utilityId) => {
     try {
         const jwtToken = await retrieveJwt();
 
@@ -209,8 +232,8 @@ const deleteUtility = async (utilityId) => {
         await axiosWithToken.delete(`http://localhost:8080/app/utility-information/delete/${utilityId}`);
 
         // Optionally, you can reload the auto shop list after deletion
-        utilities = await fetchUtilityList();
-        renderUtilityList(utilities, currentPage);
+        entries = await fetchUtilityList();
+        renderUtilityList(entries, currentPage);
 
         // Close the modal after successful deletion
         modal.style.display = 'none';
