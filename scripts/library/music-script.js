@@ -114,7 +114,9 @@ const submitInfo = async () => {
         const artist = document.querySelector('input[name="artist"]').value;
         const genre = document.querySelector('input[name="genre"]').value;
 
-        // Validate the required fields if needed
+        if (!title || !artist || !genre) {
+            throw new Error('Please fill in all required fields');
+        }
 
         // Create a data object with the book information
         const data = {

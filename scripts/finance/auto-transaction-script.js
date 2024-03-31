@@ -319,6 +319,10 @@ const submitInfo = async () => {
         const trxTypeId = document.querySelector('select[name="trxTypeId"]').value;
         const userId = document.querySelector('select[name="userId"]').value;
 
+        if (!autoTrxDate || !amount || !vehicleId || !autoShopId || !trxTypeId || !userId) {
+            throw new Error('Please fill all required fields');
+        }
+
         const data = {
             autoTrxDate: autoTrxDate,
             amount: amount,

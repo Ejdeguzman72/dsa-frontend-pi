@@ -274,6 +274,10 @@ const submitInfo = async () => {
         const trxTypeId = document.querySelector('select[name="trxTypeId"]').value;
         const userId = document.querySelector('select[name="userId"]').value;
 
+        if (!medTrxDate || !amount || !medicalOfficeId || !trxTypeId || !userId) {
+            throw new Error('Please fill all required fields');
+        }
+
         const data = {
             medTrxDate: medTrxDate,
             amount: amount,

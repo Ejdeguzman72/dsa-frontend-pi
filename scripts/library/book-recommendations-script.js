@@ -123,7 +123,10 @@ const submitInfo = async () => {
         const author = document.querySelector('input[name="author"]').value;
         const description = document.querySelector('textarea').value;
 
-        // Validate the required fields if needed
+        // Validate required fields
+        if (!title || !author || !description) {
+            throw new Error("Please fill in all required fields.");
+        }
 
         // Create a data object with the book information
         const bookData = {

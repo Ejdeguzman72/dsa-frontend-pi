@@ -135,7 +135,9 @@ submitInfo = async () => {
         const state = document.querySelector('input[name="state"]').value;
         const zip = document.querySelector('input[name="zip"]').value;
 
-        // Validate the required fields if needed
+        if (!autoShopName || !address || !city || !state || !zip) {
+            throw new Error("Please fill in all required fields.");
+        }
 
         // Create a data object with the book information
         const data = {

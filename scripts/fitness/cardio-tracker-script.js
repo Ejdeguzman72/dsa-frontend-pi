@@ -240,6 +240,10 @@ const submitInfo = async () => {
         const cardioTypeId = document.querySelector('select[name="cardioTypeId"]').value;
         const userId = document.querySelector('select[name="userId"]').value;
 
+        if (!cDate || !cDistance || !cTime || !cardioTypeId || !userId) {
+            throw new Error("Please fill in all required fields.");
+        }
+
         const data = {
             cDate: cDate,
             cDistance: cDistance,

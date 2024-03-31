@@ -206,6 +206,10 @@ const submitInfo = async () => {
         const zip = document.querySelector('input[name="zip"]').value;
         const restaurantTypeId = document.querySelector('select[name="restaurantTypeId"]').value;
 
+        if (!name || !address || !city || !state || !zip || !restaurantTypeId) {
+            throw new Error("Please fill in all required fields.");
+        }
+
         const data = {
             name: name,
             address: address,

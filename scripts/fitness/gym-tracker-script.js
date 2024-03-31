@@ -286,6 +286,10 @@ const submitInfo = async () => {
         const exerciseTypeId = document.querySelector('select[name="exerciseTypeId"]').value;
         const userId = document.querySelector('select[name="userId"]').value;
 
+        if (!exerciseName || !sets || !reps || !weight || !date || !exerciseTypeId || !udserId) {
+            throw new Error('Please fill all required fields');
+        }
+
         const data = {
             exerciseName: exerciseName,
             sets: sets,

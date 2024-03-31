@@ -138,7 +138,9 @@ const submitInfo = async () => {
         const location = document.querySelector('select[name="location"]').value;
         const quantity = document.querySelector('select[name="quantity"]').value;
 
-        // Validate the required fields if needed
+        if (!name || !description || !condition || !location || !quantity) {
+            throw new Error("Please fill in all required fields.");
+        }
 
         // Create a data object with the book information
         const data = {

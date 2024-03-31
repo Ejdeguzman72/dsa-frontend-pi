@@ -238,6 +238,10 @@ const submitInfo = async () => {
         const trxTypeId = document.querySelector('select[name="trxTypeId"]').value;
         const userId = document.querySelector('select[name="userId"]').value;
 
+        if (!paymentDate || !amount || !entity || !trxTypeId || !userId) {
+            throw new Error('Please fill all required fields');
+        }
+
         const data = {
             paymentDate: paymentDate,
             amount: amount,

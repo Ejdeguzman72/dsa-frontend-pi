@@ -151,14 +151,14 @@ const submitInfo = async () => {
     try {
         // Get book information from the form or wherever it's stored
         const make = document.querySelector('input[name="make"]').value;
-        console.log(make)
         const model = document.querySelector('input[name="model"]').value;
-        console.log(model);
         const year = document.querySelector('input[name="year"]').value;
         const transmission = document.querySelector('select[name="transmission"]').value;
         const capacity = document.querySelector('select[name="capacity"]').value;
 
-        // Validate the required fields if needed
+        if (!make || !model || !year || !transmission || !capacity) {
+            throw new Error("Please fill in all required fields.");
+        }
 
         // Create a data object with the book information
         const data = {

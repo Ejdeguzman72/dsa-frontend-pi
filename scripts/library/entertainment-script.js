@@ -190,6 +190,10 @@ const submitInfo = async () => {
         const name = document.querySelector('input[name="name"]').value;
         const entertainmentTypeId = document.querySelector('select[name="entertainmentTypeId"]').value;
 
+        if (!name || !entertainmentTypeId) {
+            throw new Error("Please fill in all required fields.");
+        }
+
         const data = {
             name: name,
             entertainmentTypeId: entertainmentTypeId
