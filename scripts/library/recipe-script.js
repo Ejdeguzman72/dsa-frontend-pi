@@ -3,6 +3,7 @@ const paginationContainer = document.getElementById('pagination');
 const modal = document.getElementById('myModal');
 const modalContent = document.getElementById('modalContent');
 const closeBtn = document.getElementsByClassName('close')[0];
+const recipeChart = document.getElementById('recipeChart');
 
 const retrieveJwt = async () => {
     try {
@@ -64,10 +65,55 @@ const renderRecipeList = (entries, page) => {
     });
 };
 
+const categorizeRestaurants = () => {
+    const categories = {}; // Object to store restaurant categories and their counts
+
+    // Loop through restaurants
+    for (let i = 0; i < recipes.length; i++) {
+        const category = getCategory(recipes[i]);
+        // Increment the count for this category
+        categories[category] = (categories[category] || 0) + 1;
+    }
+
+    // Extracting category names and counts for chart data
+    const categoryNames = Object.keys(categories);
+    const categoryCounts = Object.values(categories);
+
+    // Creating the bar chart
+    new Chart("recipeChart", {
+        type: "bar",
+        data: {
+            labels: categoryNames, // Category names on x-axis
+            datasets: [{
+                data: categoryCounts, // Counts on y-axis
+                backgroundColor: "rgba(0,0,255,0.5)" // Bar color
+            }]
+        },
+        options: {
+            legend: {display: false},
+            title: {
+                display: true,
+                text: "Recipe Categories"
+            },
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
+}
+
+function getCategory(recipe) {
+    return recipe.descr;
+}
+
 // Pagination
 const itemsPerPage = 5;
 let currentPage = 1;
-let recipes = {};
+let recipes = [];
 
 // Open modal with contact info details
 const openModal = (recipe) => {
@@ -101,6 +147,7 @@ window.onclick = (event) => {
 // Initialize page
 const initPage = async () => {
     entries = await fetchRecipeList();
+    categorizeRestaurants();
     renderRecipeList(entries, currentPage);
     renderPagination();
 };
