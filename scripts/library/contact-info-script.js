@@ -136,7 +136,9 @@ const submitInfo = async () => {
         const email = document.querySelector('input[name="email"]').value;
         const birthdate = document.querySelector('input[name="birthdate"]').value;
 
-        // Validate the required fields if needed
+        if (!firstname || !middleInitial || !lastname || !address01 || !city || !state || !zipcode || !phone || !email || !birthdate) {
+            throw new Error("Please fill in all required fields.");
+        }
 
         // Create a data object with the contact information
         const data = {

@@ -1,6 +1,12 @@
 async function login() {
     const username = document.getElementById('username').value;
+    if (username == '') {
+        alert('Username must be filled')
+    }
     const password = document.getElementById('password').value;
+    if (password == '') {
+        alert('Password must be filled');
+    }
 
     try {
         // Make a request to your authentication API endpoint

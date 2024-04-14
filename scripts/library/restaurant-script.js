@@ -20,6 +20,7 @@ let currentPage = 1;
 let restaurants = [];
 let restaurantTypes = [];
 let updatedRestaurantDetails = {};
+let categorizedRestaurantList = new Map([]);
 
 const retrieveJwt = async () => {
     try {
@@ -343,6 +344,7 @@ window.onclick = (event) => {
 // Initialize page
 const initPage = async () => {
     restaurants = await fetchRestaurantList();
+    categorizeRestaurants();
     renderRestaurantList(restaurants, currentPage);
     renderPagination();
 };
