@@ -11,6 +11,7 @@ const updateModal = document.getElementById('myUpdateModal');
 const updateModalContent = document.getElementById('updateModalContent');
 // const updateCloseBtn = document.getElementById('updateCloseBtn');
 const updateSubmitBtn = document.getElementById('updateSubmitBtn');
+const restaurantChart = document.getElementById('restaurantChart');
 let restaurantTypesDropdown;
 
 // Pagination
@@ -20,7 +21,7 @@ let currentPage = 1;
 let restaurants = [];
 let restaurantTypes = [];
 let updatedRestaurantDetails = {};
-let categorizedRestaurantList = new Map([]);
+let restaurantCategoryData = [];
 
 const retrieveJwt = async () => {
     try {
@@ -50,6 +51,54 @@ const fetchRestaurantList = async () => {
         return [];
     }
 };
+
+const categorizeRestaurants = () => {
+    const categories = {}; // Object to store restaurant categories and their counts
+
+    // Loop through restaurants
+    for (let i = 0; i < restaurants.length; i++) {
+        const category = getCategory(restaurants[i]); // Assume you have a function getCategory that returns the category of a restaurant
+        // Increment the count for this category
+        categories[category] = (categories[category] || 0) + 1;
+    }
+
+    // Extracting category names and counts for chart data
+    const categoryNames = Object.keys(categories);
+    const categoryCounts = Object.values(categories);
+
+    // Creating the bar chart
+    new Chart("restaurantChart", {
+        type: "bar",
+        data: {
+            labels: categoryNames, // Category names on x-axis
+            datasets: [{
+                data: categoryCounts, // Counts on y-axis
+                backgroundColor: "rgba(0,0,255,0.5)" // Bar color
+            }]
+        },
+        options: {
+            legend: {display: false},
+            title: {
+                display: true,
+                text: "Restaurant Categories"
+            },
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
+}
+
+// Example function to get the category of a restaurant
+function getCategory(restaurant) {
+    // Assuming the category is stored in the 'category' property of the restaurant object
+    return restaurant.descr;
+}
+
 
 const fetchRestaurantById = async (restaurantId) => {
     try {
