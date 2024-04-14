@@ -65,12 +65,14 @@ const renderRecipeList = (entries, page) => {
     });
 };
 
-const categorizeRestaurants = () => {
+const categorizeRecipes = () => {
     const categories = {}; // Object to store restaurant categories and their counts
 
     // Loop through restaurants
     for (let i = 0; i < recipes.length; i++) {
+        console.log(recipes);
         const category = getCategory(recipes[i]);
+        console.log(category);
         // Increment the count for this category
         categories[category] = (categories[category] || 0) + 1;
     }
@@ -107,6 +109,7 @@ const categorizeRestaurants = () => {
 }
 
 function getCategory(recipe) {
+    console.log(recipe.descr)
     return recipe.descr;
 }
 
@@ -147,7 +150,7 @@ window.onclick = (event) => {
 // Initialize page
 const initPage = async () => {
     entries = await fetchRecipeList();
-    categorizeRestaurants();
+    categorizeRecipes();
     renderRecipeList(entries, currentPage);
     renderPagination();
 };
