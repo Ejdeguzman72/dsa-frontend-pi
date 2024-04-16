@@ -3,7 +3,13 @@ const paginationContainer = document.getElementById('pagination');
 const modal = document.getElementById('myModal');
 const modalContent = document.getElementById('modalContent');
 const closeBtn = document.getElementsByClassName('close')[0];
+const addModalContent = document.getElementById('addModalContent');
+const addModalButton = document.getElementById('addModalButton');
+const myAddModal = document.getElementById('myAddModal');
+const submitBtn = document.getElementById('submitBtn');
 const recipeChart = document.getElementById('recipeChart');
+let recipeTypesDropdown;
+addModalButton.addEventListener('click', () => openAddModal());
 
 const retrieveJwt = async () => {
     try {
@@ -33,6 +39,35 @@ const fetchRecipeList = async () => {
         return [];
     }
 };
+
+const fetchRecipeTypes = async () => {
+    try {
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        const response = await axiosWithToken.get('http://192.168.1.36:8080/app/recipe-types/all');
+        recipeTypes = response.data.list;
+    } catch (error) {
+        console.error('Error fetching recipe type list:', error.message);
+        return [];
+    }
+}
+
+const renderRecipeTypeDropdown = () => {
+    recipeTypesDropdown.innerHTML = '';
+
+    recipeTypes.forEach(type => {
+        const option = document.createElement("option");
+        option.value = type.recipeTypeId;
+        option.text = type.descr;
+        recipeTypesDropdown.add(option);
+    })
+}
 
 // Render recipe list items
 const renderRecipeList = (entries, page) => {
@@ -92,7 +127,7 @@ const categorizeRecipes = () => {
             }]
         },
         options: {
-            legend: {display: false},
+            legend: { display: false },
             title: {
                 display: true,
                 text: "Recipe Categories"
@@ -134,6 +169,96 @@ const openModal = (recipe) => {
     `;
     modal.style.display = 'block';
 };
+
+const openAddModal = async () => {
+    addModalContent.innerHTML = `
+    <h2>Add Recipe Information</h2><hr />
+        <div class="modal-body">
+            <input class="input" type="text" name="name" placeholder="Recipe Name"/><br />
+            <div id="ingredientsContainer">
+                <textarea class="input" name="ingredients" placeholder="Ingredients"></textarea>
+                <button type="button" onclick="addIngredientField()">Add Ingredient</button>
+            </div>
+            <div id="directionsContainer">
+                <textarea class="input" name="directions" placeholder="Directions"></textarea>
+                <button type="button" onclick="addDirectionField()">Add Direction</button>
+            </div>
+            <label for="recipeTypesDropdown">Select Recipe Type:</label>
+            <select id="recipeTypesDropdown" name="recipeTypeId"></select>
+        </div><hr />
+        <button id="submitBtn" class="add-button" onClick=submitInfo()>Submit</button><br /><br />
+    <script>
+        submitBtn.addEventListener('click', () => submitInfo())
+    </script>
+        `;
+    recipeTypesDropdown = document.getElementById('recipeTypesDropdown');
+    await fetchRecipeTypes();
+    renderPagination();
+    renderRecipeTypeDropdown();
+    myAddModal.style.display = 'block';
+};
+
+const addIngredientField = () => {
+    const ingredientsContainer = document.getElementById('ingredientsContainer');
+    const textarea = document.createElement('textarea');
+    textarea.classList.add('input');
+    textarea.setAttribute('name', 'ingredients');
+    textarea.setAttribute('placeholder', 'Ingredients');
+    ingredientsContainer.appendChild(textarea);
+};
+
+const addDirectionField = () => {
+    const directionsContainer = document.getElementById('directionsContainer');
+    const textarea = document.createElement('textarea');
+    textarea.classList.add('input');
+    textarea.setAttribute('name', 'directions');
+    textarea.setAttribute('placeholder', 'Directions');
+    directionsContainer.appendChild(textarea);
+};
+
+const submitInfo = async () => {
+    try {
+        const name = document.querySelector('input[name="name"]').value;
+        const ingredientsInputs = document.querySelectorAll('textarea[name="ingredients"]');
+        const ingredients = Array.from(ingredientsInputs).map(input => input.value);
+        const directionsInputs = document.querySelectorAll('textarea[name="directions"]');
+        const directions = Array.from(directionsInputs).map(input => input.value);
+        const recipeTypeId = document.querySelector('select[name="recipeTypeId"]').value; // Corrected the field name
+
+
+
+        if (!name || !ingredients || !directions || !recipeTypeId) {
+            throw new Error("Please fill in all required fields.");
+        }
+
+        const data = {
+            name: name,
+            ingredients: ingredients,
+            directions: directions,
+            recipeTypeId: recipeTypeId,
+        };
+
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+
+        const response = await axiosWithToken.post('http://192.168.1.36:8080/app/recipes/add', data);
+
+        console.log('Recipe added successfully:', response.data);
+
+        myAddModal.style.display = 'none';
+
+        recipes = await fetchRecipeList();
+        renderRecipeList(recipes, currentPage);
+    } catch (error) {
+        console.error('Error submitting recipes information:', error.message);
+    }
+}
 
 // Close modal
 closeBtn.onclick = () => {

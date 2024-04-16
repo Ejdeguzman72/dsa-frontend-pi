@@ -30,6 +30,21 @@ body {
    border-style: solid;
 }
 
+.recipe-modal-body {
+   width: 1000px;
+   /* margin: 0 auto; */
+   font-family: Tahoma, Verdana, Arial, sans-serif;
+   /* margin: 0; */
+   padding: 25px;
+   background-image: url('../assets/background.jpg');
+   background-size: cover;
+   background-position: center;
+   font-family: Arial, sans-serif;
+   /* height: auto; */
+   border-color: #333;
+   border-style: solid;
+}
+
 footer {
    position: fixed;
    left: 0;
