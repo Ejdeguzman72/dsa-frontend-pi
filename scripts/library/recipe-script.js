@@ -173,7 +173,7 @@ const openModal = (recipe) => {
 const openAddModal = async () => {
     addModalContent.innerHTML = `
     <h2>Add Recipe Information</h2><hr />
-        <div class="modal-body">
+        <div class="recipe-modal-body">
             <input class="input" type="text" name="name" placeholder="Recipe Name"/><br />
             <div id="ingredientsContainer">
                 <textarea class="input" name="ingredients" placeholder="Ingredients"></textarea>
