@@ -130,6 +130,29 @@ const fetchRestaurantTypes = async () => {
         });
         const response = await axiosWithToken.get('http://localhost:8080/app/restaurant-types/all');
         if (Array.isArray(response.data.list)) {
+            restaurantTypes = response.data.list
+        } else {
+            console.error('Expected list of restaurant types but got:', response.data.list);
+            return [];
+        }
+    } catch (error) {
+        console.error('Error fetching restaurant type list:', error.message);
+        return [];
+    }
+}
+
+const fetchRestaurantTypesForFilter = async () => {
+    try {
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        const response = await axiosWithToken.get('http://localhost:8080/app/restaurant-types/all');
+        if (Array.isArray(response.data.list)) {
             return response.data.list
         } else {
             console.error('Expected list of restaurant types but got:', response.data.list);
@@ -153,7 +176,7 @@ const fetchRestaurantTypesDropdown = () => {
 };
 
 const renderRestaurantTypeFilter = async () => {
-    const filterTypes = await fetchRestaurantTypes();
+    const filterTypes = await fetchRestaurantTypesForFilter();
     if (!Array.isArray(filterTypes)) {
         console.error('Expected an array of restaurant types but got:', filterTypes);
         return;
