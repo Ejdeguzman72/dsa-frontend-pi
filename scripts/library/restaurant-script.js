@@ -12,6 +12,7 @@ const updateModalContent = document.getElementById('updateModalContent');
 // const updateCloseBtn = document.getElementById('updateCloseBtn');
 const updateSubmitBtn = document.getElementById('updateSubmitBtn');
 const restaurantChart = document.getElementById('restaurantChart');
+let restaurantFilterDropdown = document.getElementById('restaurant-filter');
 let restaurantTypesDropdown;
 
 // Pagination
@@ -26,7 +27,6 @@ let restaurantCategoryData = [];
 const retrieveJwt = async () => {
     try {
         let token = localStorage.getItem('DeGuzmanStuffAnywhere');
-        console.log('Retrieved token:', token);
         return token;
     } catch (error) {
         console.log('Error retrieving jwt token:', error.message);
@@ -44,7 +44,7 @@ const fetchRestaurantList = async () => {
                 'Content-Type': 'application/json',
             },
         });
-        const response = await axiosWithToken.get('http://192.168.1.36:8080/app/restaurants/all');
+        const response = await axiosWithToken.get('http://localhost:8080/app/restaurants/all');
         return response.data.list;
     } catch (error) {
         console.error('Error fetching restaurant list:', error.message);
@@ -110,7 +110,7 @@ const fetchRestaurantById = async (restaurantId) => {
                 'Content-Type': 'application/json',
             },
         });
-        const response = await axiosWithToken.get(`http://192.168.1.36:8080/app/restaurants/restaurant/search/id/${restaurantId}`);
+        const response = await axiosWithToken.get(`http://localhost:8080/app/restaurants/restaurant/search/id/${restaurantId}`);
         return response.data.restaurant;
     } catch (error) {
         console.error('Error fetching restaurant list:', error.message);
@@ -128,8 +128,13 @@ const fetchRestaurantTypes = async () => {
                 'Content-Type': 'application/json',
             },
         });
-        const response = await axiosWithToken.get('http://192.168.1.36:8080/app/restaurant-types/all');
-        restaurantTypes = response.data.list;
+        const response = await axiosWithToken.get('http://localhost:8080/app/restaurant-types/all');
+        if (Array.isArray(response.data.list)) {
+            return response.data.list
+        } else {
+            console.error('Expected list of restaurant types but got:', response.data.list);
+            return [];
+        }
     } catch (error) {
         console.error('Error fetching restaurant type list:', error.message);
         return [];
@@ -146,6 +151,21 @@ const fetchRestaurantTypesDropdown = () => {
         restaurantTypesDropdown.add(option);
     });
 };
+
+const renderRestaurantTypeFilter = async () => {
+    const filterTypes = await fetchRestaurantTypes();
+    if (!Array.isArray(filterTypes)) {
+        console.error('Expected an array of restaurant types but got:', filterTypes);
+        return;
+    }
+    restaurantFilterDropdown.innerHTML = '<option value="">All Recipes</option>';
+    filterTypes.forEach(type => {
+        const option = document.createElement("option");
+        option.value = type.restaurantTypeId;
+        option.text = type.descr;
+        restaurantFilterDropdown.add(option);
+    });
+}
 
 // Render restaurant list items
 const renderRestaurantList = (entries, page) => {
@@ -205,7 +225,7 @@ const deleteEntry = async (restaurantId) => {
                 'Content-Type': 'application/json',
             },
         });
-        await axiosWithToken.delete(`http://192.168.1.36:8080/app/restaurants/delete/${restaurantId}`);
+        await axiosWithToken.delete(`http://localhost:8080/app/restaurants/delete/${restaurantId}`);
 
         // Optionally, you can reload the restaurant list after deletion
         entries = await fetchRestaurantList();
@@ -278,7 +298,7 @@ const submitInfo = async () => {
             },
         });
 
-        const response = await axiosWithToken.post('http://192.168.1.36:8080/app/restaurants/add', data);
+        const response = await axiosWithToken.post('http://localhost:8080/app/restaurants/add', data);
 
         console.log('Entry added successfully:', response.data);
 
@@ -355,7 +375,7 @@ const submitUpdate = async (restaurantId) => {
             },
         });
 
-        const response = await axiosWithToken.put(`http://192.168.1.36:8080/app/restaurants/update/${data.restaurantId}`, data);
+        const response = await axiosWithToken.put(`http://localhost:8080/app/restaurants/update/${data.restaurantId}`, data);
 
         console.log('Restaurant updated successfully:', response);
 
@@ -392,6 +412,7 @@ window.onclick = (event) => {
 
 // Initialize page
 const initPage = async () => {
+    renderRestaurantTypeFilter();
     restaurants = await fetchRestaurantList();
     categorizeRestaurants();
     renderRestaurantList(restaurants, currentPage);
