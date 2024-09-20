@@ -521,6 +521,35 @@ footer p {
    box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
 }
 
+#restaurant-filter-label {
+   padding: 10px;
+   margin: 10px; 
+   font-size: 20px;
+   font-family: fantasy;
+}
+
+#restaurant-filter {
+   box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+   padding: 10px;
+   font-family: fantasy;
+   margin: 10px;
+   font-size: 20px;
+   width: 200px;
+   border-radius: 15px;
+}
+
+#restaurant-filter:hover {
+   box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+   color: black;
+   background-color: 'black';
+   padding: 10px;
+   font-family: fantasy;
+   margin: 10px;
+   font-size: 20px;
+   width: 200px;
+   border-radius: 15px;
+}
+
 .vehicle-element {
    width: 100%;
    background-color: #dcdcdc;

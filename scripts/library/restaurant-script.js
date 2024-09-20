@@ -34,17 +34,22 @@ const retrieveJwt = async () => {
 }
 
 // Fetch medical office list using Axios
-const fetchRestaurantList = async () => {
+const fetchRestaurantList = async (restaurantTypeId) => {
     try {
         const jwtToken = await retrieveJwt();
-
+        let response;
         const axiosWithToken = axios.create({
             headers: {
                 'Authorization': `Bearer ${jwtToken}`,
                 'Content-Type': 'application/json',
             },
         });
-        const response = await axiosWithToken.get('http://localhost:8080/app/restaurants/all');
+        let selectedType = parseInt(restaurantFilterDropdown.value);
+        if (selectedType && selectedType > 0) {
+            response = await axiosWithToken.get(`http://localhost:8080/app/restaurants/all/search/type/${selectedType}`);
+        } else {
+            response = await axiosWithToken.get('http://localhost:8080/app/restaurants/all');
+        }
         return response.data.list;
     } catch (error) {
         console.error('Error fetching restaurant list:', error.message);
@@ -432,6 +437,14 @@ window.onclick = (event) => {
         updateModal.style.display = 'none';
     }
 };
+
+restaurantFilterDropdown.addEventListener('change', async () => {
+    console.log('Dropdown value selected:', restaurantFilterDropdown.value);
+    restaurants = await fetchRestaurantList(); // Fetch restaurants based on the selected filter
+    renderRestaurantList(restaurants, currentPage); // Re-render the list based on the filter
+    console.log('rendering the new list')
+    renderPagination(); // Update pagination if necessary
+});
 
 // Initialize page
 const initPage = async () => {
