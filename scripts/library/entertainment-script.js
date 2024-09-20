@@ -12,6 +12,7 @@ const updateModal = document.getElementById('myUpdateModal');
 const updateModalContent = document.getElementById('updateModalContent');
 // const updateCloseBtn = document.getElementById('updateCloseBtn');
 const updateSubmitBtn = document.getElementById('updateSubmitBtn');
+const entertainmentTypeFilterDropdown = document.getElementById('entertainment-filter');
 let entertainmentTypesDropdown;
 
 // Constants
@@ -38,14 +39,21 @@ const retrieveJwt = async () => {
 const fetchEntertainmentList = async () => {
     try {
         const jwtToken = await retrieveJwt();
-
+        let response;
         const axiosWithToken = axios.create({
             headers: {
                 'Authorization': `Bearer ${jwtToken}`,
                 'Content-Type': 'application/json',
             },
         });
-        const response = await axiosWithToken.get('http://192.168.1.36:8080/app/entertainment/all');
+        selectedType = entertainmentTypeFilterDropdown.value;
+
+        if (selectedType && selectedType > 0) {
+            response = await axiosWithToken.get(`http://localhost:8080/app/entertainment/all/type/${entityId}`)
+        } else {
+            response = await axiosWithToken.get('http://localhost:8080/app/entertainment/all');
+        }
+
         return response.data.list || [];
     } catch (error) {
         console.error('Error fetching entertainment list:', error.message);
@@ -82,7 +90,7 @@ const fetchEntertainmentTypes = async () => {
                 'Content-Type': 'application/json',
             },
         });
-        const response = await axiosWithToken.get('http://192.168.1.36:8080/app/entertainment-types/all');
+        const response = await axiosWithToken.get('http://localhost:8080/app/entertainment-types/all');
         entertainmentTypes = response.data.list; // Store entertainment types in state
     } catch (error) {
         console.error('Error fetching entertainment types:', error);
@@ -122,6 +130,40 @@ const renderEntertainmentList = (entries, page) => {
         entertainmentListContainer.appendChild(entertainmentElement);
     });
 };
+
+// Fetch entertainment types
+const fetchEntertainmentTypesForFilter = async () => {
+    try {
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        const response = await axiosWithToken.get('http://localhost:8080/app/entertainment-types/all');
+        return response.data.list;
+    } catch (error) {
+        console.error('Error fetching entertainment types:', error);
+    }
+};
+
+const renderEntertainmentTypeFilter = async () => {
+    const filterTypes = await fetchEntertainmentTypesForFilter();
+    if (!Array.isArray(filterTypes)) {
+        console.error('Expected an array of restaurant types but got:', filterTypes);
+        return;
+    }
+    entertainmentTypeFilterDropdown.innerHTML = '<option value="">All Types</option>';
+
+    filterTypes.forEach(type => {
+        const option = document.createAttribute('option');
+        option.value = type.entertainmentTypeId;
+        option.text - type.descr;
+        entertainmentTypeFilterDropdown.add(option);
+    })
+}
 
 const openModal = (entry) => {
     modalContent.innerHTML = `
@@ -241,6 +283,7 @@ window.onclick = (event) => {
 // Initialize page
 const initPage = async () => {
     try {
+        renderEntertainmentTypeFilter();
         entertainmentEntries = await fetchEntertainmentList();
         renderEntertainmentList(entertainmentEntries, currentPage);
         renderPagination();
