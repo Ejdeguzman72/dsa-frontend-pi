@@ -25,7 +25,7 @@ const fetchBlogList = async () => {
                 'Content-Type': 'application/json',
             },
         });
-        const response = await axiosWithToken.get('http://localhost:8080/app/posts/all');
+        const response = await axiosWithToken.get('http://192.168.1.36:8080/app/posts/all');
         return response.data.list;
     } catch (error) {
         console.error('Error fetching blog list:', error.message);

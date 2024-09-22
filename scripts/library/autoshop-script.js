@@ -46,9 +46,9 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log('test')
             if (selectedZipCode && selectedZipCode.trim() !== "") {
                 console.log('selectedZipcode')
-                response = await axiosWithToken.get(`http://localhost:8080/app/auto-repair-shops/all/search/zip/${selectedZipCode}`)
+                response = await axiosWithToken.get(`http://192.168.1.36:8080/app/auto-repair-shops/all/search/zip/${selectedZipCode}`)
             } else {
-                response = await axiosWithToken.get('http://localhost:8080/app/auto-repair-shops/all');
+                response = await axiosWithToken.get('http://192.168.1.36:8080/app/auto-repair-shops/all');
             }
             return response.data.list;
         } catch (error) {
@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     'Content-Type': 'application/json',
                 },
             });
-            const response = await axiosWithToken.get(`http://localhost:8080/app/auto-repair-shops/repair-shop/search/id/${autoShopId}`);
+            const response = await axiosWithToken.get(`http://192.168.1.36:8080/app/auto-repair-shops/repair-shop/search/id/${autoShopId}`);
             return response.data.autoShop;
         } catch (error) {
             console.error('Error fetching auto repair shop with ID: ', updateAutoShopDetails, error.message);
@@ -167,7 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             // Send a POST request to add the book information
-            const response = await axiosWithToken.post('http://localhost:8080/app/auto-repair-shops/add', data);
+            const response = await axiosWithToken.post('http://192.168.1.36:8080/app/auto-repair-shops/add', data);
 
             // Optionally, handle the response or perform additional actions
             console.log('Office added successfully:', response.data);
@@ -219,7 +219,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
             });
             // Send a DELETE request to your API endpoint
-            await axiosWithToken.delete(`http://localhost:8080/app/auto-repair-shops/delete/${autoShopId}`);
+            await axiosWithToken.delete(`http://192.168.1.36:8080/app/auto-repair-shops/delete/${autoShopId}`);
 
             // Optionally, you can reload the auto shop list after deletion
             autoshops = await fetchAutoshopList();
@@ -289,7 +289,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
             });
 
-            const response = await axiosWithToken.put(`http://localhost:8080/app/auto-repair-shops/update/${data.autoShopId}`, data);
+            const response = await axiosWithToken.put(`http://192.168.1.36:8080/app/auto-repair-shops/update/${data.autoShopId}`, data);
 
             console.log('Auto Repair Shop updated successfully:', response);
 
