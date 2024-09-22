@@ -337,7 +337,7 @@ const initPage = async () => {
 
 // Render pagination buttons
 const renderPagination = () => {
-    const totalPages = Math.ceil(entries.length / itemsPerPage);
+    const totalPages = Math.ceil(recipes.length / itemsPerPage);
     paginationContainer.innerHTML = '';
 
     for (let i = 1; i <= totalPages; i++) {
