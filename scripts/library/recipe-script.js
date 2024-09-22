@@ -9,6 +9,7 @@ const myAddModal = document.getElementById('myAddModal');
 const submitBtn = document.getElementById('submitBtn');
 const recipeChart = document.getElementById('recipeChart');
 let recipeTypesDropdown;
+let recipeTypeDropdownFilter = document.getElementById('recipe-filter');
 addModalButton.addEventListener('click', () => openAddModal());
 
 const retrieveJwt = async () => {
@@ -25,14 +26,19 @@ const retrieveJwt = async () => {
 const fetchRecipeList = async () => {
     try {
         const jwtToken = await retrieveJwt();
-
+        let response;
         const axiosWithToken = axios.create({
             headers: {
                 'Authorization': `Bearer ${jwtToken}`,
                 'Content-Type': 'application/json',
             },
         });
-        const response = await axiosWithToken.get('http://localhost:8080/app/recipes/all');
+        let selectedType = recipeTypeDropdownFilter.value;
+        if (selectedType && selectedType > 0) {
+            response = await axiosWithToken.get(`http://localhost:8080/app/recipes/all/types/${selectedType}`);
+        } else {
+            response = await axiosWithToken.get('http://localhost:8080/app/recipes/all');
+        }
         return response.data.list;
     } catch (error) {
         console.error('Error fetching recipe list:', error.message);
@@ -58,6 +64,24 @@ const fetchRecipeTypes = async () => {
     }
 }
 
+const fetchRecipeTypesForFilter = async () => {
+    try {
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        const response = await axiosWithToken.get('http://localhost:8080/app/recipe-types/all');
+        return response.data.list;
+    } catch (error) {
+        console.error('Error fetching recipe type list:', error.message);
+        return [];
+    }
+}
+
 const renderRecipeTypeDropdown = () => {
     recipeTypesDropdown.innerHTML = '';
 
@@ -66,6 +90,21 @@ const renderRecipeTypeDropdown = () => {
         option.value = type.recipeTypeId;
         option.text = type.descr;
         recipeTypesDropdown.add(option);
+    })
+}
+
+const renderRecipeTypesDropdownFilter = async () => {
+    const filterTypes = await fetchRecipeTypesForFilter();
+    if (!Array.isArray(filterTypes)) {
+        console.error('Expected an array of recipe types but got:', filterTypes);
+        return;
+    }
+    recipeTypeDropdownFilter.innerHTML = '<option value="">All Recipe Types</option>';
+    filterTypes.forEach(type => {
+        const option = document.createElement('option');
+        option.value = type.recipeTypeId;
+        option.text = type.descr;
+        recipeTypeDropdownFilter.add(option);
     })
 }
 
@@ -272,11 +311,20 @@ window.onclick = (event) => {
     }
 };
 
+recipeTypeDropdownFilter.addEventListener('change', async () => {
+    console.log('Dropdown value selected', recipeTypeDropdownFilter.value);
+    recipes = await fetchRecipeList();
+    renderRecipeList(recipes, currentPage);
+    console.log('rendering the new list');
+    renderPagination();
+})
+
 // Initialize page
 const initPage = async () => {
-    entries = await fetchRecipeList();
+    renderRecipeTypesDropdownFilter();
+    recipes = await fetchRecipeList();
     categorizeRecipes();
-    renderRecipeList(entries, currentPage);
+    renderRecipeList(recipes, currentPage);
     renderPagination();
 };
 
