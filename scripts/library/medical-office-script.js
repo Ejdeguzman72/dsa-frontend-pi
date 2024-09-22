@@ -338,18 +338,19 @@ const onPageClick = (page) => {
 
 document.addEventListener('DOMContentLoaded', () => {
     myAddModal.addEventListener('click', () => openAddModal());
+    searchButton.addEventListener('click', async () => {
+        try {
+            currentPage = 1; // Reset to first page on new search
+            medicalOffices = await fetchMedicalOfficeList();
+            renderMedicalOfficeList(medicalOffices, currentPage);
+            renderPagination();
+        } catch (error) {
+            console.error('Error fetching medical offices for search:', error.message);
+        }
+    });
 });
 
-searchButton.addEventListener('click', async () => {
-    try {
-        currentPage = 1; // Reset to first page on new search
-        medicalOffices = await fetchMedicalOfficeList();
-        renderMedicalOfficeList(medicalOffices, currentPage);
-        renderPagination();
-    } catch (error) {
-        console.error('Error fetching medical offices for search:', error.message);
-    }
-});
+
 
 // Initialize the page
 initPage();
