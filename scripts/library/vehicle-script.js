@@ -46,9 +46,9 @@ const fetchVehicleList = async (make, year, transmission) => {
         transmissionType = vehicleTransmissionFilterDropdown.value;
 
         if (makeSelectedType && makeSelectedType != null) {
-            response = await axiosWithToken.get(`http://localhost:8080/app/vehicles/all/make/${make}`);
+            response = await axiosWithToken.get(`http://localhost:8080/app/vehicles/all/make/${makeSelectedType}`);
         } else if (yearType && yearType != null) {
-            response = await axiosWithToken.get(`http://localhost:8080/app/vehicles/all/year/${year}`);
+            response = await axiosWithToken.get(`http://localhost:8080/app/vehicles/all/year/${yearType}`);
         } else {
             response = await axiosWithToken.get('http://localhost:8080/app/vehicles/all');
         }
