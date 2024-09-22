@@ -357,19 +357,17 @@ document.addEventListener('DOMContentLoaded', () => {
         renderAutoshopList(autoshops, currentPage);
     };
 
-    document.addEventListener('DOMContentLoaded', () => {
-        searchButton.addEventListener('click', async () => {
-            try {
-                currentPage = 1; // Reset to first page on new search
-                autoshops = await fetchAutoshopList();
-                renderAutoshopList(autoshops, currentPage);
-                renderPagination();
-            } catch (error) {
-                console.error('Error fetching auto repair shops for search:', error.message);
-            }
-        });
-    }
-
+    
+    searchButton.addEventListener('click', async () => {
+        try {
+            currentPage = 1; // Reset to first page on new search
+            autoshops = await fetchAutoshopList();
+            renderAutoshopList(autoshops, currentPage);
+            renderPagination();
+        } catch (error) {
+            console.error('Error fetching auto repair shops for search:', error.message);
+        }
+    });
 
     // Initialize the page
     initPage();
