@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
     // Make an HTTP request to fetch the JSON data using Axios
-    axios.get('http://localhost:8081/app/weather/city/New York')
+    axios.get('http://192.168.1.36:8081/app/weather/city/New York')
         .then(response => {
             // Call the renderWeatherInfo function with the received data
             renderWeatherInfo(response.data);
