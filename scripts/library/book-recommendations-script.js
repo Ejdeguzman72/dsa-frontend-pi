@@ -11,6 +11,7 @@ const updateModal = document.getElementById('myUpdateModal');
 const updateModalContent = document.getElementById('updateModalContent');
 // const updateCloseBtn = document.getElementById('updateCloseBtn');
 const updateSubmitBtn = document.getElementById('updateSubmitBtn');
+let bookAuthorFilterDropdown = document.getElementById('book-author-filter');
 let jwt;
 
 // Pagination
@@ -34,6 +35,29 @@ const retrieveJwt = async () => {
 const fetchBookList = async () => {
     try {
         const jwtToken = await retrieveJwt();
+        let response;
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        let selectedAuthor = bookAuthorFilterDropdown.value;
+        if (selectedAuthor && selectedAuthor.trim() !== "") {
+            response = await axiosWithToken.get(`http://192.168.1.36:8080/app/books/book/search/author/${author}`);
+        } else {
+            response = await axiosWithToken.get('http://192.168.1.36:8080/app/books/all');
+        }
+        return response.data.list;
+    } catch (error) {
+        console.error('Error fetching book list:', error.message);
+        return [];
+    }
+};
+
+const fetchAuthorList = async () => {
+    try {
+        const jwtToken = await retrieveJwt();
 
         const axiosWithToken = axios.create({
             headers: {
@@ -42,12 +66,14 @@ const fetchBookList = async () => {
             },
         });
         const response = await axiosWithToken.get('http://192.168.1.36:8080/app/books/all');
-        return response.data.list;
+        const books = response.data.list;
+        const authorList = [...new Set(entries.map(book => book.author))];
+        return authorList;
     } catch (error) {
-        console.error('Error fetching book list:', error.message);
+        console.error('Error fetching author list:', error.message);
         return [];
     }
-};
+}
 
 const fetchBookById = async (bookId) => {
     try {
@@ -97,6 +123,21 @@ const renderBookList = (bookList, page) => {
         bookListContainer.appendChild(bookElement);
     });
 };
+
+const renderAuthorDropdown = async () => {
+    const authorFilterTypes = await fetchAuthorList();
+    if (!Array.isArray(authorFilterTypes)) {
+        console.log('Expected an array of authors but got: ', authorFilterTypes);
+        return;
+    }
+    bookAuthorFilterDropdown.innnerHTML = '<option value="">All Authors</option>';
+    authorFilterTypes.forEach(author => {
+        const option = document.createElement('option');
+        option.value = author;
+        option.text = author;
+        bookAuthorFilterDropdown.add(option);
+    })
+}
 
 addModalButton.addEventListener('click', () => openAddModal());
 
@@ -290,6 +331,7 @@ window.onclick = (event) => {
 
 // Initialize page
 const initPage = async () => {
+    renderAuthorDropdown();
     books = await fetchBookList();
     renderBookList(books, currentPage);
     renderPagination();
@@ -315,6 +357,14 @@ const onPageClick = (page) => {
     currentPage = page;
     renderBookList(books, currentPage);
 };
+
+bookAuthorFilterDropdown.addEventListener('change', async () => {
+    console.log('Dropdown value selected', bookAuthorFilterDropdown.value);
+    books = await fetchBookList();
+    renderBookList(entries, currentPage);
+    console.log('rendering the new list');
+    renderPagination();
+})
 
 // Initialize the page
 initPage();
