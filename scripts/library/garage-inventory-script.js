@@ -11,6 +11,8 @@ const updateModal = document.getElementById('myUpdateModal');
 const updateModalContent = document.getElementById('updateModalContent');
 // const updateCloseBtn = document.getElementById('updateCloseBtn');
 const updateSubmitBtn = document.getElementById('updateSubmitBtn');
+let inventoryConditionDropdownFilter = document.getElementById('entertainment-condition-filter');
+let inventoryLocationDropdownFilter = document.getElementById('entertainment-location-filter');
 
 // Pagination
 const itemsPerPage = 5;
@@ -40,13 +42,53 @@ const fetchGarageInventoryList = async () => {
                 'Content-Type': 'application/json',
             },
         });
-        const response = await axiosWithToken.get('http://192.168.1.36:8080/app/inventory/all');
+        const response = await axiosWithToken.get('http://localhost:8080/app/inventory/all');
         return response.data.list;
     } catch (error) {
         console.error('Error fetching garage inventory list:', error.message);
         return [];
     }
 };
+
+const fetchConditionList = async () => {
+    try {
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        const response = await axiosWithToken.get('http://localhost:8080/app/inventory/all');
+        const entries = response.data.list;
+        const conditionList = [...new Set(entries.map(entry => entry.condition))];
+        return conditionList;
+    } catch (error) {
+        console.error('Error fetching item condition list:', error.message);
+        return [];
+    }
+}
+
+const fetchLocationList = async () => {
+    try {
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        const response = await axiosWithToken.get('http://localhost:8080/app/inventory/all');
+        const entries = response.data.list;
+        const locationList = [...new Set(entries.map(entry => entry.location))];
+        return locationList;
+    } catch (error) {
+        console.error('Error fetching item location list:', error.message);
+        return [];
+    }
+}
 
 const fetchGarageItemById = async (inventoryId) => {
     try {
@@ -58,7 +100,7 @@ const fetchGarageItemById = async (inventoryId) => {
                 'Content-Type': 'application/json',
             },
         });
-        const response = await axiosWithToken.get(`http://192.168.1.36:8080/app/inventory/search/id/${inventoryId}`);
+        const response = await axiosWithToken.get(`http://localhost:8080/app/inventory/search/id/${inventoryId}`);
         return response.data.inventory;
     } catch (error) {
         console.error('Error fetching inventory:', error.message);
@@ -88,6 +130,36 @@ const renderGarageInventoryList = (entries, page) => {
         garageInventoryListContainer.appendChild(garageInventoryElement);
     });
 };
+
+const renderItemConditionDropdown = async () => {
+    const conditionTypes = await fetchConditionList();
+    if (!Array.isArray(conditionTypes)) {
+        console.log('Expected an array of condition types but got: ', manufacturerFilterTypes);
+        return;
+    }
+    inventoryConditionDropdownFilter.innerHTML = '<option value="">All Conditions</option>';
+    conditionTypes.forEach(condition => {
+        const option = document.createElement('option');
+        option.value = condition;
+        option.text = condition;
+        inventoryConditionDropdownFilter.add(option);
+    })
+}
+
+const renderItemLocationDropdown = async () => {
+    const locationFilterTypes = await fetchLocationList();
+    if (!Array.isArray(locationFilterTypes)) {
+        console.log('Expected an array of location types but got: ', locationFilterTypes);
+        return;
+    }
+    inventoryLocationDropdownFilter.innerHTML = '<option value="">All Locations</option>';
+    locationFilterTypes.forEach(location => {
+        const option = document.createElement('option');
+        option.value = location;
+        option.text = location;
+        inventoryLocationDropdownFilter.add(option);
+    })
+}
 
 addModalButton.addEventListener('click', () => openAddModal());
 
@@ -161,7 +233,7 @@ const submitInfo = async () => {
         });
 
         // Send a POST request to add the book information
-        const response = await axiosWithToken.post('http://192.168.1.36:8080/app/inventory/add', data);
+        const response = await axiosWithToken.post('http://localhost:8080/app/inventory/add', data);
 
         // Optionally, handle the response or perform additional actions
         console.log('Item added successfully:', response.data);
@@ -211,7 +283,7 @@ const deleteEntry = async (inventoryId) => {
                 'Content-Type': 'application/json',
             },
         });
-        await axiosWithToken.delete(`http://192.168.1.36:8080/app/inventory/delete/${inventoryId}`);
+        await axiosWithToken.delete(`http://localhost:8080/app/inventory/delete/${inventoryId}`);
         
         // Optionally, you can reload the contact list after deletion
         entries = await fetchGarageInventoryList();
@@ -280,7 +352,7 @@ const submitUpdate = async (inventoryId) => {
 
         console.log(data);
 
-        const response = await axios.put(`http://192.168.1.36:8080/app/inventory/update/${data.inventoryId}`, data);
+        const response = await axios.put(`http://localhost:8080/app/inventory/update/${data.inventoryId}`, data);
 
         console.log('Inventory updated successfully:', response);
 
@@ -318,8 +390,27 @@ window.onclick = (event) => {
         updateModal.style.display = 'none';
     }
 };
+
+inventoryConditionDropdownFilter.addEventListener('change', async () => {
+    console.log('Dropdown value selected', inventoryConditionDropdownFilter.value);
+    entries = await fetchGarageInventoryList();
+    renderGarageInventoryList(entries, currentPage);
+    console.log('rendering the new list');
+    renderPagination();
+})
+
+inventoryLocationDropdownFilter.addEventListener('change', async () => {
+    console.log('Dropdown value selected', inventoryLocationDropdownFilter.value);
+    entries = await fetchGarageInventoryList();
+    renderGarageInventoryList(entries, currentPage);
+    console.log('rendering the new list');
+    renderPagination();
+})
+
 // Initialize page
 const initPage = async () => {
+    renderItemConditionDropdown();
+    renderItemLocationDropdown();
     entries = await fetchGarageInventoryList();
     renderGarageInventoryList(entries, currentPage);
     renderPagination();

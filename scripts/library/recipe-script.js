@@ -35,9 +35,9 @@ const fetchRecipeList = async () => {
         });
         let selectedType = recipeTypeDropdownFilter.value;
         if (selectedType && selectedType > 0) {
-            response = await axiosWithToken.get(`http://192.168.1.36:8080/app/recipes/all/types/${selectedType}`);
+            response = await axiosWithToken.get(`http://localhost:8080/app/recipes/all/types/${selectedType}`);
         } else {
-            response = await axiosWithToken.get('http://192.168.1.36:8080/app/recipes/all');
+            response = await axiosWithToken.get('http://localhost:8080/app/recipes/all');
         }
         return response.data.list;
     } catch (error) {
@@ -56,7 +56,7 @@ const fetchRecipeTypes = async () => {
                 'Content-Type': 'application/json',
             },
         });
-        const response = await axiosWithToken.get('http://192.168.1.36:8080/app/recipe-types/all');
+        const response = await axiosWithToken.get('http://localhost:8080/app/recipe-types/all');
         recipeTypes = response.data.list;
     } catch (error) {
         console.error('Error fetching recipe type list:', error.message);
@@ -74,7 +74,7 @@ const fetchRecipeTypesForFilter = async () => {
                 'Content-Type': 'application/json',
             },
         });
-        const response = await axiosWithToken.get('http://192.168.1.36:8080/app/recipe-types/all');
+        const response = await axiosWithToken.get('http://localhost:8080/app/recipe-types/all');
         return response.data.list;
     } catch (error) {
         console.error('Error fetching recipe type list:', error.message);
@@ -286,7 +286,7 @@ const submitInfo = async () => {
             },
         });
 
-        const response = await axiosWithToken.post('http://192.168.1.36:8080/app/recipes/add', data);
+        const response = await axiosWithToken.post('http://localhost:8080/app/recipes/add', data);
 
         console.log('Recipe added successfully:', response.data);
 

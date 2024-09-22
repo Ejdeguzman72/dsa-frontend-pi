@@ -44,7 +44,7 @@ const fetchCardioList = async () => {
                 'Content-Type': 'application/json',
             },
         });
-        const response = await axiosWithToken.get('http://192.168.1.36:8080/app/cardio-tracker-app/all');
+        const response = await axiosWithToken.get('http://localhost:8080/app/cardio-tracker-app/all');
         return response.data.list;
     } catch (error) {
         console.error('Error fetching cardio tracker list:', error.message);
@@ -62,7 +62,7 @@ const fetchCardioById = async (cardioId) => {
                 'Content-Type': 'application/json',
             },
         });
-        const response = await axiosWithToken.get(`http://192.168.1.36:8080/app/cardio-tracker-app/cardio/id/${cardioId}`);
+        const response = await axiosWithToken.get(`http://localhost:8080/app/cardio-tracker-app/cardio/id/${cardioId}`);
         return response.data.cardio;
     } catch (error) {
         console.error('Error fetching cardio information:', error.message);
@@ -80,7 +80,7 @@ const fetchCardioTypes = async () => {
                 'Content-Type': 'application/json',
             },
         });
-        const response = await axiosWithToken.get('http://192.168.1.36:8080/app/cardio-types/all');
+        const response = await axiosWithToken.get('http://localhost:8080/app/cardio-types/all');
         cardioTypes = response.data.list;
     } catch (error) {
         console.error('Error fetching cardio type list:', error.message);
@@ -98,7 +98,7 @@ const fetchUsers = async () => {
                 'Content-Type': 'application/json',
             },
         });
-        const response = await axiosWithToken.get('http://192.168.1.36:8080/app/users/all');
+        const response = await axiosWithToken.get('http://localhost:8080/app/users/all');
         users = response.data.list;
     } catch (error) {
         console.error('Error fetching user list:', error.message);
@@ -189,7 +189,7 @@ const deleteEntry = async (cardioId) => {
                 'Content-Type': 'application/json',
             },
         });
-        await axiosWithToken.delete(`http://192.168.1.36:8080/app/cardio-tracker-app/delete/${cardioId}`);
+        await axiosWithToken.delete(`http://localhost:8080/app/cardio-tracker-app/delete/${cardioId}`);
         console.log("Deleting entry with ID: " + cardioId);
         // Optionally, you can reload the cardio list after deletion
         entries = await fetchCardioList();
@@ -261,7 +261,7 @@ const submitInfo = async () => {
             },
         });
 
-        const response = await axiosWithToken.post('http://192.168.1.36:8080/app/cardio-tracker-app/add', data);
+        const response = await axiosWithToken.post('http://localhost:8080/app/cardio-tracker-app/add', data);
 
         console.log('Entry added successfully:', response.data);
 
@@ -343,7 +343,7 @@ const submitUpdate = async (cardioId) => {
             },
         });
 
-        const response = await axiosWithToken.put(`http://192.168.1.36:8080/app/cardio-tracker-app/update/${data.cardioId}`, data);
+        const response = await axiosWithToken.put(`http://localhost:8080/app/cardio-tracker-app/update/${data.cardioId}`, data);
 
         console.log('Cardio Entry updated successfully:', response);
 

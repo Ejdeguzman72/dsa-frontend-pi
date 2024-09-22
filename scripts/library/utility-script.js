@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     'Content-Type': 'application/json',
                 },
             });
-            const response = await axiosWithToken.get('http://192.168.1.36:8080/app/utility-information/all');
+            const response = await axiosWithToken.get('http://localhost:8080/app/utility-information/all');
             return response.data.list;
         } catch (error) {
             console.error('Error fetching utility list:', error.message);
@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     'Content-Type': 'application/json',
                 },
             });
-            const response = await axiosWithToken.get('http://192.168.1.36:8080/app/utility-types/all');
+            const response = await axiosWithToken.get('http://localhost:8080/app/utility-types/all');
             utilityTypes = response.data.list;
 
         } catch (error) {
@@ -101,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     'Content-Type': 'application/json',
                 },
             });
-            const response = await axiosWithToken.get(`http://192.168.1.36:8080/app/utility-information/utility/id/${utilityId}`);
+            const response = await axiosWithToken.get(`http://localhost:8080/app/utility-information/utility/id/${utilityId}`);
             return response.data.utility;
         } catch (error) {
             console.error('Error fetching utility with ID: ', utilityId, error.message);
@@ -188,7 +188,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             // Send a POST request to add the utility information
-            const response = await axiosWithToken.post('http://192.168.1.36:8080/app/utility-information/add', utilityData);
+            const response = await axiosWithToken.post('http://localhost:8080/app/utility-information/add', utilityData);
 
             // Optionally, handle the response or perform additional actions
             console.log('Utility added successfully:', response.data);
@@ -239,7 +239,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     'Content-Type': 'application/json',
                 },
             });
-            await axiosWithToken.delete(`http://192.168.1.36:8080/app/utility-information/delete/${utilityId}`);
+            await axiosWithToken.delete(`http://localhost:8080/app/utility-information/delete/${utilityId}`);
 
             // Optionally, you can reload the auto shop list after deletion
             entries = await fetchUtilityList();
@@ -292,7 +292,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             console.log(data);
 
-            const response = await axios.put(`http://192.168.1.36:8080/app/utility-information/update/${data.utilityId}`, data);
+            const response = await axios.put(`http://localhost:8080/app/utility-information/update/${data.utilityId}`, data);
 
             console.log('Utility Information updated successfully:', response);
 
