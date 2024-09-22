@@ -328,7 +328,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Initialize page
 const initPage = async () => {
-    renderRecipeTypesDropdownFilter();
+    await renderRecipeTypesDropdownFilter();
     recipes = await fetchRecipeList();
     categorizeRecipes();
     renderRecipeList(recipes, currentPage);
@@ -354,7 +354,10 @@ const renderPagination = () => {
 const onPageClick = (page) => {
     currentPage = page;
     renderRecipeList(recipes, currentPage);
+    renderPagination();
 };
 
 // Initialize the page
-initPage();
+document.addEventListener('DOMContentLoaded', () => {
+    initPage();
+});
