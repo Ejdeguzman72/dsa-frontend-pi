@@ -311,13 +311,22 @@ window.onclick = (event) => {
     }
 };
 
-recipeTypeDropdownFilter.addEventListener('change', async () => {
-    console.log('Dropdown value selected', recipeTypeDropdownFilter.value);
-    recipes = await fetchRecipeList();
-    renderRecipeList(recipes, currentPage);
-    console.log('rendering the new list');
-    renderPagination();
+document.addEventListener('DOMContentLoaded', () => {
+    const recipeTypeDropdownFilter = document.getElementById('recipe-filter');
+    
+    if (recipeTypeDropdownFilter) {
+        recipeTypeDropdownFilter.addEventListener('change', async () => {
+            console.log('Dropdown value selected', recipeTypeDropdownFilter.value);
+            const recipes = await fetchRecipeList();
+            renderRecipeList(recipes, currentPage);
+            console.log('rendering the new list');
+            renderPagination();
+        });
+    } else {
+        console.error('Dropdown filter element not found');
+    }
 })
+
 
 // Initialize page
 const initPage = async () => {

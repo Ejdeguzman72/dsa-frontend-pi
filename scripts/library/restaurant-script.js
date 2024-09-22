@@ -82,7 +82,7 @@ const categorizeRestaurants = () => {
             }]
         },
         options: {
-            legend: {display: false},
+            legend: { display: false },
             title: {
                 display: true,
                 text: "Restaurant Categories"
@@ -438,13 +438,19 @@ window.onclick = (event) => {
     }
 };
 
-restaurantFilterDropdown.addEventListener('change', async () => {
-    console.log('Dropdown value selected:', restaurantFilterDropdown.value);
-    restaurants = await fetchRestaurantList(); // Fetch restaurants based on the selected filter
-    renderRestaurantList(restaurants, currentPage); // Re-render the list based on the filter
-    console.log('rendering the new list')
-    renderPagination(); // Update pagination if necessary
-});
+document.addEventListener('DOMContentLoaded', () => {
+    const restaurantFilterDropdown = document.getElementById('restaurant-filter');
+    if (restaurantTypesDropdown) {
+        restaurantFilterDropdown.addEventListener('change', async () => {
+            console.log('Dropdown value selected:', restaurantFilterDropdown.value);
+            restaurants = await fetchRestaurantList(); // Fetch restaurants based on the selected filter
+            renderRestaurantList(restaurants, currentPage); // Re-render the list based on the filter
+            console.log('rendering the new list')
+            renderPagination(); // Update pagination if necessary
+        });
+    }
+})
+
 
 // Initialize page
 const initPage = async () => {
