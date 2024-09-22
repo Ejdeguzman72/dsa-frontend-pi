@@ -46,9 +46,9 @@ const fetchRestaurantList = async (restaurantTypeId) => {
         });
         let selectedType = parseInt(restaurantFilterDropdown.value);
         if (selectedType && selectedType > 0) {
-            response = await axiosWithToken.get(`http://localhost:8080/app/restaurants/all/search/type/${selectedType}`);
+            response = await axiosWithToken.get(`http://192.168.1.36:8080/app/restaurants/all/search/type/${selectedType}`);
         } else {
-            response = await axiosWithToken.get('http://localhost:8080/app/restaurants/all');
+            response = await axiosWithToken.get('http://192.168.1.36:8080/app/restaurants/all');
         }
         return response.data.list;
     } catch (error) {
@@ -115,7 +115,7 @@ const fetchRestaurantById = async (restaurantId) => {
                 'Content-Type': 'application/json',
             },
         });
-        const response = await axiosWithToken.get(`http://localhost:8080/app/restaurants/restaurant/search/id/${restaurantId}`);
+        const response = await axiosWithToken.get(`http://192.168.1.36:8080/app/restaurants/restaurant/search/id/${restaurantId}`);
         return response.data.restaurant;
     } catch (error) {
         console.error('Error fetching restaurant list:', error.message);
@@ -133,7 +133,7 @@ const fetchRestaurantTypes = async () => {
                 'Content-Type': 'application/json',
             },
         });
-        const response = await axiosWithToken.get('http://localhost:8080/app/restaurant-types/all');
+        const response = await axiosWithToken.get('http://192.168.1.36:8080/app/restaurant-types/all');
         if (Array.isArray(response.data.list)) {
             restaurantTypes = response.data.list
         } else {
@@ -156,7 +156,7 @@ const fetchRestaurantTypesForFilter = async () => {
                 'Content-Type': 'application/json',
             },
         });
-        const response = await axiosWithToken.get('http://localhost:8080/app/restaurant-types/all');
+        const response = await axiosWithToken.get('http://192.168.1.36:8080/app/restaurant-types/all');
         if (Array.isArray(response.data.list)) {
             return response.data.list
         } else {
@@ -253,7 +253,7 @@ const deleteEntry = async (restaurantId) => {
                 'Content-Type': 'application/json',
             },
         });
-        await axiosWithToken.delete(`http://localhost:8080/app/restaurants/delete/${restaurantId}`);
+        await axiosWithToken.delete(`http://192.168.1.36:8080/app/restaurants/delete/${restaurantId}`);
 
         // Optionally, you can reload the restaurant list after deletion
         entries = await fetchRestaurantList();
@@ -326,7 +326,7 @@ const submitInfo = async () => {
             },
         });
 
-        const response = await axiosWithToken.post('http://localhost:8080/app/restaurants/add', data);
+        const response = await axiosWithToken.post('http://192.168.1.36:8080/app/restaurants/add', data);
 
         console.log('Entry added successfully:', response.data);
 
@@ -403,7 +403,7 @@ const submitUpdate = async (restaurantId) => {
             },
         });
 
-        const response = await axiosWithToken.put(`http://localhost:8080/app/restaurants/update/${data.restaurantId}`, data);
+        const response = await axiosWithToken.put(`http://192.168.1.36:8080/app/restaurants/update/${data.restaurantId}`, data);
 
         console.log('Restaurant updated successfully:', response);
 
