@@ -20,7 +20,6 @@ let recipes = [];
 const retrieveJwt = async () => {
     try {
         let token = localStorage.getItem('DeGuzmanStuffAnywhere');
-        console.log('Retrieved token:', token);
         return token;
     } catch (error) {
         console.log('Error retrieving jwt token:', error.message);
@@ -149,9 +148,7 @@ const categorizeRecipes = () => {
 
     // Loop through restaurants
     for (let i = 0; i < recipes.length; i++) {
-        console.log(recipes);
         const category = getCategory(recipes[i]);
-        console.log(category);
         // Increment the count for this category
         categories[category] = (categories[category] || 0) + 1;
     }
@@ -188,7 +185,6 @@ const categorizeRecipes = () => {
 }
 
 function getCategory(recipe) {
-    console.log(recipe.descr)
     return recipe.descr;
 }
 

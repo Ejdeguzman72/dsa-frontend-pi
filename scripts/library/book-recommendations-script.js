@@ -24,7 +24,6 @@ let updateBookDetais = {};
 const retrieveJwt = async () => {
     try {
         let token = localStorage.getItem('DeGuzmanStuffAnywhere');
-        console.log('Retrieved token:', token);
         return token;
     } catch (error) {
         console.log('Error retrieving jwt token:', error.message);
@@ -44,7 +43,6 @@ const fetchBookList = async () => {
         });
         let selectedAuthor = bookAuthorFilterDropdown.value;
         if (selectedAuthor && selectedAuthor.trim() !== "") {
-            console.log('asdkljfh')
             response = await axiosWithToken.get(`http://192.168.1.36:8080/app/books/book/search/author/${selectedAuthor}`);
         } else {
             response = await axiosWithToken.get('http://192.168.1.36:8080/app/books/all');

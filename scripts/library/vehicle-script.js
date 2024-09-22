@@ -23,7 +23,6 @@ let updatedVehicleDetails = {};
 const retrieveJwt = async () => {
     try {
         let token = localStorage.getItem('DeGuzmanStuffAnywhere');
-        console.log('Retrieved token:', token);
         return token;
     } catch (error) {
         console.log('Error retrieving jwt token:', error.message);
@@ -113,7 +112,6 @@ const fetchVehicleTransmission = async () => {
         const response = await axiosWithToken.get('http://192.168.1.36:8080/app/vehicles/all');
         const vehicles = response.data.list;
         const vehhiclesByTransmission = [...new Set(vehicles.map(vehicle => vehicle.transmission))];
-        console.log(vehhiclesByTransmission);
         return vehhiclesByTransmission;
     } catch (error) {
         console.error('Error fetching vehicle list:', error.message);
@@ -180,7 +178,6 @@ const renderVehicleManufacturerDropdownFilter = async () => {
 
 const renderVehicleYearDropdownFilter = async () => {
     const vehicleYearList = await fetchVehicleYear();
-    console.log(vehicleYearList);
     if (!Array.isArray(vehicleYearList)) {
         console.log('Expected an array of entertainment types but got: ', vehicleYearList);
         return;
@@ -196,7 +193,6 @@ const renderVehicleYearDropdownFilter = async () => {
 
 const renderVehicleTransmissionDropdownFilter = async () => {
     const vehicleTransmissionFilter = await fetchVehicleTransmission();
-    console.log(vehicleTransmissionFilter);
     if (!Array.isArray(vehicleTransmissionFilter)) {
         console.log('Expected an array of entertainment types but got: ', vehicleTransmissionFilter);
         return;

@@ -31,7 +31,6 @@ let updatedTranasction = {};
 const retrieveJwt = async () => {
     try {
         let token = localStorage.getItem('DeGuzmanStuffAnywhere');
-        console.log('Retrieved token:', token);
         return token;
     } catch (error) {
         console.log('Error retrieving jwt token:', error.message);
@@ -401,13 +400,9 @@ const openUpdateModal = async (autoTrxId) => {
 const submitUpdate = async (autoTrxId) => {
     // try {
         const updateAmount = document.getElementById('updateAmount').value;
-        console.log(updateAmount);
         const updateAutoTrxDate = document.getElementById('updateAutoTrxDate').value;
-        console.log(updateAutoTrxDate);
         const updateVehicleId = document.getElementById('vehicleDropdown').value;
-        console.log(updateVehicleId);
         const updateAutoShopId = document.getElementById('autoShopDropdown').value;
-        console.log(updateAutoShopId);
         const updateTrxTypeId = document.getElementById('trxTypeDropdown').value;
         const updateUserId = document.getElementById('userDropdown').value;
 
