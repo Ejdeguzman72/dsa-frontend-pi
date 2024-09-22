@@ -311,9 +311,7 @@ window.onclick = (event) => {
     }
 };
 
-document.addEventListener('DOMContentLoaded', () => {
-    const recipeTypeDropdownFilter = document.getElementById('recipe-filter');
-    
+document.addEventListener('DOMContentLoaded', () => {    
     if (recipeTypeDropdownFilter) {
         recipeTypeDropdownFilter.addEventListener('change', async () => {
             console.log('Dropdown value selected', recipeTypeDropdownFilter.value);

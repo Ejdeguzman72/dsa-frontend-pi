@@ -439,8 +439,7 @@ window.onclick = (event) => {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-    const restaurantFilterDropdown = document.getElementById('restaurant-filter');
-    if (restaurantTypesDropdown) {
+    if (restaurantFilterDropdown) {
         restaurantFilterDropdown.addEventListener('change', async () => {
             console.log('Dropdown value selected:', restaurantFilterDropdown.value);
             restaurants = await fetchRestaurantList(); // Fetch restaurants based on the selected filter
