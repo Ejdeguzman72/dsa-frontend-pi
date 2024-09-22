@@ -10,7 +10,11 @@ const submitBtn = document.getElementById('submitBtn');
 const updateModal = document.getElementById('myUpdateModal');
 const updateModalContent = document.getElementById('updateModalContent');
 // const updateCloseBtn = document.getElementById('updateCloseBtn');
+const musicArtistFilterDropdown = document.getElementById('music-artist-filter');
 const updateSubmitBtn = document.getElementById('updateSubmitBtn');
+let musicGenreFilterDropdown = document.getElementById('music-genre-filter')
+let artistSearchInput = document.getElementById('artist-search-input');
+let artistSearchBtn = document.getElementById('artist-search-btn');
 
 // Pagination
 const itemsPerPage = 5;
@@ -33,20 +37,64 @@ const retrieveJwt = async () => {
 const fetchMusicList = async () => {
     try {
         const jwtToken = await retrieveJwt();
-
+        let response;
         const axiosWithToken = axios.create({
             headers: {
                 'Authorization': `Bearer ${jwtToken}`,
                 'Content-Type': 'application/json',
             },
         });
-        const response = await axiosWithToken.get('http://192.168.1.36:8080/app/music/all');
+        let selectedGenre = musicGenreFilterDropdown.value;
+        let selectedArtist = artistSearchInput.value;
+        if (selectedGenre && selectedGenre.trim() !== "") {
+            response = await axiosWithToken.get(`http://192.168.1.36:8080/app/music/all/genre/${selectedGenre}`);
+        } else if (selectedArtist && selectedArtist.trim() !== "") {
+            response = await axiosWithToken.get(`http://192.168.1.36:8080/app/music/all/artist/${selectedArtist}`);
+        } else {
+            response = await axiosWithToken.get('http://192.168.1.36:8080/app/music/all');
+        }
         return response.data.list;
     } catch (error) {
         console.error('Error fetching music list:', error.message);
         return [];
     }
 };
+
+const fetchGenreList = async () => {
+    try {
+        const jwtToken = await retrieveJwt();
+        let response;
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        
+        response = await axiosWithToken.get('http://192.168.1.36:8080/app/music/all');
+        const musicList = response.data.list;
+        const genreList = [...new Set(musicList.map(entry => entry.genre))];
+        return genreList;
+    } catch (error) {
+        console.error('Error fetching genre list:', error.message);
+        return [];
+    }
+};
+
+const renderMusicGenreDropdownFilter = async () => {
+    const genreTypes = await fetchGenreList();
+    if (!Array.isArray(genreTypes)) {
+        console.log('Expected an array of genre types but got: ', genreTypes);
+        return;
+    }
+    musicGenreFilterDropdown.innerHTML = '<option value="">All Genres</option>';
+    genreTypes.forEach(genre => {
+        const option = document.createElement('option');
+        option.value = genre;
+        option.text = genre;
+        musicGenreFilterDropdown.add(option);
+    })
+}
 
 const fetchMusicById = async (songId) => {
     try {
@@ -110,9 +158,9 @@ const openAddModal = () => {
 const submitInfo = async () => {
     try {
         // Get book information from the form or wherever it's stored
-        const title = document.querySelector('input[name="title"]').value;
-        const artist = document.querySelector('input[name="artist"]').value;
-        const genre = document.querySelector('input[name="genre"]').value;
+        const title = document.querySelector('input[name="title"]').value.trim();
+        const artist = document.querySelector('input[name="artist"]').value.trim();
+        const genre = document.querySelector('input[name="genre"]').value.trim();
 
         if (!title || !artist || !genre) {
             throw new Error('Please fill in all required fields');
@@ -138,7 +186,7 @@ const submitInfo = async () => {
         const response = await axiosWithToken.post('http://192.168.1.36:8080/app/music/add-song-information', data);
 
         // Optionally, handle the response or perform additional actions
-        console.log('Book added successfully:', response.data);
+        console.log('Entry added successfully:', response.data);
 
         // Close the add modal after successful submission
         myAddModal.style.display = 'none';
@@ -282,8 +330,28 @@ window.onclick = (event) => {
     }
 };
 
+musicGenreFilterDropdown.addEventListener('change', async () => {
+    console.log('Dropdown value selected', musicGenreFilterDropdown.value);
+    musicEntries = await fetchMusicList();
+    renderMusicList(musicEntries, currentPage);
+    console.log('rendering the new list');
+    renderPagination();
+})
+
+artistSearchBtn.addEventListener('click', async () => {
+    try {
+        currentPage = 1; // Reset to first page on new search
+        musicEntries = await fetchMusicList();
+        renderMusicList(musicEntries, currentPage);
+        renderPagination();
+    } catch (error) {
+        console.error('Error fetching music entries for search:', error.message);
+    }
+});
+
 // Initialize page
 const initPage = async () => {
+    renderMusicGenreDropdownFilter();
     music = await fetchMusicList();
     renderMusicList(music, currentPage);
     renderPagination();

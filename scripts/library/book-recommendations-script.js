@@ -44,7 +44,8 @@ const fetchBookList = async () => {
         });
         let selectedAuthor = bookAuthorFilterDropdown.value;
         if (selectedAuthor && selectedAuthor.trim() !== "") {
-            response = await axiosWithToken.get(`http://192.168.1.36:8080/app/books/book/search/author/${author}`);
+            console.log('asdkljfh')
+            response = await axiosWithToken.get(`http://192.168.1.36:8080/app/books/book/search/author/${selectedAuthor}`);
         } else {
             response = await axiosWithToken.get('http://192.168.1.36:8080/app/books/all');
         }
@@ -130,7 +131,7 @@ const renderAuthorDropdown = async () => {
         console.log('Expected an array of authors but got: ', authorFilterTypes);
         return;
     }
-    bookAuthorFilterDropdown.innnerHTML = '<option value="">All Authors</option>';
+    bookAuthorFilterDropdown.innerHTML = '<option value="">All Authors</option>';
     authorFilterTypes.forEach(author => {
         const option = document.createElement('option');
         option.value = author;
@@ -361,7 +362,7 @@ const onPageClick = (page) => {
 bookAuthorFilterDropdown.addEventListener('change', async () => {
     console.log('Dropdown value selected', bookAuthorFilterDropdown.value);
     books = await fetchBookList();
-    renderBookList(entries, currentPage);
+    renderBookList(books, currentPage);
     console.log('rendering the new list');
     renderPagination();
 })

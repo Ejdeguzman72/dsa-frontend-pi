@@ -322,6 +322,13 @@ footer p {
    padding: 10px;
 }
 
+#artist-search-input {
+   border-radius: 15px;
+   font-family: fantasy;
+   font-size: 20px;
+   padding: 10px;
+}
+
 .general-trx-element {
    width: 100%;
    background-color: #dcdcdc;
@@ -382,6 +389,12 @@ footer p {
    box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
 }
 
+
+#book-filter-label {
+   font-size: 20px;
+   font-family: fantasy;
+}
+
 .book-element {
    width: 100%;
    background-color: #dcdcdc;
@@ -425,6 +438,26 @@ footer p {
 
 .contact-element:hover {
    box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+}
+
+#book-author-filter {
+   box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+   padding: 10px;
+   font-family: fantasy;
+   margin: 10px;
+   font-size: 20px;
+   width: 200px;
+   border-radius: 15px;
+}
+
+#music-genre-filter {
+   box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+   padding: 10px;
+   font-family: fantasy;
+   margin: 10px;
+   font-size: 20px;
+   width: 200px;
+   border-radius: 15px;
 }
 
 .entertainment-element {
@@ -551,6 +584,21 @@ footer p {
 
 .restaurant-element:hover {
    box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+}
+
+#music-filter-label {
+   font-size: 20px;
+   font-family: fantasy;
+}
+
+#music-artist-filter {
+   box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+   padding: 10px;
+   font-family: fantasy;
+   margin: 10px;
+   font-size: 20px;
+   width: 200px;
+   border-radius: 15px;
 }
 
 #restaurant-filter-label {

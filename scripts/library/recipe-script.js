@@ -12,6 +12,11 @@ let recipeTypesDropdown;
 let recipeTypeDropdownFilter = document.getElementById('recipe-filter');
 addModalButton.addEventListener('click', () => openAddModal());
 
+// Pagination
+const itemsPerPage = 5;
+let currentPage = 1;
+let recipes = [];
+
 const retrieveJwt = async () => {
     try {
         let token = localStorage.getItem('DeGuzmanStuffAnywhere');
@@ -187,11 +192,6 @@ function getCategory(recipe) {
     return recipe.descr;
 }
 
-// Pagination
-const itemsPerPage = 5;
-let currentPage = 1;
-let recipes = [];
-
 // Open modal with contact info details
 const openModal = (recipe) => {
     modalContent.innerHTML = `
@@ -353,7 +353,7 @@ const renderPagination = () => {
 // Handle pagination button click
 const onPageClick = (page) => {
     currentPage = page;
-    renderRecipeList(entries, currentPage);
+    renderRecipeList(recipes, currentPage);
 };
 
 // Initialize the page
