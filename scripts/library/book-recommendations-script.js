@@ -67,7 +67,7 @@ const fetchAuthorList = async () => {
         });
         const response = await axiosWithToken.get('http://192.168.1.36:8080/app/books/all');
         const books = response.data.list;
-        const authorList = [...new Set(entries.map(book => book.author))];
+        const authorList = [...new Set(books.map(book => book.author))];
         return authorList;
     } catch (error) {
         console.error('Error fetching author list:', error.message);
