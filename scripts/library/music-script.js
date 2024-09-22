@@ -359,7 +359,7 @@ const initPage = async () => {
 
 // Render pagination buttons
 const renderPagination = () => {
-    const totalPages = Math.ceil(music.length / itemsPerPage);
+    const totalPages = Math.ceil(musicEntries.length / itemsPerPage);
     paginationContainer.innerHTML = '';
 
     for (let i = 1; i <= totalPages; i++) {
@@ -375,7 +375,7 @@ const renderPagination = () => {
 // Handle pagination button click
 const onPageClick = (page) => {
     currentPage = page;
-    renderMusicList(music, currentPage);
+    renderMusicList(musicEntries, currentPage);
 };
 
 // Initialize the page
