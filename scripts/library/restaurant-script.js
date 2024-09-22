@@ -186,7 +186,7 @@ const renderRestaurantTypeFilter = async () => {
         console.error('Expected an array of restaurant types but got:', filterTypes);
         return;
     }
-    restaurantFilterDropdown.innerHTML = '<option value="">All Recipes</option>';
+    restaurantFilterDropdown.innerHTML = '<option value="">All Restaurants</option>';
     filterTypes.forEach(type => {
         const option = document.createElement("option");
         option.value = type.restaurantTypeId;
