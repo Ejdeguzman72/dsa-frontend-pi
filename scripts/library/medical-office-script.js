@@ -100,8 +100,6 @@ const renderMedicalOfficeList = (entries, page) => {
     });
 };
 
-addModalButton.addEventListener('click', () => openAddModal());
-
 const openAddModal = () => {
     // Clear the modal content (if needed)
     addModalContent.innerHTML = `
@@ -337,6 +335,10 @@ const onPageClick = (page) => {
     currentPage = page;
     renderMedicalOfficeList(medicalOffices, currentPage);
 };
+
+document.addEventListener('DOMContentLoaded', () => {
+    myAddModal.addEventListener('click', () => openAddModal());
+});
 
 searchButton.addEventListener('click', async () => {
     try {
