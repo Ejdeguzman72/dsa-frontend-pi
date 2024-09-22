@@ -11,7 +11,9 @@ const updateModal = document.getElementById('myUpdateModal');
 const updateModalContent = document.getElementById('updateModalContent');
 // const updateCloseBtn = document.getElementById('updateCloseBtn');
 const updateSubmitBtn = document.getElementById('updateSubmitBtn');
-
+let vehicleManufacturerFilterDropdown = document.getElementById('vehicle-make-filter');
+let vehicleYearFilterDropdown = document.getElementById('vehicle-year-filter');
+let vehicleTransmissionFilterDropdown = document.getElementById('vehicle-transmission-filter');
 // Pagination
 const itemsPerPage = 5;
 let currentPage = 1;
@@ -29,7 +31,36 @@ const retrieveJwt = async () => {
 }
 
 // Fetch vehicle list using Axios
-const fetchVehicleList = async () => {
+const fetchVehicleList = async (make, year, transmission) => {
+    try {
+        const jwtToken = await retrieveJwt();
+        let response;
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        makeSelectedType = vehicleManufacturerFilterDropdown.value;
+        yearType = vehicleYearFilterDropdown.value;
+        transmissionType = vehicleTransmissionFilterDropdown.value;
+
+        if (makeSelectedType && makeSelectedType != null) {
+            response = await axiosWithToken.get(`http://localhost:8080/app/vehicles/all/make/${make}`);
+        } else if (yearType && yearType != null) {
+            response = await axiosWithToken.get(`http://localhost:8080/app/vehicles/all/year/${year}`);
+        } else {
+            response = await axiosWithToken.get('http://localhost:8080/app/vehicles/all');
+        }
+
+        return response.data.list;
+    } catch (error) {
+        console.error('Error fetching vehicle list:', error.message);
+        return [];
+    }
+};
+
+const fetchVehicleManufacturers = async () => {
     try {
         const jwtToken = await retrieveJwt();
 
@@ -40,12 +71,55 @@ const fetchVehicleList = async () => {
             },
         });
         const response = await axiosWithToken.get('http://localhost:8080/app/vehicles/all');
-        return response.data.list;
+        const vehicles = response.data.list;
+        const manufacturersList = [...new Set(vehicles.map(vehicle => vehicle.make))];
+        return manufacturersList;
     } catch (error) {
         console.error('Error fetching vehicle list:', error.message);
         return [];
     }
-};
+}
+
+const fetchVehicleYear = async () => {
+    try {
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        const response = await axiosWithToken.get('http://localhost:8080/app/vehicles/all');
+        const vehicles = response.data.list;
+        const vehiclesByList = [...new Set(vehicles.map(vehicle => vehicle.year))];
+        return vehiclesByList;
+    } catch (error) {
+        console.error('Error fetching vehicle list:', error.message);
+        return [];
+    }
+}
+
+const fetchVehicleTransmission = async () => {
+    try {
+        const jwtToken = await retrieveJwt();
+
+        const axiosWithToken = axios.create({
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        const response = await axiosWithToken.get('http://localhost:8080/app/vehicles/all');
+        const vehicles = response.data.list;
+        const vehhiclesByTransmission = [...new Set(vehicles.map(vehicle => vehicle.transmission))];
+        console.log(vehhiclesByTransmission);
+        return vehhiclesByTransmission;
+    } catch (error) {
+        console.error('Error fetching vehicle list:', error.message);
+        return [];
+    }
+}
 
 const fetchVehicleById = async (vehicleId) => {
     try {
@@ -87,6 +161,78 @@ const renderVehicleList = (vehicleList, page) => {
         vehicleListContainer.appendChild(vehilceElement);
     });
 };
+
+const renderVehicleManufacturerDropdownFilter = async () => {
+    const manufacturerFilterTypes = await fetchVehicleManufacturers();
+    console.log(manufacturerFilterTypes);
+    if (!Array.isArray(manufacturerFilterTypes)) {
+        console.log('Expected an array of entertainment types but got: ', manufacturerFilterTypes);
+        return;
+    }
+    vehicleManufacturerFilterDropdown.innerHTML = '<option value="">All Manufacturers</option>';
+    manufacturerFilterTypes.forEach(type => {
+        const option = document.createElement('option');
+        option.value = type;
+        option.text = type;
+        vehicleManufacturerFilterDropdown.add(option);
+    })
+}
+
+const renderVehicleYearDropdownFilter = async () => {
+    const vehicleYearList = await fetchVehicleYear();
+    console.log(vehicleYearList);
+    if (!Array.isArray(vehicleYearList)) {
+        console.log('Expected an array of entertainment types but got: ', vehicleYearList);
+        return;
+    }
+    vehicleYearFilterDropdown.innerHTML = '<option value="">All Years</option>';
+    vehicleYearList.forEach(type => {
+        const option = document.createElement('option');
+        option.value = type;
+        option.text = type;
+        vehicleYearFilterDropdown.add(option);
+    })
+}
+
+const renderVehicleTransmissionDropdownFilter = async () => {
+    const vehicleTransmissionFilter = await fetchVehicleTransmission();
+    console.log(vehicleTransmissionFilter);
+    if (!Array.isArray(vehicleTransmissionFilter)) {
+        console.log('Expected an array of entertainment types but got: ', vehicleTransmissionFilter);
+        return;
+    }
+    vehicleTransmissionFilterDropdown.innerHTML = '<option value="">All Transmission</option>';
+    vehicleTransmissionFilter.forEach(type => {
+        const option = document.createElement('option');
+        option.value = type;
+        option.text = type;
+        vehicleTransmissionFilterDropdown.add(option);
+    })
+}
+
+vehicleManufacturerFilterDropdown.addEventListener('change', async () => {
+    console.log('Dropdown value selected', vehicleManufacturerFilterDropdown.value);
+    vehicles = await fetchVehicleList();
+    renderVehicleList(vehicles, currentPage);
+    console.log('rendering the new list');
+    renderPagination();
+});
+
+vehicleYearFilterDropdown.addEventListener('change', async () => {
+    console.log('Dropdown value selected', vehicleManufacturerFilterDropdown.value);
+    vehicles = await fetchVehicleList();
+    renderVehicleList(vehicles, currentPage);
+    console.log('rendering the new list');
+    renderPagination();
+})
+
+vehicleTransmissionFilterDropdown.addEventListener('change', async () => {
+    console.log('Dropdown value selected', vehicleManufacturerFilterDropdown.value);
+    vehicles = await fetchVehicleList();
+    renderVehicleList(vehicles, currentPage);
+    console.log('rendering the new list');
+    renderPagination();
+})
 
 const confirmDeleteEntry = (vehicleId) => {
     const confirmModal = window.confirm('Are you sure you want to delete this entry?');
@@ -317,6 +463,9 @@ window.onclick = (event) => {
 
 // Initialize page
 const initPage = async () => {
+    renderVehicleManufacturerDropdownFilter();
+    renderVehicleYearDropdownFilter();
+    renderVehicleTransmissionDropdownFilter();
     vehicles = await fetchVehicleList();
     renderVehicleList(vehicles, currentPage);
     renderPagination();

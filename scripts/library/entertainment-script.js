@@ -171,7 +171,7 @@ entertainmentTypeFilterDropdown.addEventListener('change', async () => {
     console.log('Dropdown value selected', entertainmentTypeFilterDropdown.value);
     entertainmentEntries = await fetchEntertainmentList();
     renderEntertainmentList(entertainmentEntries, currentPage);
-    console.log('rendering the nnew list');
+    console.log('rendering the new list');
     renderPagination();
 })
 
