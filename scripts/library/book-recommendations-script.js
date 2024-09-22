@@ -41,7 +41,7 @@ const fetchBookList = async () => {
                 'Content-Type': 'application/json',
             },
         });
-        const response = await axiosWithToken.get('http://192.168.1.36:8080/app/books/all');
+        const response = await axiosWithToken.get('http://localhost:8080/app/books/all');
         return response.data.list;
     } catch (error) {
         console.error('Error fetching book list:', error.message);
@@ -59,7 +59,7 @@ const fetchBookById = async (bookId) => {
                 'Content-Type': 'application/json',
             },
         });
-        const response = await axiosWithToken.get(`http://192.168.1.36:8080/app/books/book/search/id/${bookId}`);
+        const response = await axiosWithToken.get(`http://localhost:8080/app/books/book/search/id/${bookId}`);
         return response.data.book;
     } catch (error) {
         console.error('Error fetching book with ID: ', updateBookDetais, error.message);
@@ -143,9 +143,9 @@ const submitInfo = async () => {
                 'Content-Type': 'application/json',
             },
         });
-        
+
         // Send a POST request to add the book information
-        const response = await axiosWithToken.post('http://192.168.1.36:8080/app/books/add', bookData);
+        const response = await axiosWithToken.post('http://localhost:8080/app/books/add', bookData);
 
         // Optionally, handle the response or perform additional actions
         console.log('Book added successfully:', response.data);
@@ -194,7 +194,7 @@ const deleteBook = async (bookId) => {
                 'Content-Type': 'application/json',
             },
         });
-        await axiosWithToken.delete(`http://192.168.1.36:8080/app/books/delete/${bookId}`);
+        await axiosWithToken.delete(`http://localhost:8080/app/books/delete/${bookId}`);
 
         // Optionally, you can reload the auto shop list after deletion
         books = await fetchBookList();
@@ -222,7 +222,7 @@ const openUpdateModal = async (bookId) => {
         </div><hr />
         <button id="updateSubmitBtn" class="update-button" onClick="submitUpdate(${updateBookDetais.bookId})">Update</button><br /><br />
     `;
-    updateModal.style.display = 'block';
+            updateModal.style.display = 'block';
         } else {
             console.error('Error fetching book details')
         }
@@ -249,7 +249,7 @@ const submitUpdate = async (bookId) => {
 
         console.log(data);
 
-        const response = await axios.put(`http://192.168.1.36:8080/app/books/update/${data.bookId}`, data);
+        const response = await axios.put(`http://localhost:8080/app/books/update/${data.bookId}`, data);
 
         console.log('Book Information updated successfully:', response);
 

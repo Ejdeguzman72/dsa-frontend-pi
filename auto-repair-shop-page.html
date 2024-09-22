@@ -60,6 +60,11 @@
 
    <button id="addModalButton" class="add-button">+</button>
 
+   <label id="zipcode-search-text" for="zipCode">Enter ZIP Code:</label>
+   <input type="text" id="zipCode-search-input" name="zipCode" placeholder="Enter ZIP" maxlength="5" pattern="\d{5}" required>
+   <button type="submit" class="add-button" id="zip-search-btn">Search</button>
+
+
    <div id="myAddModal" class="modal">
       <div class="add-modal-content">
          <div id="addModalContent"></div>
@@ -81,7 +86,7 @@
          <div id="modalContent"></div>
       </div>
    </div>
-<br />
+   <br />
    <footer>
       <p>Edgar Joseph DeGuzman</p>
    </footer>

@@ -46,11 +46,11 @@ const fetchVehicleList = async (make, year, transmission) => {
         transmissionType = vehicleTransmissionFilterDropdown.value;
 
         if (makeSelectedType && makeSelectedType != null) {
-            response = await axiosWithToken.get(`http://192.168.1.36:8080/app/vehicles/all/make/${makeSelectedType}`);
+            response = await axiosWithToken.get(`http://localhost:8080/app/vehicles/all/make/${makeSelectedType}`);
         } else if (yearType && yearType != null) {
-            response = await axiosWithToken.get(`http://192.168.1.36:8080/app/vehicles/all/year/${yearType}`);
+            response = await axiosWithToken.get(`http://localhost:8080/app/vehicles/all/year/${yearType}`);
         } else {
-            response = await axiosWithToken.get('http://192.168.1.36:8080/app/vehicles/all');
+            response = await axiosWithToken.get('http://localhost:8080/app/vehicles/all');
         }
 
         return response.data.list;
@@ -70,7 +70,7 @@ const fetchVehicleManufacturers = async () => {
                 'Content-Type': 'application/json',
             },
         });
-        const response = await axiosWithToken.get('http://192.168.1.36:8080/app/vehicles/all');
+        const response = await axiosWithToken.get('http://localhost:8080/app/vehicles/all');
         const vehicles = response.data.list;
         const manufacturersList = [...new Set(vehicles.map(vehicle => vehicle.make))];
         return manufacturersList;
@@ -90,7 +90,7 @@ const fetchVehicleYear = async () => {
                 'Content-Type': 'application/json',
             },
         });
-        const response = await axiosWithToken.get('http://192.168.1.36:8080/app/vehicles/all');
+        const response = await axiosWithToken.get('http://localhost:8080/app/vehicles/all');
         const vehicles = response.data.list;
         const vehiclesByList = [...new Set(vehicles.map(vehicle => vehicle.year))];
         return vehiclesByList;
@@ -110,7 +110,7 @@ const fetchVehicleTransmission = async () => {
                 'Content-Type': 'application/json',
             },
         });
-        const response = await axiosWithToken.get('http://192.168.1.36:8080/app/vehicles/all');
+        const response = await axiosWithToken.get('http://localhost:8080/app/vehicles/all');
         const vehicles = response.data.list;
         const vehhiclesByTransmission = [...new Set(vehicles.map(vehicle => vehicle.transmission))];
         console.log(vehhiclesByTransmission);
@@ -131,7 +131,7 @@ const fetchVehicleById = async (vehicleId) => {
                 'Content-Type': 'application/json',
             },
         });
-        const response = await axiosWithToken.get(`http://192.168.1.36:8080/app/vehicles/vehicle/id/${vehicleId}`);
+        const response = await axiosWithToken.get(`http://localhost:8080/app/vehicles/vehicle/id/${vehicleId}`);
         return response.data.vehicle;
     } catch (error) {
         console.error('Error fetching vehicle with ID: ', updatedVehicleDetails, error.message);
@@ -252,7 +252,7 @@ const deleteEntry = async (vehicleId) => {
                 'Content-Type': 'application/json',
             },
         });
-        await axiosWithToken.delete(`http://192.168.1.36:8080/app/vehicles/delete/${vehicleId}`);
+        await axiosWithToken.delete(`http://localhost:8080/app/vehicles/delete/${vehicleId}`);
 
         // Optionally, you can reload the vehicleId list after deletion
         entries = await fetchVehicleList();
@@ -325,7 +325,7 @@ const submitInfo = async () => {
         });
 
         // Send a POST request to add the book information
-        const response = await axiosWithToken.post('http://192.168.1.36:8080/app/vehicles/add', data);
+        const response = await axiosWithToken.post('http://localhost:8080/app/vehicles/add', data);
 
         // Optionally, handle the response or perform additional actions
         console.log('vehicle added successfully:', response.data);
@@ -426,7 +426,7 @@ const submitUpdate = async (vehicleId) => {
             },
         });
 
-        const response = await axiosWithToken.put(`http://192.168.1.36:8080/app/vehicles/update/${data.vehicleId}`, data);
+        const response = await axiosWithToken.put(`http://localhost:8080/app/vehicles/update/${data.vehicleId}`, data);
 
         console.log('Vehicle Information updated successfully:', response);
 

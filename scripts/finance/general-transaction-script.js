@@ -43,7 +43,7 @@ const fetchGeneralTrxList = async () => {
                 'Content-Type': 'application/json',
             },
         });
-        const response = await axiosWithToken.get('http://192.168.1.36:8080/app/general-transactions/all');
+        const response = await axiosWithToken.get('http://localhost:8080/app/general-transactions/all');
         return response.data.list;
     } catch (error) {
         console.error('Error fetching general transaction list:', error.message);
@@ -61,7 +61,7 @@ const fetchTransactionById = async (genTrxId) => {
                 'Content-Type': 'application/json',
             },
         });
-        const response = await axiosWithToken.get(`http://192.168.1.36:8080/app/general-transactions/transaction/search/id/${genTrxId}`);
+        const response = await axiosWithToken.get(`http://localhost:8080/app/general-transactions/transaction/search/id/${genTrxId}`);
         return response.data.transaction
     } catch (error) {
         console.error('Error fetching transaction list:', error.message);
@@ -79,7 +79,7 @@ const fetchTransactionTypesList = async () => {
                 'Content-Type': 'application/json',
             },
         });
-        const response = await axiosWithToken.get('http://192.168.1.36:8080/app/transaction-types/all');
+        const response = await axiosWithToken.get('http://localhost:8080/app/transaction-types/all');
         transactionTypes = response.data.list;
     } catch (error) {
         console.error('Error fetching transaction type list:', error.message);
@@ -97,7 +97,7 @@ const fetchUsers = async () => {
                 'Content-Type': 'application/json',
             },
         });
-        const response = await axiosWithToken.get('http://192.168.1.36:8080/app/users/all');
+        const response = await axiosWithToken.get('http://localhost:8080/app/users/all');
         users = response.data.list;
     } catch (error) {
         console.error('Error fetching user list:', error.message);
@@ -187,7 +187,7 @@ const deleteEntry = async (genTrxId) => {
                 'Content-Type': 'application/json',
             },
         });
-        await axiosWithToken.delete(`http://192.168.1.36:8080/app/general-transactions/delete/${genTrxId}`);
+        await axiosWithToken.delete(`http://localhost:8080/app/general-transactions/delete/${genTrxId}`);
         
         // Optionally, you can reload the vehicleId list after deletion
         entries = await fetchGeneralTrxList();
@@ -259,7 +259,7 @@ const submitInfo = async () => {
             },
         });
 
-        const response = await axiosWithToken.post('http://192.168.1.36:8080/app/general-transactions/add', data);
+        const response = await axiosWithToken.post('http://localhost:8080/app/general-transactions/add', data);
 
         console.log('Entry added successfully:', response.data);
 
@@ -338,7 +338,7 @@ const submitUpdate = async (genTrxId) => {
             },
         });
 
-        const response = await axiosWithToken.put(`http://192.168.1.36:8080/app/general-transactions/update/${data.genTrxId}`, data);
+        const response = await axiosWithToken.put(`http://localhost:8080/app/general-transactions/update/${data.genTrxId}`, data);
 
         console.log('Transaction updated successfully:', response);
 
