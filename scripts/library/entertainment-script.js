@@ -158,7 +158,6 @@ const renderEntertainmentTypeFilter = async () => {
     }
     entertainmentTypeFilterDropdown.innerHTML = '<option value="">All Types</option>';
     filterTypes.forEach(type => {
-        console.log(type)
         const option = document.createElement('option');
         option.value = type.entertainmentTypeId;
         option.text = type.descr;

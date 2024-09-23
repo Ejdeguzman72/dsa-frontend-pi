@@ -26,7 +26,6 @@ let updatedCardioDetails = {};
 const retrieveJwt = async () => {
     try {
         let token = localStorage.getItem('DeGuzmanStuffAnywhere');
-        console.log('Retrieved token:', token);
         return token;
     } catch (error) {
         console.log('Error retrieving jwt token:', error.message);

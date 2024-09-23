@@ -43,9 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
             });
             let selectedZipCode = zipSearchInput.value;
-            console.log('test')
             if (selectedZipCode && selectedZipCode.trim() !== "") {
-                console.log('selectedZipcode')
                 response = await axiosWithToken.get(`http://192.168.1.36:8080/app/auto-repair-shops/all/search/zip/${selectedZipCode}`)
             } else {
                 response = await axiosWithToken.get('http://192.168.1.36:8080/app/auto-repair-shops/all');

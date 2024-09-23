@@ -440,6 +440,33 @@ footer p {
    box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
 }
 
+#lastname-search-input {
+   box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+   padding: 10px;
+   font-family: fantasy;
+   font-size: 20px;
+   width: 200px;
+   border-radius: 15px;
+}
+
+#phone-search-input {
+   box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+   padding: 10px;
+   font-family: fantasy;
+   font-size: 20px;
+   width: 200px;
+   border-radius: 15px;
+}
+
+#email-search-input {
+   box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+   padding: 10px;
+   font-family: fantasy;
+   font-size: 20px;
+   width: 200px;
+   border-radius: 15px;
+}
+
 #book-author-filter {
    box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
    padding: 10px;

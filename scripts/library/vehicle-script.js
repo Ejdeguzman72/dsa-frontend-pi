@@ -50,6 +50,7 @@ const fetchVehicleList = async (make, year, transmission) => {
             response = await axiosWithToken.get(`http://192.168.1.36:8080/app/vehicles/all/year/${yearType}`);
         } else {
             response = await axiosWithToken.get('http://192.168.1.36:8080/app/vehicles/all');
+            console.log(response.data)
         }
 
         return response.data.list;
@@ -390,15 +391,10 @@ const openUpdateModal = async (vehicleId) => {
 const submitUpdate = async (vehicleId) => {
     // try {
         const updateMake = document.getElementById('updateMake').value;
-        console.log(updateMake)
         const updateModel = document.getElementById('updateModel').value;
-        console.log(updateModel)
         const updateYear = document.getElementById('updateYear').value;
-        console.log(updateYear)
         const updateTransmission = document.getElementById('updateTransmission').value;
-        console.log(updateTransmission)
         const updateCapacity = document.getElementById('updateCapacity').value;
-        console.log(updateCapacity)
 
         // Validate the required fields if needed
 

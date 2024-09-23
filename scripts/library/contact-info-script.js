@@ -11,6 +11,10 @@ const updateModal = document.getElementById('myUpdateModal');
 const updateModalContent = document.getElementById('updateModalContent');
 // const updateCloseBtn = document.getElementById('updateCloseBtn');
 const updateSubmitBtn = document.getElementById('updateSubmitBtn');
+const searchInputButton = document.getElementById('search-btn')
+const lastnameSearchInput = document.getElementById('lastname-search-input');
+const phoneSearchInput = document.getElementById('phone-search-input');
+const emailSearchInput = document.getElementById('email-search-input')
 
 
 // Pagination
@@ -33,14 +37,25 @@ const retrieveJwt = async () => {
 const fetchContactList = async () => {
     try {
         const jwtToken = await retrieveJwt();
-
+        let response;
         const axiosWithToken = axios.create({
             headers: {
                 'Authorization': `Bearer ${jwtToken}`,
                 'Content-Type': 'application/json',
             },
         });
-        const response = await axiosWithToken.get('http://192.168.1.36:8080/app/person-info/all');
+        const selectedLastname = lastnameSearchInput.value;
+        const selectedEmail = emailSearchInput.value;
+        const selectedPhone = phoneSearchInput.value;
+        if (selectedLastname && selectedLastname.trim() !== "") {
+            response = await axiosWithToken.get(`http://192.168.1.36:8080/app/person-info/contact/lastname/${selectedLastname}`);
+        } else if (selectedEmail && selectedEmail.trim() !== "") {
+            response = await axiosWithToken.get(`http://192.168.1.36:8080/app/person-info/contact/email/${selectedEmail}`);
+        } else if (selectedPhone && selectedPhone.trim() !== "") {
+            response = await axiosWithToken.get(`http://192.168.1.36:8080/app/person-info/contact/phone/${selectedPhone}`);;
+        } else {
+            response = await axiosWithToken.get('http://192.168.1.36:8080/app/person-info/all');
+        }
         return response.data.list;
     } catch (error) {
         console.error('Error fetching conatact list:', error.message);
@@ -344,6 +359,19 @@ window.onclick = (event) => {
         updateModal.style.display = 'none';
     }
 };
+
+document.addEventListener('DOMContentLoaded', () => {
+    searchInputButton.addEventListener('click', async () => {
+        try {
+            currentPage = 1; // Reset to first page on new search
+            entries = await fetchContactList();
+            renderContactList(entries, currentPage);
+            renderPagination();
+        } catch (error) {
+            console.error('Error fetching contact info for search:', error.message);
+        }
+    });
+});
 
 // Initialize page
 const initPage = async () => {

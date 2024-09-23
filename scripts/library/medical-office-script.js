@@ -12,7 +12,7 @@ const updateModalContent = document.getElementById('updateModalContent');
 // const updateCloseBtn = document.getElementById('updateCloseBtn');
 const updateSubmitBtn = document.getElementById('updateSubmitBtn');
 const searchButton = document.getElementById('zip-search-btn')
-    const zipSearchInput = document.getElementById('zipCode-search-input');
+const zipSearchInput = document.getElementById('zipCode-search-input');
 // Pagination
 const itemsPerPage = 5;
 
