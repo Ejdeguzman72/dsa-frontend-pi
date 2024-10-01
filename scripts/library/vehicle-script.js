@@ -30,7 +30,7 @@ const retrieveJwt = async () => {
 }
 
 // Fetch vehicle list using Axios
-const fetchVehicleList = async (make, year, transmission) => {
+const fetchVehicleList = async () => {
     try {
         const jwtToken = await retrieveJwt();
         let response;
@@ -146,18 +146,35 @@ const renderVehicleList = (vehicleList, page) => {
     vehicleListContainer.innerHTML = '';
 
     vehiclesToDisplay.forEach((vehicle, index) => {
-        const vehilceElement = document.createElement('div');
-        vehilceElement.classList.add('vehicle-element');
-        vehilceElement.dataset.index = startIdx + index;
+        
+        if (vehicle.needsMaintenance) {
+            const vehilceElement = document.createElement('div');
+            vehilceElement.classList.add('needs-maintenance-vehicle-element');
+            vehilceElement.dataset.index = startIdx + index;
+    
+            const entryElement = document.createElement('h3');
+            entryElement.textContent = `${vehicle.year} - ${vehicle.make} ${vehicle.model} - NEEDS MAINTENANCE`;
+    
+            vehilceElement.appendChild(entryElement);
+    
+            vehilceElement.addEventListener('click', () => openModal(vehicle));
+    
+            vehicleListContainer.appendChild(vehilceElement);
+        } else {
+            const vehilceElement = document.createElement('div');
+            vehilceElement.classList.add('vehicle-element');
+            vehilceElement.dataset.index = startIdx + index;
+    
+            const entryElement = document.createElement('h3');
+            entryElement.textContent = `${vehicle.year} - ${vehicle.make} ${vehicle.model}`;
+    
+            vehilceElement.appendChild(entryElement);
+    
+            vehilceElement.addEventListener('click', () => openModal(vehicle));
+    
+            vehicleListContainer.appendChild(vehilceElement);
+        }
 
-        const entryElement = document.createElement('h3');
-        entryElement.textContent = `${vehicle.year} - ${vehicle.make} ${vehicle.model}`;
-
-        vehilceElement.appendChild(entryElement);
-
-        vehilceElement.addEventListener('click', () => openModal(vehicle));
-
-        vehicleListContainer.appendChild(vehilceElement);
     });
 };
 
@@ -346,6 +363,8 @@ const openModal = (vehicle) => {
         <h2>${vehicle.year} ${vehicle.make} ${vehicle.model} </h2><hr />
         <p>Transmission: ${vehicle.transmission}</p>
         <p>Capacity: ${vehicle.capacity}</p>
+        <p>Mileage: ${vehicle.mileage}</p>
+        <p>Last Maintenance Date: ${vehicle.lastMaintenanceDate}</p>
         <button onClick="openUpdateModal(${vehicle.vehicleId})" class="update-button">Update</button>
         <button onClick="confirmDeleteEntry(${vehicle.vehicleId})" class="delete-button">Delete</button>
     `;
