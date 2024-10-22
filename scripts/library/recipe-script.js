@@ -16,7 +16,9 @@ addModalButton.addEventListener('click', () => openAddModal());
 const itemsPerPage = 5;
 let currentPage = 1;
 let recipes = [];
+let filteredRecipes = [];
 
+// Fetch JWT Token
 const retrieveJwt = async () => {
     try {
         let token = localStorage.getItem('DeGuzmanStuffAnywhere');
@@ -24,9 +26,9 @@ const retrieveJwt = async () => {
     } catch (error) {
         console.log('Error retrieving jwt token:', error.message);
     }
-}
+};
 
-// Fetch recipe list using Axios
+// Fetch Recipe List using Axios
 const fetchRecipeList = async () => {
     try {
         const jwtToken = await retrieveJwt();
@@ -43,13 +45,15 @@ const fetchRecipeList = async () => {
         } else {
             response = await axiosWithToken.get('http://192.168.1.36:8080/app/recipes/all');
         }
-        return response.data.list;
+        filteredRecipes = response.data.list;  // Update filteredRecipes
+        return filteredRecipes;
     } catch (error) {
         console.error('Error fetching recipe list:', error.message);
         return [];
     }
 };
 
+// Fetch Recipe Types
 const fetchRecipeTypes = async () => {
     try {
         const jwtToken = await retrieveJwt();
@@ -66,7 +70,7 @@ const fetchRecipeTypes = async () => {
         console.error('Error fetching recipe type list:', error.message);
         return [];
     }
-}
+};
 
 const fetchRecipeTypesForFilter = async () => {
     try {
@@ -84,8 +88,9 @@ const fetchRecipeTypesForFilter = async () => {
         console.error('Error fetching recipe type list:', error.message);
         return [];
     }
-}
+};
 
+// Render Recipe Type Dropdown
 const renderRecipeTypeDropdown = () => {
     recipeTypesDropdown.innerHTML = '';
 
@@ -94,9 +99,10 @@ const renderRecipeTypeDropdown = () => {
         option.value = type.recipeTypeId;
         option.text = type.descr;
         recipeTypesDropdown.add(option);
-    })
-}
+    });
+};
 
+// Render Recipe Types for Filter Dropdown
 const renderRecipeTypesDropdownFilter = async () => {
     const filterTypes = await fetchRecipeTypesForFilter();
     if (!Array.isArray(filterTypes)) {
@@ -109,10 +115,10 @@ const renderRecipeTypesDropdownFilter = async () => {
         option.value = type.recipeTypeId;
         option.text = type.descr;
         recipeTypeDropdownFilter.add(option);
-    })
-}
+    });
+};
 
-// Render recipe list items
+// Render Recipe List Items
 const renderRecipeList = (entries, page) => {
     const startIdx = (page - 1) * itemsPerPage;
     const endIdx = startIdx + itemsPerPage;
@@ -129,10 +135,7 @@ const renderRecipeList = (entries, page) => {
         nameElement.textContent = `${entry.name}`;
 
         const typeElement = document.createElement('p');
-        typeElement.textContent = `${entry.descr}`
-
-        const recipeTitleElement = document.createElement('p')
-        recipeTitleElement.textContent = 'Ingredients';
+        typeElement.textContent = `${entry.descr}`;
 
         recipeElement.appendChild(nameElement);
         recipeElement.appendChild(typeElement);
@@ -143,217 +146,110 @@ const renderRecipeList = (entries, page) => {
     });
 };
 
-const categorizeRecipes = () => {
-    const categories = {}; // Object to store restaurant categories and their counts
-
-    // Loop through restaurants
-    for (let i = 0; i < recipes.length; i++) {
-        const category = getCategory(recipes[i]);
-        // Increment the count for this category
-        categories[category] = (categories[category] || 0) + 1;
-    }
-
-    // Extracting category names and counts for chart data
-    const categoryNames = Object.keys(categories);
-    const categoryCounts = Object.values(categories);
-
-    // Creating the bar chart
-    new Chart("recipeChart", {
-        type: "bar",
-        data: {
-            labels: categoryNames, // Category names on x-axis
-            datasets: [{
-                data: categoryCounts, // Counts on y-axis
-                backgroundColor: "rgba(0,0,255,0.5)" // Bar color
-            }]
-        },
-        options: {
-            legend: { display: false },
-            title: {
-                display: true,
-                text: "Recipe Categories"
-            },
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: true
-                    }
-                }]
-            }
-        }
-    });
-}
-
-function getCategory(recipe) {
-    return recipe.descr;
-}
-
-// Open modal with contact info details
+// Open modal with recipe details
 const openModal = (recipe) => {
     modalContent.innerHTML = `
-    <h2>${recipe.name}</h2>
-    <p>Type: ${recipe.descr}</p>
-    <h3>Ingredients:</h3>
-    <ul>
-        ${recipe.ingredients.map(ingredient => `<li>${ingredient}</li>`).join('')}
-    </ul>
-    <h3>Directions:</h3>
-    <ol>
-        ${recipe.directions.map(direction => `<li>${direction}</li>`).join('')}
-    </ol>
+        <h2>${recipe.name}</h2>
+        <p>Type: ${recipe.descr}</p>
+        <h3>Ingredients:</h3>
+        <ul>
+            ${recipe.ingredients.map(ingredient => `<li>${ingredient}</li>`).join('')}
+        </ul>
+        <h3>Directions:</h3>
+        <ol>
+            ${recipe.directions.map(direction => `<li>${direction}</li>`).join('')}
+        </ol>
     `;
     modal.style.display = 'block';
 };
 
-const openAddModal = async () => {
-    addModalContent.innerHTML = `
-    <h2>Add Recipe Information</h2><hr />
-        <div class="recipe-modal-body">
-            <input class="input" type="text" name="name" placeholder="Recipe Name"/><br />
-            <div id="ingredientsContainer">
-                <textarea class="input" name="ingredients" placeholder="Ingredients"></textarea>
-                <button type="button" onclick="addIngredientField()">Add Ingredient</button>
-            </div>
-            <div id="directionsContainer">
-                <textarea class="input" name="directions" placeholder="Directions"></textarea>
-                <button type="button" onclick="addDirectionField()">Add Direction</button>
-            </div>
-            <label for="recipeTypesDropdown">Select Recipe Type:</label>
-            <select id="recipeTypesDropdown" name="recipeTypeId"></select>
-        </div><hr />
-        <button id="submitBtn" class="add-button" onClick=submitInfo()>Submit</button><br /><br />
-    <script>
-        submitBtn.addEventListener('click', () => submitInfo())
-    </script>
-        `;
-    recipeTypesDropdown = document.getElementById('recipeTypesDropdown');
-    await fetchRecipeTypes();
-    renderPagination();
-    renderRecipeTypeDropdown();
-    myAddModal.style.display = 'block';
+// Handle Filter Change
+const handleFilterChange = async () => {
+    filteredRecipes = await fetchRecipeList();  // Fetch filtered recipes
+    currentPage = 1;  // Reset to first page if list changes
+    renderRecipeList(filteredRecipes, currentPage);
+    renderPagination();  // Update pagination
 };
 
-const addIngredientField = () => {
-    const ingredientsContainer = document.getElementById('ingredientsContainer');
-    const textarea = document.createElement('textarea');
-    textarea.classList.add('input');
-    textarea.setAttribute('name', 'ingredients');
-    textarea.setAttribute('placeholder', 'Ingredients');
-    ingredientsContainer.appendChild(textarea);
-};
-
-const addDirectionField = () => {
-    const directionsContainer = document.getElementById('directionsContainer');
-    const textarea = document.createElement('textarea');
-    textarea.classList.add('input');
-    textarea.setAttribute('name', 'directions');
-    textarea.setAttribute('placeholder', 'Directions');
-    directionsContainer.appendChild(textarea);
-};
-
-const submitInfo = async () => {
-    try {
-        const name = document.querySelector('input[name="name"]').value;
-        const ingredientsInputs = document.querySelectorAll('textarea[name="ingredients"]');
-        const ingredients = Array.from(ingredientsInputs).map(input => input.value);
-        const directionsInputs = document.querySelectorAll('textarea[name="directions"]');
-        const directions = Array.from(directionsInputs).map(input => input.value);
-        const recipeTypeId = document.querySelector('select[name="recipeTypeId"]').value; // Corrected the field name
-
-
-
-        if (!name || !ingredients || !directions || !recipeTypeId) {
-            throw new Error("Please fill in all required fields.");
-        }
-
-        const data = {
-            name: name,
-            ingredients: ingredients,
-            directions: directions,
-            recipeTypeId: recipeTypeId,
-        };
-
-        const jwtToken = await retrieveJwt();
-
-        const axiosWithToken = axios.create({
-            headers: {
-                'Authorization': `Bearer ${jwtToken}`,
-                'Content-Type': 'application/json',
-            },
-        });
-
-        const response = await axiosWithToken.post('http://192.168.1.36:8080/app/recipes/add', data);
-
-        console.log('Recipe added successfully:', response.data);
-
-        myAddModal.style.display = 'none';
-
-        recipes = await fetchRecipeList();
-        renderRecipeList(recipes, currentPage);
-    } catch (error) {
-        console.error('Error submitting recipes information:', error.message);
-    }
-}
-
-// Close modal
+// Close Modal
 closeBtn.onclick = () => {
     modal.style.display = 'none';
 };
 
-// Close modal if clicked outside the modal
-window.onclick = (event) => {
-    if (event.target === modal) {
-        modal.style.display = 'none';
-    }
-};
-
-document.addEventListener('DOMContentLoaded', () => {    
-    if (recipeTypeDropdownFilter) {
-        recipeTypeDropdownFilter.addEventListener('change', async () => {
-            console.log('Dropdown value selected', recipeTypeDropdownFilter.value);
-            const recipes = await fetchRecipeList();
-            renderRecipeList(recipes, currentPage);
-            console.log('rendering the new list');
-            renderPagination();
-        });
-    } else {
-        console.error('Dropdown filter element not found');
-    }
-})
-
-
-// Initialize page
-const initPage = async () => {
-    await renderRecipeTypesDropdownFilter();
-    recipes = await fetchRecipeList();
-    categorizeRecipes();
-    renderRecipeList(recipes, currentPage);
-    renderPagination();
-};
-
-// Render pagination buttons
+// Render Pagination with First, Previous, Next, and Last
 const renderPagination = () => {
-    const totalPages = Math.ceil(recipes.length / itemsPerPage);
+    const totalPages = Math.ceil(filteredRecipes.length / itemsPerPage);  // Based on filtered recipes
+    const maxVisiblePages = 5;  // Maximum number of page buttons to show at once
     paginationContainer.innerHTML = '';
 
-    for (let i = 1; i <= totalPages; i++) {
+    // First button
+    const firstButton = document.createElement('button');
+    firstButton.textContent = 'First';
+    firstButton.disabled = currentPage === 1;
+    firstButton.addEventListener('click', () => onPageClick(1));
+    paginationContainer.appendChild(firstButton);
+
+    // Previous button
+    const prevButton = document.createElement('button');
+    prevButton.textContent = 'Prev';
+    prevButton.disabled = currentPage === 1;
+    prevButton.addEventListener('click', () => onPageClick(currentPage - 1));
+    paginationContainer.appendChild(prevButton);
+
+    // Calculate start and end page range for numeric buttons
+    let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+    let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+    // Adjust startPage if there are fewer pages at the end
+    if (endPage - startPage < maxVisiblePages - 1) {
+        startPage = Math.max(1, endPage - maxVisiblePages + 1);
+    }
+
+    // Numeric page buttons
+    for (let i = startPage; i <= endPage; i++) {
         const button = document.createElement('button');
         button.textContent = i;
+        if (i === currentPage) {
+            button.classList.add('active');  // Highlight the active page
+        }
         button.addEventListener('click', () => onPageClick(i));
         paginationContainer.appendChild(button);
     }
-    const hrElement = document.createElement('hr');
-    paginationContainer.appendChild(hrElement);
+
+    // Next button
+    const nextButton = document.createElement('button');
+    nextButton.textContent = 'Next';
+    nextButton.disabled = currentPage === totalPages;
+    nextButton.addEventListener('click', () => onPageClick(currentPage + 1));
+    paginationContainer.appendChild(nextButton);
+
+    // Last button
+    const lastButton = document.createElement('button');
+    lastButton.textContent = 'Last';
+    lastButton.disabled = currentPage === totalPages;
+    lastButton.addEventListener('click', () => onPageClick(totalPages));
+    paginationContainer.appendChild(lastButton);
 };
 
-// Handle pagination button click
+// Handle Pagination Button Click
 const onPageClick = (page) => {
     currentPage = page;
-    renderRecipeList(recipes, currentPage);
+    renderRecipeList(filteredRecipes, currentPage);
     renderPagination();
 };
 
-// Initialize the page
+// Initialize Page
+const initPage = async () => {
+    await renderRecipeTypesDropdownFilter();
+    filteredRecipes = await fetchRecipeList();
+    renderRecipeList(filteredRecipes, currentPage);
+    renderPagination();
+};
+
+// Add Event Listener for Filter Dropdown Change
+recipeTypeDropdownFilter.addEventListener('change', handleFilterChange);
+
+// Initialize the Page on DOM Load
 document.addEventListener('DOMContentLoaded', () => {
     initPage();
 });
