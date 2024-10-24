@@ -1,10 +1,12 @@
 document.addEventListener('DOMContentLoaded', () => {
     const articlesContainer = document.getElementById('articles-container');
+    const paginationContainer = document.getElementById('pagination-container');
     const perPage = 10; // Number of articles per page
     let currentPage = 1;
+    let articles = []; // Declare articles here
 
     // Function to display articles for the current page
-    const displayArticles = (articles) => {
+    const displayArticles = () => {
         articlesContainer.innerHTML = '';
 
         const startIndex = (currentPage - 1) * perPage;
@@ -13,7 +15,6 @@ document.addEventListener('DOMContentLoaded', () => {
         for (let i = startIndex; i < endIndex && i < articles.length; i++) {
             const article = articles[i];
 
-            // Create HTML elements for the article (similar to previous code)
             const articleDiv = document.createElement('div');
             articleDiv.classList.add('article-element');
 
@@ -34,21 +35,18 @@ document.addEventListener('DOMContentLoaded', () => {
             articleImage.src = article.urlToImage;
             articleImage.alt = 'Article Image';
 
-            // Append elements to the articleDiv
             articleDiv.appendChild(articleTitle);
             articleDiv.appendChild(articleAuthor);
             articleDiv.appendChild(articleDescription);
             articleDiv.appendChild(articleLink);
             articleDiv.appendChild(articleImage);
 
-            // Append the articleDiv to the articlesContainer
             articlesContainer.appendChild(articleDiv);
         }
     };
 
     // Function to create pagination buttons
     const createPaginationButtons = (totalPages) => {
-        const paginationContainer = document.getElementById('pagination-container');
         paginationContainer.innerHTML = '';
 
         for (let i = 1; i <= totalPages; i++) {
@@ -56,7 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
             button.textContent = i;
             button.addEventListener('click', () => {
                 currentPage = i;
-                displayArticles(articles);
+                displayArticles();
             });
             paginationContainer.appendChild(button);
         }
@@ -65,15 +63,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // Make a GET request using Axios
     axios.get('http://192.168.1.36:8081/app/news/all')
         .then(response => {
-            const articles = response.data.articles;
+            articles = response.data.articles; // Assign articles here
 
-            // Calculate total pages based on the number of articles and articles per page
             const totalPages = Math.ceil(articles.length / perPage);
-
-            // Display articles for the initial page
-            displayArticles(articles);
-
-            // Create pagination buttons
+            displayArticles();
             createPaginationButtons(totalPages);
         })
         .catch(error => {

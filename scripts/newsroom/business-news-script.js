@@ -2,9 +2,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const articlesContainer = document.getElementById('articles-container');
     const perPage = 10; // Number of articles per page
     let currentPage = 1;
+    let articles = [];
 
     // Function to display articles for the current page
-    const displayArticles = (articles) => {
+    const displayArticles = () => {
         articlesContainer.innerHTML = '';
 
         const startIndex = (currentPage - 1) * perPage;
