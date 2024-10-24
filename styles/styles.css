@@ -185,6 +185,11 @@ ul.navbar li.dropdown:hover .dropdown-content {
    opacity: 0.7;
    font-family: fantasy;
    box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+   border-radius: 200px;
+   margin: 0;
+   padding: 20px;
+   border-color: #333;
+   border-style: solid;
 }
 
 .weather-container p {
