@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const articlesContainer = document.getElementById('articles-container');
     const perPage = 10; // Number of articles per page
     let currentPage = 1;
-    let artciles = [];
+    let articles = [];
 
     // Function to display articles for the current page
     const displayArticles = () => {
@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Make a GET request using Axios
     axios.get('http://192.168.1.36:8081/app/news/sports/all')
         .then(response => {
-            const articles = response.data.articles;
+            articles = response.data.articles;
 
             // Calculate total pages based on the number of articles and articles per page
             const totalPages = Math.ceil(articles.length / perPage);
