@@ -421,23 +421,64 @@ const initPage = async () => {
 
 // Render pagination buttons
 const renderPagination = () => {
-    const totalPages = Math.ceil(transactions.length / itemsPerPage);
+    const totalPages = Math.ceil(transactions.length / itemsPerPage);  // Based on filtered recipes
+    const maxVisiblePages = 5;  // Maximum number of page buttons to show at once
     paginationContainer.innerHTML = '';
 
-    for (let i = 1; i <= totalPages; i++) {
+    // First button
+    const firstButton = document.createElement('button');
+    firstButton.textContent = 'First';
+    firstButton.disabled = currentPage === 1;
+    firstButton.addEventListener('click', () => onPageClick(1));
+    paginationContainer.appendChild(firstButton);
+
+    // Previous button
+    const prevButton = document.createElement('button');
+    prevButton.textContent = 'Prev';
+    prevButton.disabled = currentPage === 1;
+    prevButton.addEventListener('click', () => onPageClick(currentPage - 1));
+    paginationContainer.appendChild(prevButton);
+
+    // Calculate start and end page range for numeric buttons
+    let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+    let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+    // Adjust startPage if there are fewer pages at the end
+    if (endPage - startPage < maxVisiblePages - 1) {
+        startPage = Math.max(1, endPage - maxVisiblePages + 1);
+    }
+
+    // Numeric page buttons
+    for (let i = startPage; i <= endPage; i++) {
         const button = document.createElement('button');
         button.textContent = i;
+        if (i === currentPage) {
+            button.classList.add('active');  // Highlight the active page
+        }
         button.addEventListener('click', () => onPageClick(i));
         paginationContainer.appendChild(button);
     }
-    const hrElement = document.createElement('hr');
-    paginationContainer.appendChild(hrElement);
+
+    // Next button
+    const nextButton = document.createElement('button');
+    nextButton.textContent = 'Next';
+    nextButton.disabled = currentPage === totalPages;
+    nextButton.addEventListener('click', () => onPageClick(currentPage + 1));
+    paginationContainer.appendChild(nextButton);
+
+    // Last button
+    const lastButton = document.createElement('button');
+    lastButton.textContent = 'Last';
+    lastButton.disabled = currentPage === totalPages;
+    lastButton.addEventListener('click', () => onPageClick(totalPages));
+    paginationContainer.appendChild(lastButton);
 };
 
 // Handle pagination button click
 const onPageClick = (page) => {
     currentPage = page;
     renderMedicalTrxList(transactions, currentPage);
+    renderPagination();
 };
 
 // Initialize the page
