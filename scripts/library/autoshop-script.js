@@ -393,6 +393,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const onPageClick = (page) => {
         currentPage = page;
         renderAutoshopList(autoshops, currentPage);
+        renderPagination();
     };
 
     
