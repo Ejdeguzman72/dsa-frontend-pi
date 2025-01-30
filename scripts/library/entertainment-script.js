@@ -307,6 +307,7 @@ const renderPagination = () => {
 
     // First button
     const firstButton = document.createElement('button');
+    firstButton.classList.add('pagination-button')
     firstButton.textContent = 'First';
     firstButton.disabled = currentPage === 1;
     firstButton.addEventListener('click', () => onPageClick(1));
@@ -314,6 +315,7 @@ const renderPagination = () => {
 
     // Previous button
     const prevButton = document.createElement('button');
+    prevButton.classList.add('pagination-button')
     prevButton.textContent = 'Prev';
     prevButton.disabled = currentPage === 1;
     prevButton.addEventListener('click', () => onPageClick(currentPage - 1));
@@ -331,6 +333,7 @@ const renderPagination = () => {
     // Numeric page buttons
     for (let i = startPage; i <= endPage; i++) {
         const button = document.createElement('button');
+        button.classList.add('pagination-button')
         button.textContent = i;
         if (i === currentPage) {
             button.classList.add('active');  // Highlight the active page
@@ -341,6 +344,7 @@ const renderPagination = () => {
 
     // Next button
     const nextButton = document.createElement('button');
+    nextButton.classList.add('pagination-button')
     nextButton.textContent = 'Next';
     nextButton.disabled = currentPage === totalPages;
     nextButton.addEventListener('click', () => onPageClick(currentPage + 1));
@@ -348,6 +352,7 @@ const renderPagination = () => {
 
     // Last button
     const lastButton = document.createElement('button');
+    lastButton.classList.add('pagination-button');
     lastButton.textContent = 'Last';
     lastButton.disabled = currentPage === totalPages;
     lastButton.addEventListener('click', () => onPageClick(totalPages));

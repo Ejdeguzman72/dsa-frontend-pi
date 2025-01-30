@@ -146,32 +146,32 @@ const renderVehicleList = (vehicleList, page) => {
     vehicleListContainer.innerHTML = '';
 
     vehiclesToDisplay.forEach((vehicle, index) => {
-        
+
         if (vehicle.needsMaintenance) {
             const vehilceElement = document.createElement('div');
             vehilceElement.classList.add('needs-maintenance-vehicle-element');
             vehilceElement.dataset.index = startIdx + index;
-    
+
             const entryElement = document.createElement('h3');
             entryElement.textContent = `${vehicle.year} - ${vehicle.make} ${vehicle.model} - NEEDS MAINTENANCE`;
-    
+
             vehilceElement.appendChild(entryElement);
-    
+
             vehilceElement.addEventListener('click', () => openModal(vehicle));
-    
+
             vehicleListContainer.appendChild(vehilceElement);
         } else {
             const vehilceElement = document.createElement('div');
             vehilceElement.classList.add('vehicle-element');
             vehilceElement.dataset.index = startIdx + index;
-    
+
             const entryElement = document.createElement('h3');
             entryElement.textContent = `${vehicle.year} - ${vehicle.make} ${vehicle.model}`;
-    
+
             vehilceElement.appendChild(entryElement);
-    
+
             vehilceElement.addEventListener('click', () => openModal(vehicle));
-    
+
             vehicleListContainer.appendChild(vehilceElement);
         }
 
@@ -397,7 +397,7 @@ const openUpdateModal = async (vehicleId) => {
         </div><hr />
         <button id="updateSubmitBtn" class="update-button" onClick="submitUpdate(${updatedVehicleDetails.vehicleId})">Update</button><br /><br />
     `;
-    updateModal.style.display = 'block';
+            updateModal.style.display = 'block';
         } else {
             console.error('Error fetching vehicle details')
         }
@@ -409,43 +409,43 @@ const openUpdateModal = async (vehicleId) => {
 // Function to submit the update
 const submitUpdate = async (vehicleId) => {
     // try {
-        const updateMake = document.getElementById('updateMake').value;
-        const updateModel = document.getElementById('updateModel').value;
-        const updateYear = document.getElementById('updateYear').value;
-        const updateTransmission = document.getElementById('updateTransmission').value;
-        const updateCapacity = document.getElementById('updateCapacity').value;
+    const updateMake = document.getElementById('updateMake').value;
+    const updateModel = document.getElementById('updateModel').value;
+    const updateYear = document.getElementById('updateYear').value;
+    const updateTransmission = document.getElementById('updateTransmission').value;
+    const updateCapacity = document.getElementById('updateCapacity').value;
 
-        // Validate the required fields if needed
+    // Validate the required fields if needed
 
-        const data = {
-            make: updateMake,
-            model: updateModel,
-            year: updateYear,
-            transmission: updateTransmission,
-            capacity: updateCapacity,
-            vehicleId: vehicleId
-        };
+    const data = {
+        make: updateMake,
+        model: updateModel,
+        year: updateYear,
+        transmission: updateTransmission,
+        capacity: updateCapacity,
+        vehicleId: vehicleId
+    };
 
-        console.log(data);
+    console.log(data);
 
-        const jwtToken = await retrieveJwt();
+    const jwtToken = await retrieveJwt();
 
-        const axiosWithToken = axios.create({
-            headers: {
-                'Authorization': `Bearer ${jwtToken}`,
-                'Content-Type': 'application/json',
-            },
-        });
+    const axiosWithToken = axios.create({
+        headers: {
+            'Authorization': `Bearer ${jwtToken}`,
+            'Content-Type': 'application/json',
+        },
+    });
 
-        const response = await axiosWithToken.put(`http://192.168.1.36:8080/app/vehicles/update/${data.vehicleId}`, data);
+    const response = await axiosWithToken.put(`http://192.168.1.36:8080/app/vehicles/update/${data.vehicleId}`, data);
 
-        console.log('Vehicle Information updated successfully:', response);
+    console.log('Vehicle Information updated successfully:', response);
 
-        updateModal.style.display = 'none';
+    updateModal.style.display = 'none';
 
-        vehicles = await fetchVehicleList();
-        renderVehicleList(vehicles, currentPage);
-        renderPagination();
+    vehicles = await fetchVehicleList();
+    renderVehicleList(vehicles, currentPage);
+    renderPagination();
     // } catch (error) {
     //     console.error('Error updating vehicle information:', error.message);
     //     // Handle errors or provide feedback to the user
@@ -490,6 +490,7 @@ const renderPagination = () => {
 
     // First button
     const firstButton = document.createElement('button');
+    firstButton.classList.add('pagination-button')
     firstButton.textContent = 'First';
     firstButton.disabled = currentPage === 1;
     firstButton.addEventListener('click', () => onPageClick(1));
@@ -497,6 +498,7 @@ const renderPagination = () => {
 
     // Previous button
     const prevButton = document.createElement('button');
+    prevButton.classList.add('pagination-button')
     prevButton.textContent = 'Prev';
     prevButton.disabled = currentPage === 1;
     prevButton.addEventListener('click', () => onPageClick(currentPage - 1));
@@ -514,6 +516,7 @@ const renderPagination = () => {
     // Numeric page buttons
     for (let i = startPage; i <= endPage; i++) {
         const button = document.createElement('button');
+        button.classList.add('pagination-button')
         button.textContent = i;
         if (i === currentPage) {
             button.classList.add('active');  // Highlight the active page
@@ -524,6 +527,7 @@ const renderPagination = () => {
 
     // Next button
     const nextButton = document.createElement('button');
+    nextButton.classList.add('pagination-button')
     nextButton.textContent = 'Next';
     nextButton.disabled = currentPage === totalPages;
     nextButton.addEventListener('click', () => onPageClick(currentPage + 1));
@@ -531,6 +535,7 @@ const renderPagination = () => {
 
     // Last button
     const lastButton = document.createElement('button');
+    lastButton.classList.add('pagination-button');
     lastButton.textContent = 'Last';
     lastButton.disabled = currentPage === totalPages;
     lastButton.addEventListener('click', () => onPageClick(totalPages));
