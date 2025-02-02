@@ -352,7 +352,7 @@ artistSearchBtn.addEventListener('click', async () => {
 const initPage = async () => {
     renderMusicGenreDropdownFilter();
     musicEntries = await fetchMusicList();
-    renderMusicList(music, currentPage);
+    renderMusicList(musicEntries, currentPage);
     renderPagination();
 };
 
