@@ -301,7 +301,7 @@ const submitUpdate = async (songId) => {
         updateModal.style.display = 'none';
 
         musicEntries = await fetchMusicList();
-        renderBookList(musicEntries, currentPage);
+        renderMusicList(musicEntries, currentPage);
         renderPagination();
     } catch (error) {
         console.error('Error updating music information:', error.message);
@@ -351,7 +351,7 @@ artistSearchBtn.addEventListener('click', async () => {
 // Initialize page
 const initPage = async () => {
     renderMusicGenreDropdownFilter();
-    music = await fetchMusicList();
+    musicEntries = await fetchMusicList();
     renderMusicList(music, currentPage);
     renderPagination();
 };
