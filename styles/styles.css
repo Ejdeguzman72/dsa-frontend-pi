@@ -1004,3 +1004,16 @@ table, th, td {
    padding: 5px;
 }
 
+.pagination-button:hover {
+   background-color: white;
+   color: #333;
+   border-radius: 10px;
+   padding: 5px;
+}
+
+.pagination-button:active {
+   background-color: #888;
+   color: #333;
+   border-radius: 10px;
+   padding: 5px;
+}

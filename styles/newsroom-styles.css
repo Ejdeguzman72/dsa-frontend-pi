@@ -407,3 +407,21 @@ footer p {
     color: black;
  }
  
+ #pagination-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+ #pagination-container button {
+    background-color: #333;
+    color: white;
+    border-radius: 10px;
+    padding: 5px;
+ }
+
+ #pagination-container button:hover {
+    background-color: white;
+    color: #333;
+    border-radius: 10px;
+    padding: 5px;
+ }
