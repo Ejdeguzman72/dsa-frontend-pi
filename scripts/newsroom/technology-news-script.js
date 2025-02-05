@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     const articlesContainer = document.getElementById('articles-container');
+    const paginationContainer = document.getElementById('pagination-container');
     const perPage = 10; // Number of articles per page
     let currentPage = 1;
     let articles = [];
@@ -49,31 +50,67 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Function to create pagination buttons
     const createPaginationButtons = (totalPages) => {
-        const paginationContainer = document.getElementById('pagination-container');
         paginationContainer.innerHTML = '';
+
+        const firstButton = document.createElement('button');
+        firstButton.textContent = 'First';
+        firstButton.addEventListener('click', () => {
+            if (currentPage !== 1) {
+                currentPage = 1;
+                displayArticles();
+            }
+        });
+        paginationContainer.appendChild(firstButton);
+
+        const prevButton = document.createElement('button');
+        prevButton.textContent = 'Prev';
+        prevButton.addEventListener('click', () => {
+            if (currentPage > 1) {
+                currentPage--;
+                displayArticles();
+            }
+        });
+        paginationContainer.appendChild(prevButton);
 
         for (let i = 1; i <= totalPages; i++) {
             const button = document.createElement('button');
             button.textContent = i;
             button.addEventListener('click', () => {
                 currentPage = i;
-                displayArticles(articles);
+                displayArticles();
             });
             paginationContainer.appendChild(button);
         }
+
+        const nextButton = document.createElement('button');
+        nextButton.textContent = 'Next';
+        nextButton.addEventListener('click', () => {
+            if (currentPage < totalPages) {
+                currentPage++;
+                displayArticles();
+            }
+        });
+        paginationContainer.appendChild(nextButton);
+
+        const lastButton = document.createElement('button');
+        lastButton.textContent = 'Last';
+        lastButton.addEventListener('click', () => {
+            if (currentPage !== totalPages) {
+                currentPage = totalPages;
+                displayArticles();
+            }
+        });
+        paginationContainer.appendChild(lastButton);
     };
 
     // Make a GET request using Axios
     axios.get('http://192.168.1.36:8081/app/news/technology/all')
         .then(response => {
             articles = response.data.articles;
-            console.log(articles)
             // Calculate total pages based on the number of articles and articles per page
             const totalPages = Math.ceil(articles.length / perPage);
-
             // Display articles for the initial page
             displayArticles(articles);
-
             // Create pagination buttons
             createPaginationButtons(totalPages);
         })

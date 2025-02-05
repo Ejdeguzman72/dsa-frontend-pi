@@ -49,6 +49,26 @@ document.addEventListener('DOMContentLoaded', () => {
     const createPaginationButtons = (totalPages) => {
         paginationContainer.innerHTML = '';
 
+        const firstButton = document.createElement('button');
+        firstButton.textContent = 'First';
+        firstButton.addEventListener('click', () => {
+            if (currentPage !== 1) {
+                currentPage = 1;
+                displayArticles();
+            }
+        });
+        paginationContainer.appendChild(firstButton);
+
+        const prevButton = document.createElement('button');
+        prevButton.textContent = 'Prev';
+        prevButton.addEventListener('click', () => {
+            if (currentPage > 1) {
+                currentPage--;
+                displayArticles();
+            }
+        });
+        paginationContainer.appendChild(prevButton);
+
         for (let i = 1; i <= totalPages; i++) {
             const button = document.createElement('button');
             button.textContent = i;
@@ -58,6 +78,26 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             paginationContainer.appendChild(button);
         }
+
+        const nextButton = document.createElement('button');
+        nextButton.textContent = 'Next';
+        nextButton.addEventListener('click', () => {
+            if (currentPage < totalPages) {
+                currentPage++;
+                displayArticles();
+            }
+        });
+        paginationContainer.appendChild(nextButton);
+
+        const lastButton = document.createElement('button');
+        lastButton.textContent = 'Last';
+        lastButton.addEventListener('click', () => {
+            if (currentPage !== totalPages) {
+                currentPage = totalPages;
+                displayArticles();
+            }
+        });
+        paginationContainer.appendChild(lastButton);
     };
 
     // Make a GET request using Axios
