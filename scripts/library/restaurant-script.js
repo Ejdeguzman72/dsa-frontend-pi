@@ -455,7 +455,7 @@ document.addEventListener('DOMContentLoaded', () => {
 const initPage = async () => {
     renderRestaurantTypeFilter();
     restaurants = await fetchRestaurantList();
-    categorizeRestaurants();
+    // categorizeRestaurants();
     renderRestaurantList(restaurants, currentPage);
     renderPagination();
 };

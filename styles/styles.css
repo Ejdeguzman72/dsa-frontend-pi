@@ -1002,6 +1002,7 @@ table, th, td {
    color: white;
    border-radius: 10px;
    padding: 5px;
+   margin-bottom: 20px;
 }
 
 .pagination-button:hover {
