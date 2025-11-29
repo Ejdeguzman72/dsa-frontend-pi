@@ -1034,6 +1034,7 @@ table, th, td {
   border-radius: 6px;
   cursor: pointer;
   transition: 0.2s;
+  margin: 10px;
 }
 
 .upload-btn:hover {
@@ -1047,4 +1048,10 @@ table, th, td {
 
 .hidden-input {
   display: none;
+}
+
+.margin-txt {
+   margin: 10px;
+   text-decoration-style: solid;
+   font-size: 20px;
 }
