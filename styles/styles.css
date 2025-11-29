@@ -1018,3 +1018,33 @@ table, th, td {
    border-radius: 10px;
    padding: 5px;
 }
+
+.upload-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.upload-btn {
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  font-size: 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.upload-btn:hover {
+  background-color: #357ab8;
+}
+
+.file-name {
+  font-size: 14px;
+  color: #444;
+}
+
+.hidden-input {
+  display: none;
+}
